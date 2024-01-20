@@ -4,13 +4,13 @@ This project aims to build the most realistic emulator possible + a life-size, f
 
 ## What's the Univac Scientific?
 
-The [Univac Scientific](https://en.wikipedia.org/wiki/UNIVAC_1103) is an early vacuum tube mainframe from 1956 focused on Scientific computing. It was a huge 36bit machine (hence this project's name) weighing "only" 17.5 tons while at the best of times executing just 25,000 additions per second.
+The [Univac Scientific](https://en.wikipedia.org/wiki/UNIVAC_1103) is an early vacuum tube mainframe from 1956 focused on Scientific computing. It was a huge 36bit machine weighing "only" 17.5 tons while at the best of times executing just 25,000 additions per second. Quite the Leviathan.
 
-The machine is notable today as the first machine to implement interrupts, and the first computer Seymour Cray designed. Finally this is the first machine I can find with a "Repeat" instruction, why is that interesting? Well, this machine was designed by Seymour Cray and the "Repeat" instruction looks to me like the genesis of the ideas behind vector processing, eventually leading to the Cray 1. We can even see Cray gradually refining the ideas in each of his designs over the next 18 years.
+The machine is notable today as the first machine to implement interrupts, and the first computer Seymour Cray designed. Also this is the first machine I can find with a "Repeat" instruction, why is that interesting? Well, this machine was designed by Seymour Cray and the "Repeat" instruction looks to me like the genesis of the ideas behind vector processing, eventually leading to the Cray 1. We can see Cray gradually refining the ideas in each of his designs over the next 18 years.
 
 ![1103A](/Docs/images/1103Whole.png)
 
-The [Charactron](https://en.wikipedia.org/wiki/Charactron) was an early CRT display for visual output, we have evidence from the BRL report that the Eglin Airforce Base and Convair had Charactrons installed on their 1103s.
+The [Charactron](https://en.wikipedia.org/wiki/Charactron) was an early CRT display for visual output, we have evidence from the BRL report that Eglin Airforce Base and Convair had Charactrons installed on their 1103s.
 
 ## Why?
 
@@ -18,22 +18,22 @@ It's something of a travesty that Cray's first machine hasn't been emulated when
 
 Creating a truly accurate emulator of a fairly complex early machine (there's a lot of IO devices) is an interesting technical challenge that I'll have a lot of fun with, and that's the easy part of this project.
 
-The physical replica part comes from a large wall in my apartment that needs something on it, and I don't find painting that interesting. So why not put a _*huge*_ mainframe console there instead? It'll be something that sparks conversation no matter the occasion with it's hundreds of blinking lights, buttons and switches. Being fully functional, guests can play with the switches and buttons, or even enter and run a short program like it's 1956. While for my two little nieces, the lights, physical buttons and switches will be irresistible and should put quite the smile on their faces (as they mess up whatever program was running ;)).
+The physical replica part comes from a large wall in my apartment that needs something on it, and I don't find paintings that interesting. So why not put a _**huge**_ mainframe console there instead? It'll be something to spark conversation no matter the occasion with it's hundreds of blinking lights, buttons and switches. Being fully functional, guests can play with the switches and buttons, or even enter and run a short program like it's 1956. While for my two little nieces, the lights, physical buttons and switches will be irresistible and should put quite the smile on their faces (as they mess up whatever program was running ;)).
 
-And if the photos haven't emphasised the size, this absolute beast is nearly 2.7 meters long with 360 lights and 185 buttons _for just one of the three console panels_. My soldering iron hand is going to have some RSI by the end of this.
+And if the photos haven't emphasised the size, this absolute **beast** of a console is nearly 2.7 meters long with 360 lights and 185 buttons _for just one of the three console panels_. My soldering iron hand is going to have some RSI by the end of this.
 
 ![1103A console](/Docs/images/consoleFront.png)
 * and yes, the above picture was cropped off-center in the original brochure this picture came from. Sad face.
 
 ## Can anyone else use this?
 
-While the emulator is fully cross platform and implemented as a library that can be used anywhere, the "UI" of this is purpose built for the physical replica. So you'd need to create your own alternative front-end to the emulator, unless of course you've got a 3m long section of wall that you'd like to put a console on and a love of soldering.
+While the emulator is cross platform and implemented as a library that can be used anywhere, the "UI" of this is purpose built for the physical replica. So you'd need to create your own alternative front-end to the emulator, unless of course you've got a 3m long section of wall that you'd like to put a console on and a love of soldering.
 
-## Won't you need to wear sunglasses in your living room? There's hundreds of flashing lights.
+## You'll need to wear sunglasses in your living room! There's hundreds of flashing lights.
 
 Well, part of the replica is to get as close as possible to the incandescent bulbs originally used which are nowhere near as hash on the eyes as LEDs. They don't simply flick on and off, but brighten up or darken gradually along a gradient, starting dark red when power is applied and turning yellow the longer power is applied.
 
-Secondly, this will use a photosensor to detect ambient light and adjust the brightness of the lights to the environment.
+Secondly, this will use a photosensor to detect ambient light and adjust the brightness to the environment.
 
 # The Tech
 
