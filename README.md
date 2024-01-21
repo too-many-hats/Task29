@@ -1,10 +1,10 @@
-# Leviathan
+# Task29
 
 This project aims to build the most realistic emulator possible of a 1956 Univac Scientific _and_ a life-size, fully functional replica of it's console + Charactron.
 
 ## What's the Univac Scientific?
 
-The [Univac Scientific](https://en.wikipedia.org/wiki/UNIVAC_1103) was an early vacuum tube mainframe from 1956 focused on scientific computing. A huge machine weighing 22,250kg, cost $486,140.00 a month and, at best, executed just 25,000 instructions a second. Quite the Leviathan.
+The [Univac Scientific](https://en.wikipedia.org/wiki/UNIVAC_1103) was an early vacuum tube mainframe from 1956 focused on scientific computing. A huge machine weighing 22,250kg, cost $486,140.00 a month and, at best, executed just 25,000 instructions a second.
 
 The machine is notable today as the first machine to implement interrupts, and the first computer designed by Seymour Cray. This has a "Repeat" instruction, why is that interesting? Well, this machine was designed by Seymour Cray and the "Repeat" instruction looks to me like the genesis of the ideas behind vector processing, eventually leading to the Cray 1. We can see Cray gradually refining the ideas in each of his designs over the next 18 years.
 
