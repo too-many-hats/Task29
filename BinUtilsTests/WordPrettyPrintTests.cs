@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using BinUtils;
+using Xunit;
 
 namespace BinUtilsTests;
 
@@ -39,10 +40,10 @@ public class WordPrettyPrintTests
     }
 
     [Theory]
-    [InlineData(0, "0.u(0) v(0)")]
-    [InlineData(1073774593, "1.u(1) v(1)")]
-    [InlineData(68719476735, "77.u(32,767) v(32,767)")]
-    [InlineData(67645767679, "77.u(0) v(32,767)")]
+    [InlineData(0, "??.u(0) v(0)")]
+    [InlineData(1073774593, "FP.u(1) v(1)")]
+    [InlineData(68719476735, "EW.u(32,767) v(32,767)")]
+    [InlineData(67645767679, "EW.u(0) v(32,767)")]
     public void CanPrintDecimalInstruction(ulong value, string expected)
     {
         var result = WordPrettyPrint.InstructionDecimal(value);
@@ -50,10 +51,10 @@ public class WordPrettyPrintTests
     }
 
     [Theory]
-    [InlineData(0, "0.u(0) v(0)")]
-    [InlineData(1073774593, "1.u(1) v(1)")]
-    [InlineData(68719476735, "77.u(77 777) v(77 777)")]
-    [InlineData(67645767679, "77.u(0) v(77 777)")]
+    [InlineData(0, "??.u(0) v(0)")]
+    [InlineData(1073774593, "FP.u(1) v(1)")]
+    [InlineData(68719476735, "EW.u(77 777) v(77 777)")]
+    [InlineData(67645767679, "EW.u(0) v(77 777)")]
     public void CanPrintOctalInstruction(ulong value, string expected)
     {
         var result = WordPrettyPrint.InstructionOctal(value);

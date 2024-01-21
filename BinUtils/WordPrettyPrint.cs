@@ -1,6 +1,4 @@
-﻿using BinUtils;
-
-namespace BinUtilsTests;
+﻿namespace BinUtils;
 
 public static class WordPrettyPrint
 {
@@ -75,7 +73,7 @@ public static class WordPrettyPrint
         var opcode = (long)(word >> 30);
         var u = (word >> 15) & Constants.AddressMask;
         var v = word & Constants.AddressMask;
-        return $"{Convert.ToString(opcode, 8)}.u({Decimal(u)}) v({Decimal(v)})";
+        return $"{OpcodeToMnemonic((uint)opcode).Substring(0, 2)}.u({Decimal(u)}) v({Decimal(v)})";
     }
 
     public static string InstructionOctal(ulong word)
@@ -83,6 +81,13 @@ public static class WordPrettyPrint
         var opcode = (long)(word >> 30);
         var u = (word >> 15) & Constants.AddressMask;
         var v = word & Constants.AddressMask;
-        return $"{Convert.ToString(opcode, 8)}.u({Octal(u)}) v({Octal(v)})";
+        return $"{OpcodeToMnemonic((uint)opcode).Substring(0, 2)}.u({Octal(u)}) v({Octal(v)})";
+    }
+
+    public static string OpcodeToMnemonic(uint opcode)
+    {
+        var instruction = Instructions.All.FirstOrDefault(x => x.Opcode == opcode)?.Mnemonic ?? "????";
+
+        return instruction;
     }
 }
