@@ -8,6 +8,7 @@ public static class WordPrettyPrint
         var rawString = Convert.ToString((long)(word & Constants.WordMask), 8);
         var result = new List<char>();
 
+        // put a space between each group of three octal digits.
         var spaceCounter = 0;
         for (int i = rawString.Length - 1; i > -1; i--)
         {
@@ -32,6 +33,7 @@ public static class WordPrettyPrint
         var rawString = Convert.ToString((long)(word & Constants.WordMask), 2);
         var result = new List<char>();
 
+        // put a space between each group of 3 binary digits for readability.
         var spaceCounter = 0;
         for (int i = rawString.Length - 1; i > -1; i--)
         {
@@ -45,7 +47,9 @@ public static class WordPrettyPrint
             result.Add(rawString[i]);
         }
 
-        while (result.Count < 47)
+        // left pad with 0 digits until we have a full 36bit word.
+        // "48" is the length of 3binary digits + a space between each group of three digits.
+        while (result.Count < 48 - 1)
         {
             if ((spaceCounter % 3) == 0)
             {
@@ -65,7 +69,7 @@ public static class WordPrettyPrint
     public static string Decimal(ulong word)
     {
         var signedValue = Decode.SignedNumber(word);
-        return signedValue.ToString("N0");
+        return signedValue.ToString("N0"); // N0 format adds thousands separators in the current culture.
     }
 
     public static string InstructionDecimal(ulong word)
