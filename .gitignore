@@ -8,3 +8,6 @@
 [Ll]ogs/
 
 .vs/
+
+# many PDFs are too large for github to handle, so ignore them and we'll have to back them up manually. Luckily these files don't change.
+/Docs/pdfs/**.pdf
