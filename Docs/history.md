@@ -6,7 +6,7 @@
 * For an early machine, the 1103 is remarkably elegant, there's a beauty in it. Compare it's instruction set to whatever the 704 was doing. The 704's only real advantage was address registers. Or even worse compare to a English Electric DEUCE.
 * Despite Cray's focus on simplicity, there was clearly still some learning to do. The IO devices make no sense the for types of problems the machine was designed for. Apparently "a little bit of everything" was the order of the day. It's hard to imagine how useful paper tape IO was or the weird address display thing. IBM probably had a bit of an advantage in design elegance here. Three years later, by the time of the CDC 1604, Cray had become serious about IO performance.
 * In a head to head comparison the IBM 701 was unanimously favoured by a Joint Chiefs of Staff weather prediction project, because of its better IO equipment. A lesson Cray might have taken to heart.
-* Possibly the machine machine to use modern-recognisable interrupts.
+* Possibly the first machine to use modern interrupts.
 * Second to market with floating point instructions (after 704).
 
 ## Known Installations
@@ -30,6 +30,6 @@ Some the above aren't listed in the BRL report, probably because the machines ha
 
 The types of organisations which purchased the machine make clear the main application of the machine was aircraft and missile design, especially data ingestion, reduction and analysis.
 
-The BRL report show most users moving to IBM 7090s and two to a CDC 1604.
+The BRL report shows most users moving to IBM 7090s and two to CDC 1604s.
 
-Lots of installation had some form of analog-digital converters added. 
+Lots of installations had some form of analog-digital converter added. 
