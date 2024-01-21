@@ -17,6 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BinUtils\BinUtils.csproj" />
+    <ProjectReference Include="..\Emulator\Emulator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Binaries\SDL2.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Emulator\Emulator.csproj" />
+    <ProjectReference Include="..\BinUtils\BinUtils.csproj" />
   </ItemGroup>
 
 </Project>
