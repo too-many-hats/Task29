@@ -1,38 +1,23 @@
-﻿using SDL2;
+﻿using Emulator;
+using ReplicaConsole;
+using ReplicaConsole.Windows;
+using SDL2;
+using System.Diagnostics;
 
 if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0)
 {
     Console.WriteLine($"There was an issue initilizing SDL. {SDL.SDL_GetError()}");
 }
-//3000, 700
-var window = SDL.SDL_CreateWindow("Project701 Main Console", SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, 3500, 938, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
 
-if (window == IntPtr.Zero)
+var configuration = ConfigurationLoader.Load("");
+
+var installation = new Installation().Init(configuration);
+var windows = new List<IWindow>
 {
-    Console.WriteLine($"There was an issue creating the window. {SDL.SDL_GetError()}");
-}
-
-// Creates a new SDL hardware renderer using the default graphics device with VSYNC enabled.
-var renderer = SDL.SDL_CreateRenderer(window, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED | SDL.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC);
-
-if (renderer == IntPtr.Zero)
-{
-    Console.WriteLine($"There was an issue creating the renderer. {SDL.SDL_GetError()}");
-}
-
-// Initilizes SDL_image for use with png files.
-if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == 0)
-{
-    // Console.WriteLine($"There was an issue initilizing SDL2_Image {SDL_image.IMG_GetError()}");
-}
-
-if (SDL_ttf.TTF_Init() == 0)
-{
-    // Console.WriteLine($"There was an issue initilizing SDL2_Image {SDL_image.IMG_GetError()}");
-}
+    new CenterConsolePanel(installation.Cpu).Init()
+};
 
 
-var texture = SDL_image.IMG_LoadTexture(renderer, @"C:\wd\Project702\Docs\consoletest.png");
 //var font = SDL_ttf.TTF_OpenFont(@"C:\wd\Project702\Roboto-Regular.ttf", 12);
 //var textSurface = SDL_ttf.TTF_RenderText_Solid(font, "Message", new SDL.SDL_Color { b = 210, g = 50, r = 255});
 //var textTexture = SDL.SDL_CreateTextureFromSurface(renderer, textSurface);
@@ -42,44 +27,59 @@ var texture = SDL_image.IMG_LoadTexture(renderer, @"C:\wd\Project702\Docs\consol
 //};
 
 var running = true;
+var lastFrameRenderedAt = SDL.SDL_GetTicks();
+var targetFPS = 60; ;
 
 // Main loop for the program
 while (running)
 {
-    // Check to see if there are any events and continue to do so until the queue is empty.
-    while (SDL.SDL_PollEvent(out SDL.SDL_Event e) == 1)
+    var currentTime = SDL.SDL_GetTicks();
+
+    // limit ourselves to 60 frames per second. At the end of each frame, process all window events
+    // that occurred during the previous frame and then advance the emulator.
+
+    // this means input events (like pressing FORCE STOP) are delayed to the end of the frame. 
+    // Then the emulator runs for 16ms, except nothing will execute because FORCE STOP was pressed.
+    //So if you press FORCE STOP part way through an executing frame, the executing frame will complete
+    // anyway, and the stop only takes affect for the next frame. I'm not sure if this really matters,
+    // since it will be hard for a human to notice the <16ms delay anyway. Essentially the last frame's
+    // events are used as input for the next frame's emulation.
+
+    var millisecondsSinceLastFrame = currentTime - (double)lastFrameRenderedAt;
+    if (millisecondsSinceLastFrame > 1000 / targetFPS)
     {
-        if (e.type == SDL.SDL_EventType.SDL_QUIT)
+        Debug.WriteLine("FPS:" + (1000 / millisecondsSinceLastFrame));
+
+        lastFrameRenderedAt = currentTime;
+
+        // Check to see if there are any events and continue to do so until the queue is empty.
+        while (SDL.SDL_PollEvent(out SDL.SDL_Event e) == 1)
         {
-            break;
+            // find the window that the event is targeting, and let that window handle it's event.
+            foreach (var window in windows)
+            {
+                if (window.WindowId == e.window.windowID)
+                {
+                    window.HandleEvent(e);
+                    break;
+                }
+            }
         }
 
+        installation.Cpu.Cycle((uint)millisecondsSinceLastFrame * 1000);
 
-        switch (e.type)
+        // update the UI for each window.
+        foreach (var window in windows)
         {
-            case SDL.SDL_EventType.SDL_KEYDOWN:
-                running = true;
-                break;
+            window.Update();
         }
     }
+}
 
-    // Clears the current render surface.
-    if (SDL.SDL_RenderClear(renderer) < 0)
-    {
-        Console.WriteLine($"There was an issue with clearing the render surface. {SDL.SDL_GetError()}");
-    }
-
-    SDL.SDL_RenderCopy(renderer, texture, 0, 0);
-    //SDL.SDL_RenderCopy(renderer, textTexture, 0, ref textRect);
-
-    // Switches out the currently presented render surface with the one we just did work on.
-    SDL.SDL_RenderPresent(renderer);
+foreach (var window in windows)
+{
+    window.Close();
 }
 
 // Clean up the resources that were created.
-// SDL_ttf.TTF_CloseFont(font);
-SDL_ttf.TTF_Quit();
-// SDL.SDL_FreeSurface(textSurface);
-SDL.SDL_DestroyTexture(texture);
-SDL.SDL_DestroyRenderer(renderer);
 SDL.SDL_Quit();

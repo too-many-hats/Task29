@@ -1,4 +1,6 @@
-﻿namespace Emulator;
+﻿using Emulator.Devices.Computer;
+
+namespace Emulator;
 
 public class Installation
 {
@@ -14,4 +16,13 @@ public class Installation
 
     //includes whole team, programmers, clerks, supervisors, operations, etc. Number taken from Johns Hopkins APL.
     public double RecommendedTeamSize => 28;
+
+    public Cpu Cpu { get; private set; }
+
+    public Installation Init(Configuration configuration)
+    {
+        Cpu = new Cpu();
+
+        return this;
+    }
 }

@@ -21,6 +21,12 @@
 		<ProjectReference Include="..\Emulator\Emulator.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="DefaultConfiguration.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 	<Target Name="CopyCustomContent" AfterTargets="AfterBuild">
 		<Copy SourceFiles="Binaries\SDL2.dll" DestinationFolder="$(OutDir)" />
 		<Copy SourceFiles="Binaries\SDL2_image.dll" DestinationFolder="$(OutDir)" />

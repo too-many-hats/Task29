@@ -1,5 +1,6 @@
 ﻿namespace Emulator.Devices.Computer;
 
-public class Console
+public class Drum
 {
+
 }
