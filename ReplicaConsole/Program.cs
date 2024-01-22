@@ -1,4 +1,5 @@
 ﻿using Emulator;
+using Emulator.Devices.Computer;
 using ReplicaConsole;
 using ReplicaConsole.Windows;
 using SDL2;
@@ -6,7 +7,7 @@ using System.Diagnostics;
 
 if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0)
 {
-    Console.WriteLine($"There was an issue initilizing SDL. {SDL.SDL_GetError()}");
+    System.Console.WriteLine($"There was an issue initilizing SDL. {SDL.SDL_GetError()}");
 }
 
 var configuration = ConfigurationLoader.Load("");
@@ -28,7 +29,7 @@ var windows = new List<IWindow>
 
 var running = true;
 var lastFrameRenderedAt = SDL.SDL_GetTicks();
-var targetFPS = 60; ;
+var targetFPS = 60;
 
 // Main loop for the program
 while (running)
@@ -66,7 +67,7 @@ while (running)
             }
         }
 
-        installation.Cpu.Cycle((uint)millisecondsSinceLastFrame * 1000);
+        installation.Cpu.Cycle((uint)millisecondsSinceLastFrame * 1000 / Cpu.ClockCycleMicroseconds);
 
         // update the UI for each window.
         foreach (var window in windows)
