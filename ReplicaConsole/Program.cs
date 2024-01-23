@@ -15,7 +15,7 @@ var configuration = ConfigurationLoader.Load("");
 var installation = new Installation().Init(configuration);
 var windows = new List<IWindow>
 {
-    new CenterConsolePanel(installation.Cpu).Init()
+    new CenterConsolePanel(installation.Cpu, configuration).Init()
 };
 
 

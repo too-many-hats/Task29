@@ -3,8 +3,11 @@ using SDL2;
 
 namespace ReplicaConsole.Windows;
 
-public static class ConsoleIndicatorsCommon
+public class IndicatorRenderer
 {
+    private nint Renderer;
+    private double Scale;
+
     // the area of the image which we are pulling the indicator texture out of.
     private static SDL.SDL_Rect indicatorSource = new()
     {
@@ -14,10 +17,16 @@ public static class ConsoleIndicatorsCommon
         y = 0,
     };
 
-    public static void RenderIndicators(nint renderer, List<nint> indicatorTextures, Indicator[] indicators, int x, int y, bool splitInGroupsOfThree, int splitOffsetLeft)
+    public IndicatorRenderer(nint renderer, double scale)
     {
-        const int indicatorDiameter = 43;
-        const int indicatorWidthAndMargin = 53;
+        Renderer = renderer;
+        Scale = scale;
+    }
+
+    public void Render(List<nint> indicatorTextures, Indicator[] indicators, int x, int y, bool splitInGroupsOfThree, int splitOffsetLeft)
+    {
+        var indicatorDiameter = (int)(43 * Scale);
+        var indicatorWidthAndMargin = (int)(52 * Scale);
 
         var yInternal = y;
 
@@ -42,14 +51,14 @@ public static class ConsoleIndicatorsCommon
             var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
             SDL.SDL_SetTextureAlphaMod(indicatorTextures[i], (byte)(totalCyclesIndicatorOn / 133.33));
             //     Debug.WriteLine("Alpha: " + (byte)(totalCyclesIndicatorOn / 266.66));
-            SDL.SDL_RenderCopy(renderer, indicatorTextures[i], ref indicatorSource, ref destRect);
+            SDL.SDL_RenderCopy(Renderer, indicatorTextures[i], ref indicatorSource, ref destRect);
 
             if (indicator.HasHighAndLowLight)
             {
                 // then render the bottom indicator if it exists.
                 destRect.y += indicatorWidthAndMargin;
                 SDL.SDL_SetTextureAlphaMod(indicatorTextures[i + 1], (byte)((34000 - totalCyclesIndicatorOn) / 133.33));
-                SDL.SDL_RenderCopy(renderer, indicatorTextures[i + 1], ref indicatorSource, ref destRect);
+                SDL.SDL_RenderCopy(Renderer, indicatorTextures[i + 1], ref indicatorSource, ref destRect);
             }
         }
 
