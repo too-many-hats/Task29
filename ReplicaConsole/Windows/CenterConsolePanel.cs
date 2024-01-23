@@ -77,6 +77,17 @@ public class CenterConsolePanel : IWindow
         RenderIndicatorCollection(Console.VAKIndicators, 53 * 57, 450, true, 3);
         RenderIndicatorCollection(Console.PAKIndicators, 53 * 36, 600, true, 3);
         RenderIndicatorCollection(Console.SARIndicators, 53 * 57, 600, true, 3);
+        RenderIndicatorCollection([Console.AscDelAddIndicator, Console.AscSpSubtIndicator, Console.AscOverflowIndicator, Console.AscALIndicator, Console.AscARIndicator, Console.AscBIndicator, Console.AscCIndicator, Console.AscDIndicator, Console.AscEIndicator], 0, 0, true, 3);
+        RenderIndicatorCollection([Console.InitArithSequenceLogIndicator, Console.InitArithSequenceA_1Indicator, Console.InitArithSequenceSPIndicator, Console.InitArithSequenceA1Indicator, Console.InitArithSequenceQLIndicator, Console.InitArithSequenceDivIndicator, Console.InitArithSequenceMultIndicator, Console.InitArithSequenceSEQIndicator, Console.InitArithSequenceStepIndicator, Console.InitArithSequenceCaseIndicator, Console.InitArithSequenceCKIndicator, Console.InitArithSequenceCKIIndicator, Console.InitArithSequenceRestXIndicator, Console.InitArithSequenceMultiStepIndicator, Console.InitArithSequenceExtSeoIndicator], 53 * 13, 0, true, 3);
+        RenderIndicatorCollection([Console.StopTapeIndicator, Console.SccFaultIndicator, Console.MctFaultIndicator, Console.DivFaultIndicator, Console.AZeroIndicator, Console.TapeFeedIndicator, Console.Rsc75Indicator, Console.RscHoldRptIndicator, Console.RscJumpTermIndicator, Console.RscInitRptIndicator, Console.RscInitTestIndicator, Console.RscEndRptIndicator, Console.RscDelayTestIndicator, Console.RscAdvAddIndicator, Console.SccInitReadIndicator, Console.SccInitWriteIndicator, Console.SccInitIw0_14Indicator, Console.SccInitIw15_29Indicator, Console.SccReadQIndicator, Console.SccWriteAorQIndicator, Console.SccClearAIndicator], 0, 300, true, 3);
+        RenderIndicatorCollection([Console.MasterClockCSSIIndicator, Console.MasterClockCSSIIIndicator, Console.MasterClockCRCIIndicator, Console.MasterClockCRCIIIndicator], 0, 600, true, 3);
+        RenderIndicatorCollection([Console.PdcHpcIndicator, Console.PdcTwcIndicator, Console.PdcWaitInternalIndicator, Console.PdcWaitExternalIndicator, Console.PdcWaitRscIndicator, Console.PdcStop], 53 * 8, 600, true, 3);
+        RenderIndicatorCollection(Console.MpdIndicators, 53 * 18, 600, true, 3);
+        RenderIndicatorCollection([Console.SctA, Console.SctQ, Console.SctMD, Console.SctMcs0, Console.SctMcs1], 53 * 16, 450, true, 3);
+        RenderIndicatorCollection(Console.SkTranslatorIndicators, 0, 450, true, 3);
+        RenderIndicatorCollection(Console.JTranslatorIndicators, 53 * 8, 450, true, 3);
+        RenderIndicatorCollection(Console.MainPulseTranslatorIndicators, 53 * 24, 600, true, 3);
+        RenderIndicatorCollection([Console.Halt, Console.Interrupt], 53 * 53, 600, true, 1);
         //TODO: Add all the other register and flip flop indicators.
 
         // Switches out the currently presented render surface with the one we just did work on.
@@ -93,6 +104,13 @@ public class CenterConsolePanel : IWindow
         const int indicatorDiameter = 43;
         const int indicatorWidthAndMargin = 53;
 
+        var yInternal = y;
+
+        if (indicators[0].HasHighAndLowLight is false) // when an indicator is only single row, always put the indicator on the bottom row.
+        {
+            yInternal = yInternal + indicatorWidthAndMargin;
+        }
+
         for (int i = 0; i < indicators.Length; i++)
         {
             var indicator = indicators[i];
@@ -102,7 +120,7 @@ public class CenterConsolePanel : IWindow
                 h = indicatorDiameter,
                 w = indicatorDiameter,
                 x = x + i * indicatorWidthAndMargin,
-                y = y,
+                y = yInternal,
             };
 
             // render the top indicator first

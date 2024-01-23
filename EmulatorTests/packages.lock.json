@@ -107,8 +107,14 @@
           "xunit.extensibility.core": "[2.6.6]"
         }
       },
-      "emulator": {
+      "binutils": {
         "type": "Project"
+      },
+      "emulator": {
+        "type": "Project",
+        "dependencies": {
+          "BinUtils": "[1.0.0, )"
+        }
       }
     }
   }

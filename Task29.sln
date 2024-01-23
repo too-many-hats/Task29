@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34310.174
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Emulator", "Emulator\Emulator.csproj", "{52D59519-B58C-4582-9961-780A34BC3E65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Emulator", "Emulator\Emulator.csproj", "{52D59519-B58C-4582-9961-780A34BC3E65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docs", "Docs\Docs.csproj", "{EC8FBF18-25EB-44A8-AA8B-45006A47D85A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docs", "Docs\Docs.csproj", "{EC8FBF18-25EB-44A8-AA8B-45006A47D85A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{73991916-3812-4B0F-853B-4C74201EB769}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,17 +13,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{73991916-3
 		Directory.Build.props = Directory.Build.props
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
+		TODO.md = TODO.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinUtils", "BinUtils\BinUtils.csproj", "{F582937A-1B09-4E11-A8AD-43C108CE78A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinUtils", "BinUtils\BinUtils.csproj", "{F582937A-1B09-4E11-A8AD-43C108CE78A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReplicaConsole", "ReplicaConsole\ReplicaConsole.csproj", "{9B24F9DB-6F67-4416-BF18-5161454B3BA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReplicaConsole", "ReplicaConsole\ReplicaConsole.csproj", "{9B24F9DB-6F67-4416-BF18-5161454B3BA0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5FBB96E5-EBAF-4BBF-97B1-B4DB590DF3AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinUtilsTests", "BinUtilsTests\BinUtilsTests.csproj", "{974BCDF3-B4ED-4A24-9847-E864A05488B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinUtilsTests", "BinUtilsTests\BinUtilsTests.csproj", "{974BCDF3-B4ED-4A24-9847-E864A05488B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmulatorTests", "EmulatorTests\EmulatorTests.csproj", "{7D00307B-4899-416D-A7F1-286C6B1D6715}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmulatorTests", "EmulatorTests\EmulatorTests.csproj", "{7D00307B-4899-416D-A7F1-286C6B1D6715}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,12 +2,10 @@
 
 public class Indicator
 {
-    public int OnIntensity { get; set; }
-    public int OffIntensity { get; set; }
     public bool HasHighAndLowLight { get; }
 
     private ulong CyclesOnSinceLastLastFrame;
-    private List<uint> IntensityLastFrames = new();
+    private List<uint> IntensityLastFrames = [];
     private int UpdateCounter;
 
     public Indicator(bool hasHighAndLowLight)
