@@ -1,37 +1,27 @@
-﻿using Emulator.Devices.Computer;
+﻿using Emulator;
+using Emulator.Devices.Computer;
 using SDL2;
 using System.Diagnostics;
 
 namespace ReplicaConsole.Windows;
 
-public class CenterConsolePanel : IWindow
+public class CenterConsolePanel : Window
 {
     public Emulator.Devices.Computer.Console Console { get; set; }
     private nint Renderer;
-    public nint WindowId { get; private set; }
     private readonly List<nint> ARegisterTextures = [];
 
-    public CenterConsolePanel(Cpu cpu)
+    public CenterConsolePanel(Cpu cpu, Configuration configuration):base(configuration)
     {
         Console = cpu.Console;
     }
 
     public CenterConsolePanel Init()
     {
-        WindowId = SDL.SDL_CreateWindow("Task29 Main Console", SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, 3840, 800, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
-
-        if (WindowId == IntPtr.Zero)
-        {
-            //Console.WriteLine($"There was an issue creating the window. {SDL.SDL_GetError()}");
-        }
+        CreateDesktopWindow("Task29 Main Console", 3840, 800);
 
         // Creates a new SDL hardware renderer using the default graphics device with VSYNC enabled.
-        Renderer = SDL.SDL_CreateRenderer(WindowId, -1, SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED | SDL.SDL_RendererFlags.SDL_RENDERER_PRESENTVSYNC);
-
-        if (Renderer == IntPtr.Zero)
-        {
-            //Console.WriteLine($"There was an issue creating the renderer. {SDL.SDL_GetError()}");
-        }
+        Renderer = CreateRenderer(3840, 800);
 
         if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == 0)
         {
@@ -48,12 +38,7 @@ public class CenterConsolePanel : IWindow
         return this;
     }
 
-    public void HandleEvent(SDL.SDL_Event e)
-    {
-
-    }
-
-    public void Update()
+    public override void Update()
     {
         // Clears the current render surface.
         if (SDL.SDL_RenderClear(Renderer) < 0)
@@ -157,7 +142,7 @@ public class CenterConsolePanel : IWindow
         SDL.SDL_RenderPresent(Renderer);
     }
 
-    public void Close()
+    public override void Close()
     {
         SDL.SDL_DestroyRenderer(Renderer);
     }

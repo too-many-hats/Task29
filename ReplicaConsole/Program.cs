@@ -10,12 +10,14 @@ if (SDL.SDL_Init(SDL.SDL_INIT_VIDEO) < 0)
     System.Console.WriteLine($"There was an issue initilizing SDL. {SDL.SDL_GetError()}");
 }
 
+SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
 var configuration = ConfigurationLoader.Load("");
 
 var installation = new Installation().Init(configuration);
 var windows = new List<IWindow>
 {
-    new CenterConsolePanel(installation.Cpu).Init()
+    new CenterConsolePanel(installation.Cpu, configuration).Init()
 };
 
 

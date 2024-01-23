@@ -1,3 +1,4 @@
 {
-  "SimulateActualTime": false
+  "SimulateActualTime": false,
+  "UiScaleFactor": 0.1
 }
