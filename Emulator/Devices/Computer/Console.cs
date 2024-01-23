@@ -17,6 +17,7 @@ public class Console
     public Indicator[] SkTranslatorIndicators { get; } = Enumerable.Range(0, 4).Select(_ => new Indicator(false)).ToArray();
     public Indicator[] JTranslatorIndicators { get; } = Enumerable.Range(0, 4).Select(_ => new Indicator(false)).ToArray();
     public Indicator[] MainPulseTranslatorIndicators { get; } = Enumerable.Range(0, 8).Select(_ => new Indicator(false)).ToArray();
+    public Indicator[] MainControlTranslatorIndicators { get; } = Enumerable.Range(0, 64).Select(_ => new Indicator(false)).ToArray();
     public Indicator AscDelAdd { get; } = new Indicator(true);
     public Indicator AscSpSubt { get; } = new Indicator(true);
     public Indicator AscOverflow { get; } = new Indicator(true);
@@ -102,6 +103,7 @@ public class Console
         EndFramesOfAll(JTranslatorIndicators);
         EndFramesOfAll(SkTranslatorIndicators);
         EndFramesOfAll(MainPulseTranslatorIndicators);
+        EndFramesOfAll(MainControlTranslatorIndicators);
 
         Halt.EndFrame();
         Interrupt.EndFrame();
@@ -305,5 +307,10 @@ public class Console
 
         UpdateIndicator(Halt, Cpu.Halt);
         UpdateIndicator(Interrupt, Cpu.Interrupt);
+
+        foreach(var indicator in MainControlTranslatorIndicators)
+        {
+            indicator.Update(1);
+        }
     }
 }

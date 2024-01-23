@@ -6,7 +6,7 @@ namespace ReplicaConsole.Windows;
 public static class ConsoleIndicatorsCommon
 {
     // the area of the image which we are pulling the indicator texture out of.
-    private static SDL.SDL_Rect indicatorSource = new()
+    public static SDL.SDL_Rect indicatorSource = new()
     {
         h = 113,
         w = 113,

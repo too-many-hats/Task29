@@ -18,10 +18,13 @@ public class CenterConsolePanel : Window
 
     public CenterConsolePanel Init()
     {
-        CreateDesktopWindow("Task29 Main Console", 3840, 800);
+        var logicalWidth = 3840;
+        var logicalHeight = 800;
+
+        CreateDesktopWindow("Task29 Main Console", logicalWidth, logicalHeight);
 
         // Creates a new SDL hardware renderer using the default graphics device with VSYNC enabled.
-        Renderer = CreateRenderer(3840, 800);
+        Renderer = CreateRenderer(logicalWidth, logicalHeight);
 
         if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == 0)
         {
@@ -136,7 +139,10 @@ public class CenterConsolePanel : Window
         ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.SkTranslatorIndicators, 0, 450, true, 3);
         ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.JTranslatorIndicators, 53 * 8, 450, true, 3);
         ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.MainPulseTranslatorIndicators, 53 * 24, 600, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, [Console.Halt, Console.Interrupt], 53 * 24, 600, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, [Console.Halt, Console.Interrupt], 53 * 53, 600, true, 3);
+
+        var finalStopIndicator = Console.MainControlTranslatorIndicators[0];
+        RenderMctIndicators(Renderer, ARegisterTextures, Console.MainControlTranslatorIndicators, 53 * 24, 280);
 
         // Switches out the currently presented render surface with the one we just did work on.
         SDL.SDL_RenderPresent(Renderer);
@@ -145,5 +151,38 @@ public class CenterConsolePanel : Window
     public override void Close()
     {
         SDL.SDL_DestroyRenderer(Renderer);
+    }
+
+    public static void RenderMctIndicators(nint renderer, List<nint> indicatorTextures, Indicator[] indicators, int x, int y)
+    {
+        const int indicatorDiameter = 32;
+        const int indicatorWidth = 53;
+
+        var yInternal = y;
+
+        for (int i = 0; i < indicators.Length; i++)
+        {
+            if (i != 0 && (i % 8) == 0)
+            {
+                continue;
+            }
+
+            var indicator = indicators[i];
+
+            var destRect = new SDL.SDL_Rect()// where to place the indictor on the window.
+            {
+                h = indicatorDiameter,
+                w = indicatorDiameter,
+                x = x + (i % 8) * indicatorWidth,
+                y = yInternal + 45 * (i / 8),
+            };
+
+            // render the top indicator first
+            var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
+            SDL.SDL_SetTextureAlphaMod(indicatorTextures[i], (byte)(totalCyclesIndicatorOn / 133.33));
+            //     Debug.WriteLine("Alpha: " + (byte)(totalCyclesIndicatorOn / 266.66));
+            SDL.SDL_RenderCopy(renderer, indicatorTextures[i], ref ConsoleIndicatorsCommon.indicatorSource, ref destRect);
+        }
+
     }
 }
