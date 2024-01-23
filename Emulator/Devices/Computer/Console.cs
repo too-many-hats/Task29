@@ -182,7 +182,7 @@ public class Console
         }
     }
 
-    internal void UpdateBinaryIndicator(Indicator[] indicators, UInt128 value)
+    private static void UpdateIndicator(Indicator[] indicators, UInt128 value)
     {
         // split the 128bit register into two 64bit halves. Greatly improves performance when everything is in one CPU register.
         ulong mask = 1;
@@ -201,7 +201,7 @@ public class Console
         }
     }
 
-    internal void UpdateBinaryIndicator(Indicator[] indicators, ulong value)
+    private static void UpdateIndicator(Indicator[] indicators, ulong value)
     {
         ulong mask = 1;
         for (var j = 0; j < indicators.Length; j++)
@@ -211,7 +211,7 @@ public class Console
         }
     }
 
-    internal void UpdateBinaryIndicator(Indicator indicator, bool value)
+    private static void UpdateIndicator(Indicator indicator, bool value)
     {
         indicator.Update(value ? (ulong)1 : 0);
     }
@@ -223,76 +223,76 @@ public class Console
 
     internal void UpdateIndicatorStatusEndOfCycle()
     {
-        UpdateBinaryIndicator(AIndicators, Cpu.A);
-        UpdateBinaryIndicator(QIndicators, Cpu.Q);
-        UpdateBinaryIndicator(XIndicators, Cpu.X);
-        UpdateBinaryIndicator(MCRIndicators, Cpu.MCR);
-        UpdateBinaryIndicator(UAKIndicators, Cpu.UAK);
-        UpdateBinaryIndicator(VAKIndicators, Cpu.VAK);
-        UpdateBinaryIndicator(PAKIndicators, Cpu.PAK);
-        UpdateBinaryIndicator(SARIndicators, Cpu.SAR);
-        UpdateBinaryIndicator(MpdIndicators, (uint)Cpu.Mpd);
-        UpdateBinaryIndicator(AscDelAdd, Cpu.AscDelAdd);
-        UpdateBinaryIndicator(AscSpSubt, Cpu.AscSpSubt);
-        UpdateBinaryIndicator(AscOverflow, Cpu.OverflowFault);
-        UpdateBinaryIndicator(AscAL, Cpu.AscProbeAL);
-        UpdateBinaryIndicator(AscAR, Cpu.AscProbeAR);
-        UpdateBinaryIndicator(AscB, Cpu.AscProbeB);
-        UpdateBinaryIndicator(AscC, Cpu.AscProbeC);
-        UpdateBinaryIndicator(AscD, Cpu.AscProbeD);
-        UpdateBinaryIndicator(AscE, Cpu.AscProbeE);
-        UpdateBinaryIndicator(InitArithSequenceLog, Cpu.InitArithSequenceLog);
-        UpdateBinaryIndicator(InitArithSequenceA_1, Cpu.InitArithSequenceA_1);
-        UpdateBinaryIndicator(InitArithSequenceSP, Cpu.InitArithSequenceSP);
-        UpdateBinaryIndicator(InitArithSequenceA1, Cpu.InitArithSequenceAL);
-        UpdateBinaryIndicator(InitArithSequenceQL, Cpu.InitArithSequenceQL);
-        UpdateBinaryIndicator(InitArithSequenceDiv, Cpu.InitArithSequenceDiv);
-        UpdateBinaryIndicator(InitArithSequenceMult, Cpu.InitArithSequenceMult);
-        UpdateBinaryIndicator(InitArithSequenceSEQ, Cpu.InitArithSequenceSeq);
-        UpdateBinaryIndicator(InitArithSequenceStep, Cpu.InitArithSequenceStep);
-        UpdateBinaryIndicator(InitArithSequenceCase, Cpu.InitArithSequenceCase);
-        UpdateBinaryIndicator(InitArithSequenceCKI, Cpu.InitArithSequenceCkI);
-        UpdateBinaryIndicator(InitArithSequenceCKII, Cpu.InitArithSequenceCkII);
-        UpdateBinaryIndicator(InitArithSequenceRestX, Cpu.InitArithSequenceRestX);
-        UpdateBinaryIndicator(InitArithSequenceMultiStep, Cpu.InitArithSequenceMultiStep);
-        UpdateBinaryIndicator(InitArithSequenceExtSeq, Cpu.InitArithSequenceExtSeq);
-        UpdateBinaryIndicator(StopTape, Cpu.StopTape);
-        UpdateBinaryIndicator(SccFault, Cpu.SccFault);
-        UpdateBinaryIndicator(MctFault, Cpu.MctFault);
-        UpdateBinaryIndicator(DivFault, Cpu.DivFault);
-        UpdateBinaryIndicator(AZero, Cpu.AZero);
-        UpdateBinaryIndicator(TapeFeed, Cpu.TapeFeed);
-        UpdateBinaryIndicator(Rsc75, Cpu.Rsc75);
-        UpdateBinaryIndicator(RscHoldRpt, Cpu.RscHoldRpt);
-        UpdateBinaryIndicator(RscJumpTerm, Cpu.RscJumpTerm);
-        UpdateBinaryIndicator(RscInitRpt, Cpu.RscInitRpt);
-        UpdateBinaryIndicator(RscInitTest, Cpu.RscInitTest);
-        UpdateBinaryIndicator(RscEndRpt, Cpu.RscEndRpt);
-        UpdateBinaryIndicator(RscDelayTest, Cpu.RscDelayTest);
-        UpdateBinaryIndicator(RscAdvAdd, Cpu.RscAdvAdd);
-        UpdateBinaryIndicator(SccInitRead, Cpu.SccInitRead);
-        UpdateBinaryIndicator(SccInitWrite, Cpu.SccInitWrite);
-        UpdateBinaryIndicator(SccInitIw0_14, Cpu.SccInitIw0_14);
-        UpdateBinaryIndicator(SccInitIw15_29, Cpu.SccInitIw15_29);
-        UpdateBinaryIndicator(SccReadQ, Cpu.SccReadQ);
-        UpdateBinaryIndicator(SccWriteAorQ, Cpu.SccWriteAorQ);
-        UpdateBinaryIndicator(SccClearA, Cpu.SccClearA);
-        UpdateBinaryIndicator(MasterClockCSSI, Cpu.MasterClockCSSI);
-        UpdateBinaryIndicator(MasterClockCSSII, Cpu.MasterClockCSSII);
-        UpdateBinaryIndicator(MasterClockCRCI, Cpu.MasterClockCRCI);
-        UpdateBinaryIndicator(MasterClockCRCII, Cpu.MasterClockCRCII);
-        UpdateBinaryIndicator(PdcHpc, Cpu.PdcHpc);
-        UpdateBinaryIndicator(PdcTwc, Cpu.PdcTwc);
-        UpdateBinaryIndicator(PdcWaitInternal, Cpu.PdcWaitInternal);
-        UpdateBinaryIndicator(PdcWaitExternal, Cpu.PdcWaitExternal);
-        UpdateBinaryIndicator(PdcWaitRsc, Cpu.PdcWaitRsc);
-        UpdateBinaryIndicator(PdcStop, Cpu.PdcStop);
-        UpdateBinaryIndicator(SctA, Cpu.SctA);
-        UpdateBinaryIndicator(SctQ, Cpu.SctQ);
-        UpdateBinaryIndicator(SctMD, Cpu.SctMD);
-        UpdateBinaryIndicator(SctMcs0, Cpu.SctMcs0);
-        UpdateBinaryIndicator(SctMcs1, Cpu.SctMcs1);
-        UpdateBinaryIndicator(SctMcs2, Cpu.SctMcs2);
+        UpdateIndicator(AIndicators, Cpu.A);
+        UpdateIndicator(QIndicators, Cpu.Q);
+        UpdateIndicator(XIndicators, Cpu.X);
+        UpdateIndicator(MCRIndicators, Cpu.MCR);
+        UpdateIndicator(UAKIndicators, Cpu.UAK);
+        UpdateIndicator(VAKIndicators, Cpu.VAK);
+        UpdateIndicator(PAKIndicators, Cpu.PAK);
+        UpdateIndicator(SARIndicators, Cpu.SAR);
+        UpdateIndicator(MpdIndicators, (uint)Cpu.Mpd);
+        UpdateIndicator(AscDelAdd, Cpu.AscDelAdd);
+        UpdateIndicator(AscSpSubt, Cpu.AscSpSubt);
+        UpdateIndicator(AscOverflow, Cpu.OverflowFault);
+        UpdateIndicator(AscAL, Cpu.AscProbeAL);
+        UpdateIndicator(AscAR, Cpu.AscProbeAR);
+        UpdateIndicator(AscB, Cpu.AscProbeB);
+        UpdateIndicator(AscC, Cpu.AscProbeC);
+        UpdateIndicator(AscD, Cpu.AscProbeD);
+        UpdateIndicator(AscE, Cpu.AscProbeE);
+        UpdateIndicator(InitArithSequenceLog, Cpu.InitArithSequenceLog);
+        UpdateIndicator(InitArithSequenceA_1, Cpu.InitArithSequenceA_1);
+        UpdateIndicator(InitArithSequenceSP, Cpu.InitArithSequenceSP);
+        UpdateIndicator(InitArithSequenceA1, Cpu.InitArithSequenceAL);
+        UpdateIndicator(InitArithSequenceQL, Cpu.InitArithSequenceQL);
+        UpdateIndicator(InitArithSequenceDiv, Cpu.InitArithSequenceDiv);
+        UpdateIndicator(InitArithSequenceMult, Cpu.InitArithSequenceMult);
+        UpdateIndicator(InitArithSequenceSEQ, Cpu.InitArithSequenceSeq);
+        UpdateIndicator(InitArithSequenceStep, Cpu.InitArithSequenceStep);
+        UpdateIndicator(InitArithSequenceCase, Cpu.InitArithSequenceCase);
+        UpdateIndicator(InitArithSequenceCKI, Cpu.InitArithSequenceCkI);
+        UpdateIndicator(InitArithSequenceCKII, Cpu.InitArithSequenceCkII);
+        UpdateIndicator(InitArithSequenceRestX, Cpu.InitArithSequenceRestX);
+        UpdateIndicator(InitArithSequenceMultiStep, Cpu.InitArithSequenceMultiStep);
+        UpdateIndicator(InitArithSequenceExtSeq, Cpu.InitArithSequenceExtSeq);
+        UpdateIndicator(StopTape, Cpu.StopTape);
+        UpdateIndicator(SccFault, Cpu.SccFault);
+        UpdateIndicator(MctFault, Cpu.MctFault);
+        UpdateIndicator(DivFault, Cpu.DivFault);
+        UpdateIndicator(AZero, Cpu.AZero);
+        UpdateIndicator(TapeFeed, Cpu.TapeFeed);
+        UpdateIndicator(Rsc75, Cpu.Rsc75);
+        UpdateIndicator(RscHoldRpt, Cpu.RscHoldRpt);
+        UpdateIndicator(RscJumpTerm, Cpu.RscJumpTerm);
+        UpdateIndicator(RscInitRpt, Cpu.RscInitRpt);
+        UpdateIndicator(RscInitTest, Cpu.RscInitTest);
+        UpdateIndicator(RscEndRpt, Cpu.RscEndRpt);
+        UpdateIndicator(RscDelayTest, Cpu.RscDelayTest);
+        UpdateIndicator(RscAdvAdd, Cpu.RscAdvAdd);
+        UpdateIndicator(SccInitRead, Cpu.SccInitRead);
+        UpdateIndicator(SccInitWrite, Cpu.SccInitWrite);
+        UpdateIndicator(SccInitIw0_14, Cpu.SccInitIw0_14);
+        UpdateIndicator(SccInitIw15_29, Cpu.SccInitIw15_29);
+        UpdateIndicator(SccReadQ, Cpu.SccReadQ);
+        UpdateIndicator(SccWriteAorQ, Cpu.SccWriteAorQ);
+        UpdateIndicator(SccClearA, Cpu.SccClearA);
+        UpdateIndicator(MasterClockCSSI, Cpu.MasterClockCSSI);
+        UpdateIndicator(MasterClockCSSII, Cpu.MasterClockCSSII);
+        UpdateIndicator(MasterClockCRCI, Cpu.MasterClockCRCI);
+        UpdateIndicator(MasterClockCRCII, Cpu.MasterClockCRCII);
+        UpdateIndicator(PdcHpc, Cpu.PdcHpc);
+        UpdateIndicator(PdcTwc, Cpu.PdcTwc);
+        UpdateIndicator(PdcWaitInternal, Cpu.PdcWaitInternal);
+        UpdateIndicator(PdcWaitExternal, Cpu.PdcWaitExternal);
+        UpdateIndicator(PdcWaitRsc, Cpu.PdcWaitRsc);
+        UpdateIndicator(PdcStop, Cpu.PdcStop);
+        UpdateIndicator(SctA, Cpu.SctA);
+        UpdateIndicator(SctQ, Cpu.SctQ);
+        UpdateIndicator(SctMD, Cpu.SctMD);
+        UpdateIndicator(SctMcs0, Cpu.SctMcs0);
+        UpdateIndicator(SctMcs1, Cpu.SctMcs1);
+        UpdateIndicator(SctMcs2, Cpu.SctMcs2);
 
         JTranslatorIndicators[0].Update(1);
         JTranslatorIndicators[3].Update(1);
@@ -303,7 +303,7 @@ public class Console
         MainPulseTranslatorIndicators[0].Update(1);
         MainPulseTranslatorIndicators[7].Update(1);
 
-        UpdateBinaryIndicator(Halt, Cpu.Halt);
-        UpdateBinaryIndicator(Interrupt, Cpu.Interrupt);
+        UpdateIndicator(Halt, Cpu.Halt);
+        UpdateIndicator(Interrupt, Cpu.Interrupt);
     }
 }
