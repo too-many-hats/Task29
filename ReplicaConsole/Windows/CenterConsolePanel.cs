@@ -1,26 +1,24 @@
-﻿using Emulator;
-using Emulator.Devices.Computer;
+﻿using Emulator.Devices.Computer;
 using SDL2;
 using System.Diagnostics;
 
 namespace ReplicaConsole.Windows;
 
-public class CenterConsolePanel : Window, IWindow
+public class CenterConsolePanel : IWindow
 {
     public Emulator.Devices.Computer.Console Console { get; set; }
     private nint Renderer;
     public nint WindowId { get; private set; }
     private readonly List<nint> ARegisterTextures = [];
-    private IndicatorRenderer IndicatorRenderer;
 
-    public CenterConsolePanel(Cpu cpu, Configuration configuration): base(configuration)
+    public CenterConsolePanel(Cpu cpu)
     {
         Console = cpu.Console;
     }
 
     public CenterConsolePanel Init()
     {
-        WindowId = SDL.SDL_CreateWindow("Task29 Main Console", SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, Dimension(3840), Dimension(800), SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
+        WindowId = SDL.SDL_CreateWindow("Task29 Main Console", SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, 3840, 800, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
 
         if (WindowId == IntPtr.Zero)
         {
@@ -34,8 +32,6 @@ public class CenterConsolePanel : Window, IWindow
         {
             //Console.WriteLine($"There was an issue creating the renderer. {SDL.SDL_GetError()}");
         }
-
-        IndicatorRenderer = new IndicatorRenderer(Renderer, this.Configuration.UiScaleFactor);
 
         if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == 0)
         {
@@ -65,16 +61,15 @@ public class CenterConsolePanel : Window, IWindow
             // Console.WriteLine($"There was an issue with clearing the render surface. {SDL.SDL_GetError()}");
         }
 
-        // indicator positions are semi-random at the moment. Once we have the CAD files of the front panel we'll know the actual positions to put the indicators.
-        IndicatorRenderer.Render(ARegisterTextures, Console.AIndicators, 0, Dimension(150), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.QIndicators, Dimension(52 * 36), 0, true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.XIndicators, Dimension(52 * 36), Dimension(300), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.MCRIndicators, Dimension(52 * 36), Dimension(450), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.UAKIndicators, Dimension(52 * 42), Dimension(450), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.VAKIndicators, Dimension(52 * 57), Dimension(450), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.PAKIndicators, Dimension(52 * 36), Dimension(600), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.SARIndicators, Dimension(52 * 57), Dimension(600), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, 
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.AIndicators, 0, 150, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.QIndicators, 53 * 36, 0, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.XIndicators, 53 * 36, 300, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.MCRIndicators, 53 * 36, 450, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.UAKIndicators, 53 * 42, 450, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.VAKIndicators, 53 * 57, 450, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.PAKIndicators, 53 * 36, 600, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.SARIndicators, 53 * 57, 600, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
             [
                 Console.AscDelAdd, 
                 Console.AscSpSubt, 
@@ -86,7 +81,7 @@ public class CenterConsolePanel : Window, IWindow
                 Console.AscD, 
                 Console.AscE
             ], 0, 0, true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, 
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
             [
                 Console.InitArithSequenceLog, 
                 Console.InitArithSequenceA_1, 
@@ -103,8 +98,8 @@ public class CenterConsolePanel : Window, IWindow
                 Console.InitArithSequenceRestX, 
                 Console.InitArithSequenceMultiStep, 
                 Console.InitArithSequenceExtSeq
-            ], Dimension(52 * 13), 0, true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, 
+            ], 53 * 13, 0, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
             [
                 Console.StopTape, 
                 Console.SccFault, 
@@ -127,15 +122,15 @@ public class CenterConsolePanel : Window, IWindow
                 Console.SccReadQ,
                 Console.SccWriteAorQ, 
                 Console.SccClearA
-            ], 0, Dimension(300), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, 
+            ], 0, 300, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
             [
                 Console.MasterClockCSSI,
                 Console.MasterClockCSSII,
                 Console.MasterClockCRCI,
                 Console.MasterClockCRCII
-            ], 0, Dimension(600), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, 
+            ], 0, 600, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
             [
                 Console.PdcHpc,
                 Console.PdcTwc,
@@ -143,20 +138,20 @@ public class CenterConsolePanel : Window, IWindow
                 Console.PdcWaitExternal,
                 Console.PdcWaitRsc,
                 Console.PdcStop
-            ], Dimension(52 * 8), Dimension(600), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.MpdIndicators, 52 * 18, 600, true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, 
+            ], 53 * 8, 600, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.MpdIndicators, 53 * 18, 600, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
             [
                 Console.SctA,
                 Console.SctQ,
                 Console.SctMD,
                 Console.SctMcs0,
                 Console.SctMcs1
-            ], Dimension(52 * 16), Dimension(450), true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.SkTranslatorIndicators, 0, 450, true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.JTranslatorIndicators, 52 * 8, 450, true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, Console.MainPulseTranslatorIndicators, 52 * 24, 600, true, 3);
-        IndicatorRenderer.Render(ARegisterTextures, [Console.Halt, Console.Interrupt], 53 * 24, 600, true, 3);
+            ], 53 * 16, 450, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.SkTranslatorIndicators, 0, 450, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.JTranslatorIndicators, 53 * 8, 450, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.MainPulseTranslatorIndicators, 53 * 24, 600, true, 3);
+        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, [Console.Halt, Console.Interrupt], 53 * 24, 600, true, 3);
 
         // Switches out the currently presented render surface with the one we just did work on.
         SDL.SDL_RenderPresent(Renderer);
