@@ -82,23 +82,27 @@ public class Console
     public Indicator Halt { get; } = new Indicator(true);
     public Indicator Interrupt { get; } = new Indicator(true);
 
-    public Indicator[] OperatingRateIndicators {  get; } = Enumerable.Range(0, 6).Select(_ => new Indicator(false)).ToArray();
-    public Indicator[] SelectiveJumpIndicators {  get; } = Enumerable.Range(0, 3).Select(_ => new Indicator(false)).ToArray();
-    public Indicator[] SelectiveStopsIndicators {  get; } = Enumerable.Range(0, 5).Select(_ => new Indicator(false)).ToArray();
-    public Indicator IndicateEnableLight {  get; } = new Indicator(false);
-    public Indicator AbnormalConditionLight {  get; } = new Indicator(false);
-    public Indicator NormalLight {  get; } = new Indicator(false);
-    public Indicator TestLight {  get; } = new Indicator(false);
-    public Indicator OperatingLight {  get; } = new Indicator(false);
-    public Indicator ForceStopLight {  get; } = new Indicator(false);
-    public Indicator MatrixDriveFaultLight {  get; } = new Indicator(false);
-    public Indicator MtFaultLight {  get; } = new Indicator(false);
-    public Indicator IOFaultLight {  get; } = new Indicator(false);
-    public Indicator VoltageFaultLight {  get; } = new Indicator(false);
-    public Indicator PrintFault {  get; } = new Indicator(false);
-    public Indicator TempFault {  get; } = new Indicator(false);
-    public Indicator WaterFault {  get; } = new Indicator(false);
-    public Indicator CharOverflow {  get; } = new Indicator(false);
+    public Indicator[] OperatingRateIndicators {  get; } = Enumerable.Range(0, 6).Select(_ => new Indicator(false, IndicatorType.WhiteLight)).ToArray();
+    public Indicator[] SelectiveJumpIndicators {  get; } = Enumerable.Range(0, 3).Select(_ => new Indicator(false, IndicatorType.WhiteLight)).ToArray();
+    public Indicator[] SelectiveStopsIndicators {  get; } = Enumerable.Range(0, 5).Select(_ => new Indicator(false, IndicatorType.RedLight)).ToArray();
+    public Indicator IndicateEnableLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator AbnormalConditionLight {  get; } = new Indicator(false, IndicatorType.WhiteLight);
+    public Indicator NormalLight {  get; } = new Indicator(false, IndicatorType.GreenLight);
+    public Indicator TestLight {  get; } = new Indicator(false, IndicatorType.WhiteLight);
+    public Indicator OperatingLight {  get; } = new Indicator(false, IndicatorType.GreenLight);
+    public Indicator ForceStopLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator MatrixDriveFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator MtFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator IOFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator VoltageFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator PrintFault {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator TempFault {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator WaterFault {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator CharOverflowLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator MctFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator SccFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator DivFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator OverflowFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
 
     private Cpu Cpu { get; set; }
 
@@ -138,7 +142,7 @@ public class Console
         PrintFault.EndFrame();
         TempFault.EndFrame();
         WaterFault.EndFrame();
-        CharOverflow.EndFrame();
+        CharOverflowLight.EndFrame();
 
         Halt.EndFrame();
         Interrupt.EndFrame();
@@ -146,6 +150,7 @@ public class Console
         AscDelAdd.EndFrame();
         AscSpSubt.EndFrame();
         AscOverflow.EndFrame();
+        OverflowFaultLight.EndFrame();
         AscAL.EndFrame();
         AscAR.EndFrame();
         AscB.EndFrame();
@@ -170,8 +175,11 @@ public class Console
 
         StopTape.EndFrame();
         SccFault.EndFrame();
+        SccFaultLight.EndFrame();
         MctFault.EndFrame();
+        MctFaultLight.EndFrame();
         DivFault.EndFrame();
+        DivFaultLight.EndFrame();
         AZero.EndFrame();
         TapeFeed.EndFrame();
         Rsc75.EndFrame();
@@ -272,6 +280,7 @@ public class Console
         UpdateIndicator(AscDelAdd, Cpu.AscDelAdd);
         UpdateIndicator(AscSpSubt, Cpu.AscSpSubt);
         UpdateIndicator(AscOverflow, Cpu.OverflowFault);
+        UpdateIndicator(OverflowFaultLight, Cpu.OverflowFault);
         UpdateIndicator(AscAL, Cpu.AscProbeAL);
         UpdateIndicator(AscAR, Cpu.AscProbeAR);
         UpdateIndicator(AscB, Cpu.AscProbeB);
@@ -295,8 +304,11 @@ public class Console
         UpdateIndicator(InitArithSequenceExtSeq, Cpu.InitArithSequenceExtSeq);
         UpdateIndicator(StopTape, Cpu.StopTape);
         UpdateIndicator(SccFault, Cpu.SccFault);
+        UpdateIndicator(SccFaultLight, Cpu.SccFault);
         UpdateIndicator(MctFault, Cpu.MctFault);
+        UpdateIndicator(MctFaultLight, Cpu.MctFault);
         UpdateIndicator(DivFault, Cpu.DivFault);
+        UpdateIndicator(DivFaultLight, Cpu.DivFault);
         UpdateIndicator(AZero, Cpu.AZero);
         UpdateIndicator(TapeFeed, Cpu.TapeFeed);
         UpdateIndicator(Rsc75, Cpu.Rsc75);
@@ -331,56 +343,23 @@ public class Console
         UpdateIndicator(SctMcs1, Cpu.SctMcs1);
         UpdateIndicator(SctMcs2, Cpu.SctMcs2);
 
-        JTranslatorIndicators[0].Update(1);
-        JTranslatorIndicators[3].Update(1);
-
-        SkTranslatorIndicators[0].Update(1);
-        SkTranslatorIndicators[3].Update(1);
-
-        MainPulseTranslatorIndicators[0].Update(1);
-        MainPulseTranslatorIndicators[7].Update(1);
-
         UpdateIndicator(Halt, Cpu.Halt);
         UpdateIndicator(Interrupt, Cpu.Interrupt);
 
-        foreach(var indicator in MainControlTranslatorIndicators)
-        {
-            indicator.Update(1);
-        }
+        IndicateEnableLight.Update(Cpu.IsManualInterruptArmed ? (ulong)1 : 0);
+        AbnormalConditionLight.Update(Cpu.IsAbnormalCondition ? (ulong)1 : 0);
+        NormalLight.Update(Cpu.IsNormalCondition ? (ulong)1 : 0);
+        TestLight.Update(Cpu.IsTestCondition ? (ulong)1 : 0);
+        OperatingLight.Update(Cpu.IsOperating ? (ulong)1 : 0);
+        ForceStopLight.Update(Cpu.IsForceStopped ? (ulong)1 : 0);
 
-        foreach (var indicator in OperatingRateIndicators)
-        {
-            indicator.Update(1);
-        }
-
-        foreach (var indicator in SelectiveJumpIndicators)
-        {
-            indicator.Update(1);
-        }
-
-        foreach (var indicator in SelectiveStopsIndicators)
-        {
-            indicator.Update(1);
-        }
-
-        IndicateEnableLight.Update(1);
-        AbnormalConditionLight.Update(1);
-        NormalLight.Update(1);
-        TestLight.Update(1);
-        OperatingLight.Update(1);
-        ForceStopLight.Update(1);
-
-        MatrixDriveFaultLight.Update(1);
-        MtFaultLight.Update(1);
-        IOFaultLight.Update(1);
-        VoltageFaultLight.Update(1);
-        MctFault.Update(1);
-        DivFault.Update(1);
-        SccFault.Update(1);
-        AscOverflow.Update(1);
-        PrintFault.Update(1);
-        TempFault.Update(1);
-        WaterFault.Update(1);
-        CharOverflow.Update(1);
+        MatrixDriveFaultLight.Update(Cpu.MatrixDriveFault ? (ulong)1 : 0);
+        MtFaultLight.Update(Cpu.TapeFault ? (ulong)1 : 0);
+        IOFaultLight.Update(Cpu.IOFault ? (ulong)1 : 0);
+        VoltageFaultLight.Update(Cpu.VoltageFault ? (ulong)1 : 0);
+        PrintFault.Update(Cpu.PrintFault ? (ulong)1 : 0);
+        TempFault.Update(Cpu.TempFault ? (ulong)1 : 0);
+        WaterFault.Update(Cpu.WaterFault ? (ulong)1 : 0);
+        CharOverflowLight.Update(Cpu.FpCharOverflow ? (ulong)1 : 0);
     }
 }

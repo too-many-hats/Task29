@@ -7,11 +7,13 @@ public class Indicator
     private ulong CyclesOnSinceLastLastFrame;
     private List<uint> IntensityLastFrames = [];
     private int UpdateCounter;
+    public IndicatorType Type { get; init; }
 
-    public Indicator(bool hasHighAndLowLight)
+    public Indicator(bool hasHighAndLowLight, IndicatorType indicatorType = IndicatorType.Basic)
     {
         HasHighAndLowLight = hasHighAndLowLight;
         IntensityLastFrames = Enumerable.Range(0, 4).Select(_ => (uint)0).ToList();
+        Type = indicatorType;
     }
 
     public void Update(ulong isOn)

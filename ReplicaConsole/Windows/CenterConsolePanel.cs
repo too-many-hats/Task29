@@ -9,7 +9,9 @@ public class CenterConsolePanel : Window
 {
     public Emulator.Devices.Computer.Console Console { get; set; }
     private nint Renderer;
-    private readonly List<nint> ARegisterTextures = [];
+    private nint MctLightOnTexture;
+    private nint MctLightOffTexture;
+    private IndicatorRenderer IndicatorRenderer { get; set; }
 
     public CenterConsolePanel(Cpu cpu, Configuration configuration):base(configuration)
     {
@@ -31,12 +33,9 @@ public class CenterConsolePanel : Window
             // Console.WriteLine($"There was an issue initilizing SDL2_Image {SDL_image.IMG_GetError()}");
         }
 
-        var aRegisterIndicatorCount = Console.AIndicators.Length * (Console.AIndicators[0].HasHighAndLowLight ? 2 : 1);
-
-        for (int i = 0; i < aRegisterIndicatorCount; i++)
-        {
-            ARegisterTextures.Add(SDL_image.IMG_LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\bitmap.png"));
-        }
+        MctLightOnTexture = SDL_image.IMG_LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoron.png");
+        MctLightOffTexture = SDL_image.IMG_LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoroff.png");
+        IndicatorRenderer = new IndicatorRenderer(Renderer, LightTexturesLoader.Load(Renderer));
 
         return this;
     }
@@ -49,15 +48,15 @@ public class CenterConsolePanel : Window
             // Console.WriteLine($"There was an issue with clearing the render surface. {SDL.SDL_GetError()}");
         }
 
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.AIndicators, 0, 150, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.QIndicators, 53 * 36, 0, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.XIndicators, 53 * 36, 300, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.MCRIndicators, 53 * 36, 450, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.UAKIndicators, 53 * 42, 450, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.VAKIndicators, 53 * 57, 450, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.PAKIndicators, 53 * 36, 600, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.SARIndicators, 53 * 57, 600, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
+        IndicatorRenderer.RenderIndicators(Console.AIndicators, 0, 150, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.QIndicators, 53 * 36, 0, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.XIndicators, 53 * 36, 300, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.MCRIndicators, 53 * 36, 450, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.UAKIndicators, 53 * 42, 450, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.VAKIndicators, 53 * 57, 450, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.PAKIndicators, 53 * 36, 600, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.SARIndicators, 53 * 57, 600, true, 3);
+        IndicatorRenderer.RenderIndicators( 
             [
                 Console.AscDelAdd, 
                 Console.AscSpSubt, 
@@ -69,7 +68,7 @@ public class CenterConsolePanel : Window
                 Console.AscD, 
                 Console.AscE
             ], 0, 0, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
+        IndicatorRenderer.RenderIndicators( 
             [
                 Console.InitArithSequenceLog, 
                 Console.InitArithSequenceA_1, 
@@ -87,7 +86,7 @@ public class CenterConsolePanel : Window
                 Console.InitArithSequenceMultiStep, 
                 Console.InitArithSequenceExtSeq
             ], 53 * 13, 0, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
+        IndicatorRenderer.RenderIndicators( 
             [
                 Console.StopTape, 
                 Console.SccFault, 
@@ -111,14 +110,14 @@ public class CenterConsolePanel : Window
                 Console.SccWriteAorQ, 
                 Console.SccClearA
             ], 0, 300, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
+        IndicatorRenderer.RenderIndicators( 
             [
                 Console.MasterClockCSSI,
                 Console.MasterClockCSSII,
                 Console.MasterClockCRCI,
                 Console.MasterClockCRCII
             ], 0, 600, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
+        IndicatorRenderer.RenderIndicators( 
             [
                 Console.PdcHpc,
                 Console.PdcTwc,
@@ -127,8 +126,8 @@ public class CenterConsolePanel : Window
                 Console.PdcWaitRsc,
                 Console.PdcStop
             ], 53 * 8, 600, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.MpdIndicators, 53 * 18, 600, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, 
+        IndicatorRenderer.RenderIndicators(Console.MpdIndicators, 53 * 18, 600, true, 3);
+        IndicatorRenderer.RenderIndicators( 
             [
                 Console.SctA,
                 Console.SctQ,
@@ -136,49 +135,49 @@ public class CenterConsolePanel : Window
                 Console.SctMcs0,
                 Console.SctMcs1
             ], 53 * 16, 450, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.SkTranslatorIndicators, 0, 450, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.JTranslatorIndicators, 53 * 8, 450, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.MainPulseTranslatorIndicators, 53 * 24, 600, true, 3);
-        ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, [Console.Halt, Console.Interrupt], 53 * 53, 600, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.SkTranslatorIndicators, 0, 450, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.JTranslatorIndicators, 53 * 8, 450, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.MainPulseTranslatorIndicators, 53 * 24, 600, true, 3);
+        IndicatorRenderer.RenderIndicators([Console.Halt, Console.Interrupt], 53 * 53, 600, true, 3);
 
-        RenderMctIndicators(Renderer, ARegisterTextures, Console.MainControlTranslatorIndicators, 53 * 24, 280);
+        RenderMctIndicators(Console.MainControlTranslatorIndicators, 53 * 24, 280);
 
         for (int i = 0; i < Console.OperatingRateIndicators.Length; i++)
         {
-            ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.OperatingRateIndicators[i], 150 + (i * (ConsoleIndicatorsCommon.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLights(Console.OperatingRateIndicators[i], 150 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
         for (int i = 0; i < Console.SelectiveJumpIndicators.Length; i++)
         {
-            ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.SelectiveJumpIndicators[i], 830 + (i * (ConsoleIndicatorsCommon.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLights(Console.SelectiveJumpIndicators[i], 830 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
         for (int i = 0; i < Console.SelectiveStopsIndicators.Length; i++)
         {
-            ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.SelectiveStopsIndicators[i], 1500 + (i * (ConsoleIndicatorsCommon.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLights(Console.SelectiveStopsIndicators[i], 1500 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.IndicateEnableLight, 2100, 780);
+        IndicatorRenderer.RenderLights(Console.IndicateEnableLight, 2100, 780);
 
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.AbnormalConditionLight, 2350, 880);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.NormalLight, 2300, 980);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.TestLight, 2300 + 1 * (65 + 28), 980);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.OperatingLight, 2300 + 2 * (65 + 28), 980);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.ForceStopLight, 2300 + 3 * (65 + 28), 980);
+        IndicatorRenderer.RenderLights(Console.AbnormalConditionLight, 2350, 880);
+        IndicatorRenderer.RenderLights(Console.NormalLight, 2300, 980);
+        IndicatorRenderer.RenderLights(Console.TestLight, 2300 + 1 * (65 + 28), 980);
+        IndicatorRenderer.RenderLights(Console.OperatingLight, 2300 + 2 * (65 + 28), 980);
+        IndicatorRenderer.RenderLights(Console.ForceStopLight, 2300 + 3 * (65 + 28), 980);
 
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.MatrixDriveFaultLight, 2860 + 0 * (65 + 28), 800);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.MtFaultLight, 2860 + 1 * (65 + 28), 800);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.MctFault, 2860 + 2 * (65 + 28), 800);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.IOFaultLight, 2860 + 0 * (65 + 28), 890);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.VoltageFaultLight, 2860 + 2 * (65 + 28), 890);
+        IndicatorRenderer.RenderLights(Console.MatrixDriveFaultLight, 2860 + 0 * (65 + 28), 800);
+        IndicatorRenderer.RenderLights(Console.MtFaultLight, 2860 + 1 * (65 + 28), 800);
+        IndicatorRenderer.RenderLights(Console.MctFaultLight, 2860 + 2 * (65 + 28), 800);
+        IndicatorRenderer.RenderLights(Console.IOFaultLight, 2860 + 0 * (65 + 28), 890);
+        IndicatorRenderer.RenderLights(Console.VoltageFaultLight, 2860 + 2 * (65 + 28), 890);
 
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.DivFault, 2860 + 0 * (65 + 28), 1000);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.SccFault, 2860 + 1 * (65 + 28), 1000);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.AscOverflow, 2860 + 2 * (65 + 28), 1000);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.PrintFault, 2860 + 0 * (65 + 28), 1090);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.TempFault, 2860 + 1 * (65 + 28), 1090);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.WaterFault, 2860 + 2 * (65 + 28), 1090);
-        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.CharOverflow, 2860 + 2 * (65 + 28), 1180);
+        IndicatorRenderer.RenderLights(Console.DivFaultLight, 2860 + 0 * (65 + 28), 1000);
+        IndicatorRenderer.RenderLights(Console.SccFaultLight, 2860 + 1 * (65 + 28), 1000);
+        IndicatorRenderer.RenderLights(Console.OverflowFaultLight, 2860 + 2 * (65 + 28), 1000);
+        IndicatorRenderer.RenderLights(Console.PrintFault, 2860 + 0 * (65 + 28), 1090);
+        IndicatorRenderer.RenderLights(Console.TempFault, 2860 + 1 * (65 + 28), 1090);
+        IndicatorRenderer.RenderLights(Console.WaterFault, 2860 + 2 * (65 + 28), 1090);
+        IndicatorRenderer.RenderLights(Console.CharOverflowLight, 2860 + 2 * (65 + 28), 1180);
 
         // Switches out the currently presented render surface with the one we just did work on.
         SDL.SDL_RenderPresent(Renderer);
@@ -189,7 +188,7 @@ public class CenterConsolePanel : Window
         SDL.SDL_DestroyRenderer(Renderer);
     }
 
-    public static void RenderMctIndicators(nint renderer, List<nint> indicatorTextures, Indicator[] indicators, int x, int y)
+    public void RenderMctIndicators(Indicator[] indicators, int x, int y)
     {
         const int indicatorDiameter = 32;
         const int indicatorWidth = 53;
@@ -213,11 +212,12 @@ public class CenterConsolePanel : Window
                 y = yInternal + 45 * (i / 8),
             };
 
-            // render the top indicator first
             var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
-            SDL.SDL_SetTextureAlphaMod(indicatorTextures[i], (byte)(totalCyclesIndicatorOn / 133.33));
+            SDL.SDL_RenderCopy(Renderer, MctLightOffTexture, ref IndicatorRenderer.indicatorSource, ref destRect);
+
+            SDL.SDL_SetTextureAlphaMod(MctLightOnTexture, (byte)(totalCyclesIndicatorOn / 133.33));
             //     Debug.WriteLine("Alpha: " + (byte)(totalCyclesIndicatorOn / 266.66));
-            SDL.SDL_RenderCopy(renderer, indicatorTextures[i], ref ConsoleIndicatorsCommon.indicatorSource, ref destRect);
+            SDL.SDL_RenderCopy(Renderer, MctLightOnTexture, ref IndicatorRenderer.indicatorSource, ref destRect);
         }
 
     }

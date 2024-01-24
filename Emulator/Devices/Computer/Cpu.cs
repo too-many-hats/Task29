@@ -32,6 +32,8 @@ public class Cpu
     public bool IOFault { get; private set; }
     public bool VoltageFault { get; private set; }
 
+    public bool IsForceStopped { get; private set; }
+
 
     // storage class control state
     public bool SccInitRead { get; private set; }
@@ -243,6 +245,7 @@ public class Cpu
             if ((i % 6) == 0)
             {
                 X = (ulong)random.NextInt64(0, 688888888888);
+                X = 5;
             }
 
             // at the end of each cycle record which flip-flop circuits are HIGH. Essentially each flip-flop is connected to an indicator on the console. By counting for how many cycles a flip-flop is high, we can calculate the brightness of each indicator blub in each frame.
