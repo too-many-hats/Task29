@@ -19,7 +19,7 @@ public class CenterConsolePanel : Window
     public CenterConsolePanel Init()
     {
         var logicalWidth = 3840;
-        var logicalHeight = 800;
+        var logicalHeight = 1300;
 
         CreateDesktopWindow("Task29 Main Console", logicalWidth, logicalHeight);
 
@@ -141,8 +141,44 @@ public class CenterConsolePanel : Window
         ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, Console.MainPulseTranslatorIndicators, 53 * 24, 600, true, 3);
         ConsoleIndicatorsCommon.RenderIndicators(Renderer, ARegisterTextures, [Console.Halt, Console.Interrupt], 53 * 53, 600, true, 3);
 
-        var finalStopIndicator = Console.MainControlTranslatorIndicators[0];
         RenderMctIndicators(Renderer, ARegisterTextures, Console.MainControlTranslatorIndicators, 53 * 24, 280);
+
+        for (int i = 0; i < Console.OperatingRateIndicators.Length; i++)
+        {
+            ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.OperatingRateIndicators[i], 150 + (i * (ConsoleIndicatorsCommon.LargeIndicatorDiameter + 28)), 780);
+        }
+
+        for (int i = 0; i < Console.SelectiveJumpIndicators.Length; i++)
+        {
+            ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.SelectiveJumpIndicators[i], 830 + (i * (ConsoleIndicatorsCommon.LargeIndicatorDiameter + 28)), 780);
+        }
+
+        for (int i = 0; i < Console.SelectiveStopsIndicators.Length; i++)
+        {
+            ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.SelectiveStopsIndicators[i], 1500 + (i * (ConsoleIndicatorsCommon.LargeIndicatorDiameter + 28)), 780);
+        }
+
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.IndicateEnableLight, 2100, 780);
+
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.AbnormalConditionLight, 2350, 880);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.NormalLight, 2300, 980);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.TestLight, 2300 + 1 * (65 + 28), 980);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.OperatingLight, 2300 + 2 * (65 + 28), 980);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.ForceStopLight, 2300 + 3 * (65 + 28), 980);
+
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.MatrixDriveFaultLight, 2860 + 0 * (65 + 28), 800);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.MtFaultLight, 2860 + 1 * (65 + 28), 800);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.MctFault, 2860 + 2 * (65 + 28), 800);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.IOFaultLight, 2860 + 0 * (65 + 28), 890);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.VoltageFaultLight, 2860 + 2 * (65 + 28), 890);
+
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.DivFault, 2860 + 0 * (65 + 28), 1000);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.SccFault, 2860 + 1 * (65 + 28), 1000);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.AscOverflow, 2860 + 2 * (65 + 28), 1000);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.PrintFault, 2860 + 0 * (65 + 28), 1090);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.TempFault, 2860 + 1 * (65 + 28), 1090);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.WaterFault, 2860 + 2 * (65 + 28), 1090);
+        ConsoleIndicatorsCommon.RenderLargeIndicator(Renderer, ARegisterTextures[0], Console.CharOverflow, 2860 + 2 * (65 + 28), 1180);
 
         // Switches out the currently presented render surface with the one we just did work on.
         SDL.SDL_RenderPresent(Renderer);
@@ -162,7 +198,7 @@ public class CenterConsolePanel : Window
 
         for (int i = 0; i < indicators.Length; i++)
         {
-            if (i != 0 && (i % 8) == 0)
+            if (i != 0 && (i % 8) == 0) // in every row of 8 indicators, do not render the first in the row, except for the first row.
             {
                 continue;
             }

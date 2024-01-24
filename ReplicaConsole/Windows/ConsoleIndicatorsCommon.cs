@@ -52,6 +52,22 @@ public static class ConsoleIndicatorsCommon
                 SDL.SDL_RenderCopy(renderer, indicatorTextures[i + 1], ref indicatorSource, ref destRect);
             }
         }
+    }
 
+    public static int LargeIndicatorDiameter => 65;
+
+    public static void RenderLargeIndicator(nint renderer, nint texture, Indicator indicator, int x, int y)
+    {
+        var destRect = new SDL.SDL_Rect()// where to place the indictor on the window.
+        {
+            h = LargeIndicatorDiameter,
+            w = LargeIndicatorDiameter,
+            x = x,
+            y = y,
+        };
+
+        var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
+        SDL.SDL_SetTextureAlphaMod(texture, (byte)(totalCyclesIndicatorOn / 133.33));
+        SDL.SDL_RenderCopy(renderer, texture, ref indicatorSource, ref destRect);
     }
 }

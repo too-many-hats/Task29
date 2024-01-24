@@ -82,6 +82,24 @@ public class Console
     public Indicator Halt { get; } = new Indicator(true);
     public Indicator Interrupt { get; } = new Indicator(true);
 
+    public Indicator[] OperatingRateIndicators {  get; } = Enumerable.Range(0, 6).Select(_ => new Indicator(false)).ToArray();
+    public Indicator[] SelectiveJumpIndicators {  get; } = Enumerable.Range(0, 3).Select(_ => new Indicator(false)).ToArray();
+    public Indicator[] SelectiveStopsIndicators {  get; } = Enumerable.Range(0, 5).Select(_ => new Indicator(false)).ToArray();
+    public Indicator IndicateEnableLight {  get; } = new Indicator(false);
+    public Indicator AbnormalConditionLight {  get; } = new Indicator(false);
+    public Indicator NormalLight {  get; } = new Indicator(false);
+    public Indicator TestLight {  get; } = new Indicator(false);
+    public Indicator OperatingLight {  get; } = new Indicator(false);
+    public Indicator ForceStopLight {  get; } = new Indicator(false);
+    public Indicator MatrixDriveFaultLight {  get; } = new Indicator(false);
+    public Indicator MtFaultLight {  get; } = new Indicator(false);
+    public Indicator IOFaultLight {  get; } = new Indicator(false);
+    public Indicator VoltageFaultLight {  get; } = new Indicator(false);
+    public Indicator PrintFault {  get; } = new Indicator(false);
+    public Indicator TempFault {  get; } = new Indicator(false);
+    public Indicator WaterFault {  get; } = new Indicator(false);
+    public Indicator CharOverflow {  get; } = new Indicator(false);
+
     private Cpu Cpu { get; set; }
 
     public Console(Cpu cpu)
@@ -104,6 +122,23 @@ public class Console
         EndFramesOfAll(SkTranslatorIndicators);
         EndFramesOfAll(MainPulseTranslatorIndicators);
         EndFramesOfAll(MainControlTranslatorIndicators);
+        EndFramesOfAll(OperatingRateIndicators);
+        EndFramesOfAll(SelectiveJumpIndicators);
+        EndFramesOfAll(SelectiveStopsIndicators);
+        IndicateEnableLight.EndFrame();
+        AbnormalConditionLight.EndFrame();
+        NormalLight.EndFrame();
+        TestLight.EndFrame();
+        OperatingLight.EndFrame();
+        ForceStopLight.EndFrame();
+        MatrixDriveFaultLight.EndFrame();
+        MtFaultLight.EndFrame();
+        IOFaultLight.EndFrame();
+        VoltageFaultLight.EndFrame();
+        PrintFault.EndFrame();
+        TempFault.EndFrame();
+        WaterFault.EndFrame();
+        CharOverflow.EndFrame();
 
         Halt.EndFrame();
         Interrupt.EndFrame();
@@ -312,5 +347,40 @@ public class Console
         {
             indicator.Update(1);
         }
+
+        foreach (var indicator in OperatingRateIndicators)
+        {
+            indicator.Update(1);
+        }
+
+        foreach (var indicator in SelectiveJumpIndicators)
+        {
+            indicator.Update(1);
+        }
+
+        foreach (var indicator in SelectiveStopsIndicators)
+        {
+            indicator.Update(1);
+        }
+
+        IndicateEnableLight.Update(1);
+        AbnormalConditionLight.Update(1);
+        NormalLight.Update(1);
+        TestLight.Update(1);
+        OperatingLight.Update(1);
+        ForceStopLight.Update(1);
+
+        MatrixDriveFaultLight.Update(1);
+        MtFaultLight.Update(1);
+        IOFaultLight.Update(1);
+        VoltageFaultLight.Update(1);
+        MctFault.Update(1);
+        DivFault.Update(1);
+        SccFault.Update(1);
+        AscOverflow.Update(1);
+        PrintFault.Update(1);
+        TempFault.Update(1);
+        WaterFault.Update(1);
+        CharOverflow.Update(1);
     }
 }
