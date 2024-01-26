@@ -144,40 +144,40 @@ public class CenterConsolePanel : Window
 
         for (int i = 0; i < Console.OperatingRateIndicators.Length; i++)
         {
-            IndicatorRenderer.RenderLights(Console.OperatingRateIndicators[i], 150 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLight(Console.OperatingRateIndicators[i], 150 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
         for (int i = 0; i < Console.SelectiveJumpIndicators.Length; i++)
         {
-            IndicatorRenderer.RenderLights(Console.SelectiveJumpIndicators[i], 830 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLight(Console.SelectiveJumpIndicators[i], 830 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
         for (int i = 0; i < Console.SelectiveStopsIndicators.Length; i++)
         {
-            IndicatorRenderer.RenderLights(Console.SelectiveStopsIndicators[i], 1500 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLight(Console.SelectiveStopsIndicators[i], 1500 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
-        IndicatorRenderer.RenderLights(Console.IndicateEnableLight, 2100, 780);
+        IndicatorRenderer.RenderLight(Console.IndicateEnableLight, 2100, 780);
 
-        IndicatorRenderer.RenderLights(Console.AbnormalConditionLight, 2350, 880);
-        IndicatorRenderer.RenderLights(Console.NormalLight, 2300, 980);
-        IndicatorRenderer.RenderLights(Console.TestLight, 2300 + 1 * (65 + 28), 980);
-        IndicatorRenderer.RenderLights(Console.OperatingLight, 2300 + 2 * (65 + 28), 980);
-        IndicatorRenderer.RenderLights(Console.ForceStopLight, 2300 + 3 * (65 + 28), 980);
+        IndicatorRenderer.RenderLight(Console.AbnormalConditionLight, 2350, 880);
+        IndicatorRenderer.RenderLight(Console.NormalLight, 2300, 980);
+        IndicatorRenderer.RenderLight(Console.TestLight, 2300 + 1 * (65 + 28), 980);
+        IndicatorRenderer.RenderLight(Console.OperatingLight, 2300 + 2 * (65 + 28), 980);
+        IndicatorRenderer.RenderLight(Console.ForceStopLight, 2300 + 3 * (65 + 28), 980);
 
-        IndicatorRenderer.RenderLights(Console.MatrixDriveFaultLight, 2860 + 0 * (65 + 28), 800);
-        IndicatorRenderer.RenderLights(Console.MtFaultLight, 2860 + 1 * (65 + 28), 800);
-        IndicatorRenderer.RenderLights(Console.MctFaultLight, 2860 + 2 * (65 + 28), 800);
-        IndicatorRenderer.RenderLights(Console.IOFaultLight, 2860 + 0 * (65 + 28), 890);
-        IndicatorRenderer.RenderLights(Console.VoltageFaultLight, 2860 + 2 * (65 + 28), 890);
+        IndicatorRenderer.RenderLight(Console.MatrixDriveFaultLight, 2860 + 0 * (65 + 28), 800);
+        IndicatorRenderer.RenderLight(Console.MtFaultLight, 2860 + 1 * (65 + 28), 800);
+        IndicatorRenderer.RenderLight(Console.MctFaultLight, 2860 + 2 * (65 + 28), 800);
+        IndicatorRenderer.RenderLight(Console.IOFaultLight, 2860 + 0 * (65 + 28), 890);
+        IndicatorRenderer.RenderLight(Console.VoltageFaultLight, 2860 + 2 * (65 + 28), 890);
 
-        IndicatorRenderer.RenderLights(Console.DivFaultLight, 2860 + 0 * (65 + 28), 1000);
-        IndicatorRenderer.RenderLights(Console.SccFaultLight, 2860 + 1 * (65 + 28), 1000);
-        IndicatorRenderer.RenderLights(Console.OverflowFaultLight, 2860 + 2 * (65 + 28), 1000);
-        IndicatorRenderer.RenderLights(Console.PrintFault, 2860 + 0 * (65 + 28), 1090);
-        IndicatorRenderer.RenderLights(Console.TempFault, 2860 + 1 * (65 + 28), 1090);
-        IndicatorRenderer.RenderLights(Console.WaterFault, 2860 + 2 * (65 + 28), 1090);
-        IndicatorRenderer.RenderLights(Console.CharOverflowLight, 2860 + 2 * (65 + 28), 1180);
+        IndicatorRenderer.RenderLight(Console.DivFaultLight, 2860 + 0 * (65 + 28), 1000);
+        IndicatorRenderer.RenderLight(Console.SccFaultLight, 2860 + 1 * (65 + 28), 1000);
+        IndicatorRenderer.RenderLight(Console.OverflowFaultLight, 2860 + 2 * (65 + 28), 1000);
+        IndicatorRenderer.RenderLight(Console.PrintFault, 2860 + 0 * (65 + 28), 1090);
+        IndicatorRenderer.RenderLight(Console.TempFault, 2860 + 1 * (65 + 28), 1090);
+        IndicatorRenderer.RenderLight(Console.WaterFault, 2860 + 2 * (65 + 28), 1090);
+        IndicatorRenderer.RenderLight(Console.CharOverflowLight, 2860 + 2 * (65 + 28), 1180);
 
         // Switches out the currently presented render surface with the one we just did work on.
         SDL.SDL_RenderPresent(Renderer);

@@ -5,8 +5,8 @@ namespace ReplicaConsole.Windows;
 
 public class IndicatorRenderer
 {
-    private nint Renderer;
-    private List<LightOnOffTexture> LightOffTextures;
+    private readonly nint Renderer;
+    private readonly List<LightOnOffTexture> LightOffTextures;
 
     public IndicatorRenderer(nint renderer, List<LightOnOffTexture> lightOnOffTextures)
     {
@@ -63,7 +63,7 @@ public class IndicatorRenderer
             var xCoordinate = x;
              
             //if the low order digit of a bank of indicators is the right hand side of the screen
-            //The put the first indicator at the right hand side of the bank.
+            //then put the first indicator at the right hand side of the bank.
             if (firstIndicatorOnRight)
             {
                 xCoordinate += (indicators.Length - 1 - i) * IndicatorWidthAndMargin;
@@ -107,9 +107,9 @@ public class IndicatorRenderer
 
     public static int LargeIndicatorDiameter => 65;
 
-    public void RenderLights(Indicator indicator, int x, int y)
+    public void RenderLight(Indicator indicator, int x, int y)
     {
-        var destRect = new SDL.SDL_Rect()// where to place the indictor on the window.
+        var destRect = new SDL.SDL_Rect()// where to place the light on the window.
         {
             h = LargeIndicatorDiameter,
             w = LargeIndicatorDiameter,

@@ -224,7 +224,7 @@ public class Cpu
     public ulong RunningTimeCycles { get; private set; } // as a ulong this is sufficient capacity for 584,942 years running time, at the risk of a Y2K event, I think this is enough for our project.
     public int MainPulseDistributor { get; private set; }
 
-    private Random random = new Random();
+    private readonly Random random = new();
 
     public Cpu()
     {
@@ -244,8 +244,7 @@ public class Cpu
 
             if ((i % 8000) == 0)
             {
-                //X = (ulong)random.NextInt64(0, 688888888888);
-                X = 5;
+                X = (ulong)random.NextInt64(0, 688888888888);
             }
 
             // at the end of each cycle record which flip-flop circuits are HIGH. Essentially each flip-flop is connected to an indicator on the console. By counting for how many cycles a flip-flop is high, we can calculate the brightness of each indicator blub in each frame.

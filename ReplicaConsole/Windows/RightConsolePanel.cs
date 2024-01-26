@@ -20,7 +20,7 @@ public class RightConsolePanel : Window
         var logicalWidth = 1920;
         var logicalHeight = 1300;
 
-        CreateDesktopWindow("Task29 Left Console", logicalWidth, logicalHeight);
+        CreateDesktopWindow("Task29 Right Console", logicalWidth, logicalHeight);
 
         // Creates a new SDL hardware renderer using the default graphics device with VSYNC enabled.
         Renderer = CreateRenderer(logicalWidth, logicalHeight);
