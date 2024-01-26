@@ -142,30 +142,30 @@ public class Cpu
     public uint MtcLeaderDelay { get; private set; }
     public uint MtcInitialDelay { get; private set; }
     public uint MtcStartControl { get; private set; }
-    public uint MtcSTK { get; private set; }
+    public uint MtcBTK { get; private set; }
     public uint MtcWK { get; private set; }
     public uint MtcLK { get; private set; }
     public uint MtcTSK { get; private set; }
     public uint MtcWriteResume { get; private set; }
     public uint MtcMtWriteControl { get; private set; }
-    public uint MtcReadWriteSync { get; private set; }
-    public uint MtcTskControl { get; private set; }
-    public uint MtcBlShift { get; private set; }
-    public uint MtcBlEnd { get; private set; }
-    public uint MtcNotReady { get; private set; }
+    public bool MtcReadWriteSync { get; private set; }
+    public bool MtcTskControl { get; private set; }
+    public bool MtcBlShift { get; private set; }
+    public bool MtcBlEnd { get; private set; }
+    public bool MtcNotReady { get; private set; }
     public uint MtcCkParityError { get; private set; }
     public uint MtcControlSyncSprocketTest { get; private set; }
     public uint MtcAlignInputRegister { get; private set; }
-    public uint MtcBlock { get; private set; }
+    public uint MtcBlockEnd { get; private set; }
     public uint MtcEnd { get; private set; }
     public uint MtcRecordEnd { get; private set; }
-    public uint MtcFaultControl { get; private set; }
-    public uint MtcBccError { get; private set; }
+    public bool MtcFaultControl { get; private set; }
+    public bool MtcBccError { get; private set; }
     public uint MtcBccControl { get; private set; }
     public uint MtcTrControl { get; private set; }
-    public uint MtcTrControlTcrSync { get; private set; }
+    public bool MtcTrControlTcrSync { get; private set; }
     public uint MtcBsk { get; private set; }
-    public uint MtcRealControl { get; private set; }
+    public bool MtcReadControl { get; private set; }
     public uint MtcWrite { get; private set; }
     public uint MtcSubt { get; private set; }
     public uint MtcAdd { get; private set; }
@@ -174,7 +174,7 @@ public class Cpu
 
     // IOA section state
     public bool ExtFaultIoA1 { get; private set; }
-    public bool ExtFaultIoA2 { get; private set; }
+    public bool ExtFaultIoB1 { get; private set; }
     public bool WaitIoARead { get; private set; }
     public bool WaitIoBRead { get; private set; }
     public bool WaitIoAWrite { get; private set; }
@@ -242,14 +242,17 @@ public class Cpu
                 ExecuteSingleCycle();
             }
 
-            if ((i % 6) == 0)
+            if ((i % 8000) == 0)
             {
-                X = (ulong)random.NextInt64(0, 688888888888);
+                //X = (ulong)random.NextInt64(0, 688888888888);
                 X = 5;
             }
 
             // at the end of each cycle record which flip-flop circuits are HIGH. Essentially each flip-flop is connected to an indicator on the console. By counting for how many cycles a flip-flop is high, we can calculate the brightness of each indicator blub in each frame.
-            Console.UpdateIndicatorStatusEndOfCycle();
+            if ((i % 2)  == 0)
+            {
+                Console.UpdateIndicatorStatusEndOfCycle();
+            }
         }
 
         Console.EndFrame();

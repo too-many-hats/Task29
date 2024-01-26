@@ -48,14 +48,14 @@ public class CenterConsolePanel : Window
             // Console.WriteLine($"There was an issue with clearing the render surface. {SDL.SDL_GetError()}");
         }
 
-        IndicatorRenderer.RenderIndicators(Console.AIndicators, 0, 150, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.QIndicators, 53 * 36, 0, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.AIndicators, 0, 150, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.QIndicators, 53 * 36, 0, true, 3, true);
         IndicatorRenderer.RenderIndicators(Console.XIndicators, 53 * 36, 300, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.MCRIndicators, 53 * 36, 450, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.UAKIndicators, 53 * 42, 450, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.VAKIndicators, 53 * 57, 450, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.PAKIndicators, 53 * 36, 600, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.SARIndicators, 53 * 57, 600, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.MCRIndicators, 53 * 36, 450, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.UAKIndicators, 53 * 42, 450, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.VAKIndicators, 53 * 57, 450, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.PAKIndicators, 53 * 36, 600, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.SARIndicators, 53 * 57, 600, true, 3, true);
         IndicatorRenderer.RenderIndicators( 
             [
                 Console.AscDelAdd, 
