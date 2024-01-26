@@ -23,16 +23,17 @@ public class IndicatorRenderer
         y = 0,
     };
 
+    public static int IndicatorWidthAndMargin => 53;
+
     public void RenderIndicators(Indicator[] indicators, int x, int y, bool splitInGroupsOfThree, int splitOffsetLeft, bool firstIndicatorOnRight = false)
     {
         const int indicatorDiameter = 43;
-        const int indicatorWidthAndMargin = 53;
 
         var yInternal = y;
 
         if (indicators[0].HasHighAndLowLight is false) // when an indicator is only single row, always put the indicator on the bottom row.
         {
-            yInternal = yInternal + indicatorWidthAndMargin;
+            yInternal = yInternal + IndicatorWidthAndMargin;
         }
 
         var renderIndicator = (Indicator indicator, int xCoordinate) =>
@@ -44,14 +45,14 @@ public class IndicatorRenderer
         {
             for (int i = indicators.Length - 1; i > -1; i--)
             {
-                renderIndicator(indicators[i], x + (indicators.Length - i) * indicatorWidthAndMargin);
+                renderIndicator(indicators[i], x + (indicators.Length - i) * IndicatorWidthAndMargin);
             }
         }
         else
         {
             for (int i = 0; i < indicators.Length; i++)
             {
-                renderIndicator(indicators[i], x + i * indicatorWidthAndMargin);
+                renderIndicator(indicators[i], x + i * IndicatorWidthAndMargin);
             }
         }
 
@@ -65,11 +66,11 @@ public class IndicatorRenderer
             //The put the first indicator at the right hand side of the bank.
             if (firstIndicatorOnRight)
             {
-                xCoordinate += (indicators.Length - 1 - i) * indicatorWidthAndMargin;
+                xCoordinate += (indicators.Length - 1 - i) * IndicatorWidthAndMargin;
             }
             else
             {
-                xCoordinate += i * indicatorWidthAndMargin;
+                xCoordinate += i * IndicatorWidthAndMargin;
             }
 
             var destRect = new SDL.SDL_Rect()// where to place the indictor on the window.
@@ -94,7 +95,7 @@ public class IndicatorRenderer
             if (indicator.HasHighAndLowLight)
             {
                 // then render the bottom indicator if it exists.
-                destRect.y += indicatorWidthAndMargin;
+                destRect.y += IndicatorWidthAndMargin;
 
                 SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
 

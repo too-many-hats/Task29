@@ -18,4 +18,5 @@ public class Drum
     public bool AdvanceAik { get; private set; }
     public bool CpdI { get; private set; }
     public bool CpdII { get; private set; }
+    public bool InitWrite15_29 { get; private set; }
 }

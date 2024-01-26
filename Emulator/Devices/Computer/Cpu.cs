@@ -214,8 +214,8 @@ public class Cpu
     public bool[] McsWr30_35 { get; private set; } = new bool[3];
 
     public uint HsPunchRegister { get; private set; }
-    public uint HsPunchInit { get; private set; }
-    public uint HsPunchRes { get; private set; }
+    public bool HsPunchInit { get; private set; }
+    public bool HsPunchRes { get; private set; }
 
     public uint TypewriterRegister { get; private set; }
 

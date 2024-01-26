@@ -146,6 +146,24 @@ public class Console
     public Indicator[] FpDRegister { get; } = Enumerable.Range(0, 8).Select(_ => new Indicator(true)).ToArray();
     public Indicator[] FpCRegister { get; } = Enumerable.Range(0, 8).Select(_ => new Indicator(true)).ToArray();
     public Indicator[] FpSequenceGates { get; } = Enumerable.Range(0, 20).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] McsMonInit { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] McsRead { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] McsWrite { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] McsReadWriteEnable { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] McsWaitInit { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] McsEnId { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] McsWr0_14 { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] McsWr30_35 { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] McsWr15_29 { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] HsPunchRegister { get; } = Enumerable.Range(0, 7).Select(_ => new Indicator(false)).ToArray();
+    public Indicator[] TypewriterRegister { get; } = Enumerable.Range(0, 7).Select(_ => new Indicator(false)).ToArray();
+    public Indicator[] DrumGs { get; } = Enumerable.Range(0, 2).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] DrumAngularIndexCounter { get; } = Enumerable.Range(0, 12).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] DrumInterlace { get; } = Enumerable.Range(0, 5).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[] DrumGroup { get; } = Enumerable.Range(0, 4).Select(_ => new Indicator(true)).ToArray();
+    public Indicator[][] McsAddressRegisters { get; private set; } = new Indicator[2][];
+    public Indicator[][] McsMainPulseDistributorTranslators { get; private set; } = new Indicator[2][];
+    public Indicator[][] McsPulseDistributors { get; private set; } = new Indicator[2][];
     public Indicator MtcReadControl { get; } = new Indicator(true);
     public Indicator ExtFaultIoA1 { get; } = new Indicator(true);
     public Indicator ExtFaultIoB1 { get; } = new Indicator(true);
@@ -164,6 +182,21 @@ public class Console
     public Indicator FpDiv { get; } = new Indicator(true);
     public Indicator FpSign { get; } = new Indicator(true);
     public Indicator FpDelayShiftA { get; } = new Indicator(true);
+    public Indicator HsPunchRes { get; } = new Indicator(true);
+    public Indicator HsPunchInit { get; } = new Indicator(true);
+    public Indicator DrumInitWrite { get; } = new Indicator(true);
+    public Indicator DrumInitWrite0_14 { get; } = new Indicator(true);
+    public Indicator DrumInitRead { get; } = new Indicator(true);
+    public Indicator DrumInitDelayedRead { get; } = new Indicator(true);
+    public Indicator DrumInitWrite15_29 { get; } = new Indicator(true);
+    public Indicator DrumReadLockoutI { get; } = new Indicator(true);
+    public Indicator DrumReadLockoutII { get; } = new Indicator(true);
+    public Indicator DrumReadLockoutIII { get; } = new Indicator(true);
+    public Indicator DrumConincLockout { get; } = new Indicator(true);
+    public Indicator DrumAdvanceAik { get; } = new Indicator(true);
+    public Indicator DrumPreset { get; } = new Indicator(true);
+    public Indicator DrumCpdI { get; } = new Indicator(true);
+    public Indicator DrumCpdII { get; } = new Indicator(true);
     
     //RightConsolePanel
 
@@ -172,6 +205,13 @@ public class Console
     public Console(Cpu cpu)
     {
         Cpu = cpu;
+        
+        for (int i = 0; i < McsAddressRegisters.Length; i++)
+        {
+            McsAddressRegisters[i] = Enumerable.Range(0, 12).Select(_ => new Indicator(true)).ToArray();
+            McsMainPulseDistributorTranslators[i] = Enumerable.Range(0, 4).Select(_ => new Indicator(false)).ToArray();
+            McsPulseDistributors[i] = Enumerable.Range(0, 3).Select(_ => new Indicator(true)).ToArray();
+        }
     }
 
     internal void EndFrame()
@@ -225,7 +265,46 @@ public class Console
         EndFramesOfAll(FpDRegister);
         EndFramesOfAll(FpCRegister);
         EndFramesOfAll(FpSequenceGates);
+        EndFramesOfAll(McsAddressRegisters[1]);
+        EndFramesOfAll(McsAddressRegisters[0]);
+        EndFramesOfAll(McsMonInit);
+        EndFramesOfAll(McsRead);
+        EndFramesOfAll(McsRead);
+        EndFramesOfAll(McsWrite);
+        EndFramesOfAll(McsReadWriteEnable);
+        EndFramesOfAll(McsWaitInit);
+        EndFramesOfAll(McsEnId);
+        EndFramesOfAll(McsWr0_14);
+        EndFramesOfAll(McsWr30_35);
+        EndFramesOfAll(McsWr15_29);
+        EndFramesOfAll(McsPulseDistributors[1]);
+        EndFramesOfAll(McsPulseDistributors[0]);
+        EndFramesOfAll(McsMainPulseDistributorTranslators[1]);
+        EndFramesOfAll(McsMainPulseDistributorTranslators[0]);
+        EndFramesOfAll(McsPulseDistributors[0]);
+        EndFramesOfAll(McsPulseDistributors[0]);
+        EndFramesOfAll(TypewriterRegister);
+        EndFramesOfAll(HsPunchRegister);
+        EndFramesOfAll(DrumGs);
+        EndFramesOfAll(DrumAngularIndexCounter);
+        EndFramesOfAll(DrumInterlace);
+        EndFramesOfAll(DrumGroup);
         MtcReadControl.EndFrame();
+        DrumInitWrite.EndFrame();
+        DrumInitWrite0_14.EndFrame();
+        DrumInitWrite15_29.EndFrame();
+        DrumInitRead.EndFrame();
+        DrumInitDelayedRead.EndFrame();
+        DrumReadLockoutI.EndFrame();
+        DrumReadLockoutII.EndFrame();
+        DrumReadLockoutIII.EndFrame();
+        DrumConincLockout.EndFrame();
+        DrumPreset.EndFrame();
+        DrumAdvanceAik.EndFrame();
+        DrumCpdI.EndFrame();
+        DrumCpdII.EndFrame();
+        HsPunchRes.EndFrame();
+        HsPunchInit.EndFrame();
         FpDelayShiftA.EndFrame();
         FpSign.EndFrame();
         FpDiv.EndFrame();
@@ -524,6 +603,49 @@ public class Console
         UpdateIndicator(FpDiv, Cpu.FpDiv);
         UpdateIndicator(FpSign, Cpu.FpSign);
         UpdateIndicator(FpDelayShiftA, Cpu.FpDelayShiftA);
+        UpdateIndicator(McsAddressRegisters[1], Cpu.McsAddressRegister[1]);
+        UpdateIndicator(McsAddressRegisters[0], Cpu.McsAddressRegister[0]);
+        UpdateIndicator(McsMonInit[0], Cpu.McsMonInit[0]);
+        UpdateIndicator(McsMonInit[1], Cpu.McsMonInit[1]);
+        UpdateIndicator(McsRead[0], Cpu.McsRead[0]);
+        UpdateIndicator(McsRead[1], Cpu.McsRead[1]);
+        UpdateIndicator(McsWrite[0], Cpu.McsWrite[0]);
+        UpdateIndicator(McsWrite[1], Cpu.McsWrite[1]);
+        UpdateIndicator(McsWaitInit[0], Cpu.McsWaitInit[0]);
+        UpdateIndicator(McsWaitInit[1], Cpu.McsWaitInit[1]);
+        UpdateIndicator(McsReadWriteEnable[0], Cpu.McsReadWriteEnable[0]);
+        UpdateIndicator(McsReadWriteEnable[1], Cpu.McsReadWriteEnable[1]);
+        UpdateIndicator(McsEnId[0], Cpu.McsEnId[0]);
+        UpdateIndicator(McsEnId[1], Cpu.McsEnId[1]);
+        UpdateIndicator(McsWr0_14[0], Cpu.McsWr0_14[0]);
+        UpdateIndicator(McsWr0_14[1], Cpu.McsWr0_14[1]);
+        UpdateIndicator(McsWr30_35[1], Cpu.McsWr30_35[1]);
+        UpdateIndicator(McsWr30_35[0], Cpu.McsWr30_35[0]);
+        UpdateIndicator(McsWr15_29[0], Cpu.McsWr15_29[0]);
+        UpdateIndicator(McsWr15_29[1], Cpu.McsWr15_29[1]);
+        UpdateIndicator(McsPulseDistributors[0], Cpu.McsPulseDistributor[0]);
+        UpdateIndicator(McsPulseDistributors[1], Cpu.McsPulseDistributor[1]);
+        UpdateIndicator(HsPunchRes, Cpu.HsPunchRes);
+        UpdateIndicator(HsPunchInit, Cpu.HsPunchInit);
+        UpdateIndicator(TypewriterRegister, Cpu.TypewriterRegister);
+        UpdateIndicator(HsPunchRegister, Cpu.HsPunchRegister);
+        UpdateIndicator(DrumGs, Cpu.Drum.Gs);
+        UpdateIndicator(DrumAngularIndexCounter, Cpu.Drum.AngularIndexCounter);
+        UpdateIndicator(DrumInitWrite, Cpu.Drum.InitWrite);
+        UpdateIndicator(DrumInitWrite0_14, Cpu.Drum.InitWrite0_14);
+        UpdateIndicator(DrumInitWrite15_29, Cpu.Drum.InitWrite15_29);
+        UpdateIndicator(DrumInitRead, Cpu.Drum.InitRead);
+        UpdateIndicator(DrumInitDelayedRead, Cpu.Drum.InitDelayedRead);
+        UpdateIndicator(DrumReadLockoutI, Cpu.Drum.ReadLockoutI);
+        UpdateIndicator(DrumReadLockoutII, Cpu.Drum.ReadLockoutII);
+        UpdateIndicator(DrumReadLockoutIII, Cpu.Drum.ReadLockoutIII);
+        UpdateIndicator(DrumConincLockout, Cpu.Drum.ConincLockout);
+        UpdateIndicator(DrumPreset, Cpu.Drum.Preset);
+        UpdateIndicator(DrumAdvanceAik, Cpu.Drum.AdvanceAik);
+        UpdateIndicator(DrumCpdI, Cpu.Drum.CpdI);
+        UpdateIndicator(DrumCpdII, Cpu.Drum.CpdII);
+        UpdateIndicator(DrumInterlace, Cpu.Drum.Interlace);
+        UpdateIndicator(DrumGroup, Cpu.Drum.Group);
 
         IndicateEnableLight.Update(Cpu.IsManualInterruptArmed ? (ulong)1 : 0);
         AbnormalConditionLight.Update(Cpu.IsAbnormalCondition ? (ulong)1 : 0);

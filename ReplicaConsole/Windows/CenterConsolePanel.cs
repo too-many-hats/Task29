@@ -49,13 +49,13 @@ public class CenterConsolePanel : Window
         }
 
         IndicatorRenderer.RenderIndicators(Console.AIndicators, 0, 150, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.QIndicators, 53 * 36, 0, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.XIndicators, 53 * 36, 300, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.MCRIndicators, 53 * 36, 450, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.UAKIndicators, 53 * 42, 450, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.VAKIndicators, 53 * 57, 450, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.PAKIndicators, 53 * 36, 600, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.SARIndicators, 53 * 57, 600, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.QIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 0, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.XIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 300, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.MCRIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 450, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.UAKIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 42, 450, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.VAKIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 57, 450, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.PAKIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 600, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Console.SARIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 57, 600, true, 3, true);
         IndicatorRenderer.RenderIndicators( 
             [
                 Console.AscDelAdd, 
@@ -85,7 +85,7 @@ public class CenterConsolePanel : Window
                 Console.InitArithSequenceRestX, 
                 Console.InitArithSequenceMultiStep, 
                 Console.InitArithSequenceExtSeq
-            ], 53 * 13, 0, true, 3);
+            ], IndicatorRenderer.IndicatorWidthAndMargin * 13, 0, true, 3);
         IndicatorRenderer.RenderIndicators( 
             [
                 Console.StopTape, 
@@ -125,8 +125,8 @@ public class CenterConsolePanel : Window
                 Console.PdcWaitExternal,
                 Console.PdcWaitRsc,
                 Console.PdcStop
-            ], 53 * 8, 600, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.MpdIndicators, 53 * 18, 600, true, 3);
+            ], IndicatorRenderer.IndicatorWidthAndMargin * 8, 600, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.MpdIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 18, 600, true, 3);
         IndicatorRenderer.RenderIndicators( 
             [
                 Console.SctA,
@@ -134,13 +134,13 @@ public class CenterConsolePanel : Window
                 Console.SctMD,
                 Console.SctMcs0,
                 Console.SctMcs1
-            ], 53 * 16, 450, true, 3);
+            ], IndicatorRenderer.IndicatorWidthAndMargin * 16, 450, true, 3);
         IndicatorRenderer.RenderIndicators(Console.SkTranslatorIndicators, 0, 450, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.JTranslatorIndicators, 53 * 8, 450, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.MainPulseTranslatorIndicators, 53 * 24, 600, true, 3);
-        IndicatorRenderer.RenderIndicators([Console.Halt, Console.Interrupt], 53 * 53, 600, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.JTranslatorIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 8, 450, true, 3);
+        IndicatorRenderer.RenderIndicators(Console.MainPulseTranslatorIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 24, 600, true, 3);
+        IndicatorRenderer.RenderIndicators([Console.Halt, Console.Interrupt], IndicatorRenderer.IndicatorWidthAndMargin * 53, 600, true, 3);
 
-        RenderMctIndicators(Console.MainControlTranslatorIndicators, 53 * 24, 280);
+        RenderMctIndicators(Console.MainControlTranslatorIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 24, 280);
 
         for (int i = 0; i < Console.OperatingRateIndicators.Length; i++)
         {

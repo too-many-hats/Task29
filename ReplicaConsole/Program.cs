@@ -18,7 +18,8 @@ var installation = new Installation().Init(configuration);
 var windows = new List<IWindow>
 {
     new CenterConsolePanel(installation.Cpu, configuration).Init(),
-    new LeftConsolePanel(installation.Cpu, configuration).Init()
+    new LeftConsolePanel(installation.Cpu, configuration).Init(),
+    new RightConsolePanel(installation.Cpu, configuration).Init(),
 };
 
 
