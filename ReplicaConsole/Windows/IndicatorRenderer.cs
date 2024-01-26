@@ -36,26 +36,6 @@ public class IndicatorRenderer
             yInternal = yInternal + IndicatorWidthAndMargin;
         }
 
-        var renderIndicator = (Indicator indicator, int xCoordinate) =>
-        {
-            
-        };
-
-        if (firstIndicatorOnRight)
-        {
-            for (int i = indicators.Length - 1; i > -1; i--)
-            {
-                renderIndicator(indicators[i], x + (indicators.Length - i) * IndicatorWidthAndMargin);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < indicators.Length; i++)
-            {
-                renderIndicator(indicators[i], x + i * IndicatorWidthAndMargin);
-            }
-        }
-
         for (int i = 0; i < indicators.Length; i++)
         {
             var indicator = indicators[i];
