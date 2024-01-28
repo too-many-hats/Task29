@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Folder Include="images\" />
-    <Folder Include="pdfs\" />
+    <Folder Include="pdfs\Unicode\" />
   </ItemGroup>
 
 </Project>
