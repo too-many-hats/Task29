@@ -82,27 +82,27 @@ public class Console
     public Indicator Halt { get; } = new Indicator(true);
     public Indicator Interrupt { get; } = new Indicator(true);
 
-    public Indicator[] OperatingRateIndicators {  get; } = Enumerable.Range(0, 6).Select(_ => new Indicator(false, IndicatorType.WhiteLight)).ToArray();
-    public Indicator[] SelectiveJumpIndicators {  get; } = Enumerable.Range(0, 3).Select(_ => new Indicator(false, IndicatorType.WhiteLight)).ToArray();
-    public Indicator[] SelectiveStopsIndicators {  get; } = Enumerable.Range(0, 5).Select(_ => new Indicator(false, IndicatorType.RedLight)).ToArray();
-    public Indicator IndicateEnableLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator AbnormalConditionLight {  get; } = new Indicator(false, IndicatorType.WhiteLight);
-    public Indicator NormalLight {  get; } = new Indicator(false, IndicatorType.GreenLight);
-    public Indicator TestLight {  get; } = new Indicator(false, IndicatorType.WhiteLight);
-    public Indicator OperatingLight {  get; } = new Indicator(false, IndicatorType.GreenLight);
-    public Indicator ForceStopLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator MatrixDriveFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator MtFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator IOFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator VoltageFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator PrintFault {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator TempFault {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator WaterFault {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator CharOverflowLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator MctFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator SccFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator DivFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
-    public Indicator OverflowFaultLight {  get; } = new Indicator(false, IndicatorType.RedLight);
+    public Indicator[] OperatingRateIndicators {  get; } = Enumerable.Range(0, 6).Select(_ => new Indicator(false, LightType.White)).ToArray();
+    public Indicator[] SelectiveJumpIndicators {  get; } = Enumerable.Range(0, 3).Select(_ => new Indicator(false, LightType.White)).ToArray();
+    public Indicator[] SelectiveStopsIndicators {  get; } = Enumerable.Range(0, 5).Select(_ => new Indicator(false, LightType.Red)).ToArray();
+    public Indicator IndicateEnableLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator AbnormalConditionLight {  get; } = new Indicator(false, LightType.White);
+    public Indicator NormalLight {  get; } = new Indicator(false, LightType.Green);
+    public Indicator TestLight {  get; } = new Indicator(false, LightType.White);
+    public Indicator OperatingLight {  get; } = new Indicator(false, LightType.Green);
+    public Indicator ForceStopLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator MatrixDriveFaultLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator MtFaultLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator IOFaultLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator VoltageFaultLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator PrintFault {  get; } = new Indicator(false, LightType.Red);
+    public Indicator TempFault {  get; } = new Indicator(false, LightType.Red);
+    public Indicator WaterFault {  get; } = new Indicator(false, LightType.Red);
+    public Indicator CharOverflowLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator MctFaultLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator SccFaultLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator DivFaultLight {  get; } = new Indicator(false, LightType.Red);
+    public Indicator OverflowFaultLight {  get; } = new Indicator(false, LightType.Red);
 
     //LeftConsolePanel
     public Indicator[] IOBIndicators { get; } = Enumerable.Range(0, 36).Select(_ => new Indicator(true)).ToArray();

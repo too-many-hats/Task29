@@ -6,12 +6,12 @@ public class LightOnOffTexture
 {
     public nint OnTexture {  get; set; }
     public nint OffTexture {  get; set; }
-    public IndicatorType IndicatorType { get; set; }
+    public LightType LightType { get; set; }
 
-    public LightOnOffTexture(nint onTexture, nint offTexture, IndicatorType indicatorType)
+    public LightOnOffTexture(nint onTexture, nint offTexture, LightType lightType)
     {
         OnTexture = onTexture;
         OffTexture = offTexture;
-        IndicatorType = indicatorType;
+        LightType = lightType;
     }
 }

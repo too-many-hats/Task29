@@ -15,7 +15,9 @@ public abstract class Window : IWindow
 
     protected void CreateDesktopWindow(string title, int width, int height)
     {
-        WindowId = SDL.SDL_CreateWindow(title, SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, (int)(width * Configuration.UiScaleFactor), (int)(height * Configuration.UiScaleFactor), SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
+        var scaledWidth = (int)(width * Configuration.UiScaleFactor);
+        var scaledHeight = (int)(height * Configuration.UiScaleFactor);
+        WindowId = SDL.SDL_CreateWindow(title, SDL.SDL_WINDOWPOS_UNDEFINED, SDL.SDL_WINDOWPOS_UNDEFINED, scaledWidth, scaledHeight, SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
 
         if (WindowId == IntPtr.Zero)
         {

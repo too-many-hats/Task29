@@ -8,7 +8,7 @@ public class Installation
     // a high-speed printer and card to tape unit. + a Charactron that Lockheed did not have. See Accuracy 1.
     public static decimal MonthlyRental => 43107.36M;
 
-    // includes the computer, small maintenance area and air-conditioning. Not including motor-generators.
+    // includes the computer, small maintenance area and air-conditioning space. Not including motor-generators.
     public static double RequiredAreaSquareMeters => 178;
 
     // includes computer, air con, 250kg for Charactron
@@ -21,7 +21,7 @@ public class Installation
 
     public Installation Init(Configuration configuration)
     {
-        Cpu = new Cpu();
+        Cpu = new Cpu(configuration);
 
         return this;
     }

@@ -7,9 +7,9 @@ public class Indicator
     private ulong CyclesOnSinceLastLastFrame;
     private List<uint> IntensityLastFrames = [];
     private int UpdateCounter;
-    public IndicatorType Type { get; init; }
+    public LightType Type { get; init; }
 
-    public Indicator(bool hasHighAndLowLight, IndicatorType indicatorType = IndicatorType.Basic)
+    public Indicator(bool hasHighAndLowLight, LightType indicatorType = LightType.Basic)
     {
         HasHighAndLowLight = hasHighAndLowLight;
         IntensityLastFrames = Enumerable.Range(0, 4).Select(_ => (uint)0).ToList();
@@ -25,7 +25,7 @@ public class Indicator
     {
         IntensityLastFrames[UpdateCounter++] = (uint)CyclesOnSinceLastLastFrame;
         CyclesOnSinceLastLastFrame = 0;
-        UpdateCounter = UpdateCounter % 4;
+        UpdateCounter = UpdateCounter % 4; // this modulo step is separate from the increment above to prevent integer wrap-around. This method is called many times per second.
     }
 
     public long SumIntensityRecordedFrames()

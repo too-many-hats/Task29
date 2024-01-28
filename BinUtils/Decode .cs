@@ -4,7 +4,7 @@ public static class Decode
 {
     public static long SignedNumber(ulong word)
     {
-        if ((word & Constants.SignBitMask) == 0)
+        if ((word & Constants.SignBitMask) == 0) // is positive
         {
             return (long)(word & Constants.MagnitudeBitMask);
         }

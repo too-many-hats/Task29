@@ -6,7 +6,7 @@ public class Cpu
 {
     public static uint ClockCycleMicroseconds => 2; // the machine operates at 500,000 clock cycles per second. So 2 microseconds per clock cycle. All timing in the machine is a multiple of this value.
 
-    public ulong[] Memory { get; private set; } = new ulong[12288];
+    public ulong[] Memory { get; private set; } = new ulong[8192];
     public Drum Drum { get; private set; } = new Drum();
     public Console Console { get; private set; }
 
@@ -200,18 +200,18 @@ public class Cpu
     public uint FpSequenceGates { get; private set; }
 
     // Console left side panel state
-    //Magnetic Core Storage section. There are 3 core storage units, hence 3 copies of each circuit.
-    public uint[] McsAddressRegister { get; private set; } = new uint[3];
-    public uint[] McsPulseDistributor { get; private set; } = new uint[3];
-    public bool[] McsMonInit { get; private set; } = new bool[3];
-    public bool[] McsRead { get; private set; } = new bool[3];
-    public bool[] McsWrite { get; private set; } = new bool[3];
-    public bool[] McsWaitInit { get; private set; } = new bool[3];
-    public bool[] McsReadWriteEnable { get; private set; } = new bool[3];
-    public bool[] McsEnId { get; private set; } = new bool[3]; //can't properly read the label
-    public bool[] McsWr0_14 { get; private set; } = new bool[3];
-    public bool[] McsWr15_29 { get; private set; } = new bool[3];
-    public bool[] McsWr30_35 { get; private set; } = new bool[3];
+    //Magnetic Core Storage section. There are two core storage units, hence 2 copies of each circuit.
+    public uint[] McsAddressRegister { get; private set; } = new uint[2];
+    public uint[] McsPulseDistributor { get; private set; } = new uint[2];
+    public bool[] McsMonInit { get; private set; } = new bool[2];
+    public bool[] McsRead { get; private set; } = new bool[2];
+    public bool[] McsWrite { get; private set; } = new bool[2];
+    public bool[] McsWaitInit { get; private set; } = new bool[2];
+    public bool[] McsReadWriteEnable { get; private set; } = new bool[2];
+    public bool[] McsEnId { get; private set; } = new bool[2]; //can't properly read the label
+    public bool[] McsWr0_14 { get; private set; } = new bool[2];
+    public bool[] McsWr15_29 { get; private set; } = new bool[2];
+    public bool[] McsWr30_35 { get; private set; } = new bool[2];
 
     public uint HsPunchRegister { get; private set; }
     public bool HsPunchInit { get; private set; }
@@ -226,7 +226,7 @@ public class Cpu
 
     private readonly Random random = new();
 
-    public Cpu()
+    public Cpu(Configuration configuration)
     {
         Console = new Console(this);
     }
@@ -242,6 +242,7 @@ public class Cpu
                 ExecuteSingleCycle();
             }
 
+            // test the blinking lights on the console.
             if ((i % 8000) == 0)
             {
                 X = (ulong)random.NextInt64(0, 688888888888);
