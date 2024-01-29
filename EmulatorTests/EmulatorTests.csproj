@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CrossAssembler\CrossAssembler.csproj" />
     <ProjectReference Include="..\Emulator\Emulator.csproj" />
   </ItemGroup>
 
