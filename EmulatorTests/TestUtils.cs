@@ -21,4 +21,9 @@ public static class TestUtils
             installation.Cpu.Memory[i] = result.Data[i];
         }
     }
+
+    public static Configuration GetDefaultConfig()
+    {
+        return new Configuration();
+    }
 }

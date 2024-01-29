@@ -63,7 +63,7 @@ public class IndicatorRenderer
 
             // render the top indicator first
             var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
-            var onIndictorAlpha = (byte)(totalCyclesIndicatorOn / 133.33);
+            var onIndictorAlpha = (byte)(totalCyclesIndicatorOn / 66.66);
             var onOffTextures = LightOffTextures.First(x => x.LightType == indicator.Type);
 
             SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
@@ -79,7 +79,7 @@ public class IndicatorRenderer
 
                 SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
 
-                SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)((34000 - totalCyclesIndicatorOn) / 133.33));
+                SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)((34000 - totalCyclesIndicatorOn) / 66.66));
                 SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);
             }
         }
@@ -101,7 +101,7 @@ public class IndicatorRenderer
 
         var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
         SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
-        SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(totalCyclesIndicatorOn / 133.33));
+        SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(totalCyclesIndicatorOn / 66.66));
         SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);
     }
 }

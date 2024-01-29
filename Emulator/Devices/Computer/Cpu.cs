@@ -7,7 +7,7 @@ public class Cpu
     public static uint ClockCycleMicroseconds => 2; // the machine operates at 500,000 clock cycles per second. So 2 microseconds per clock cycle. All timing in the machine is a multiple of this value.
 
     public ulong[] Memory { get; private set; } = new ulong[8192];
-    public Drum Drum { get; private set; } = new Drum();
+    public Drum Drum { get; private set; }
     public Console Console { get; private set; }
 
     //main operating registers
@@ -45,12 +45,11 @@ public class Cpu
     public bool SccClearA { get; private set; }
 
     //storage class control translator state. Managed by the CPU so other devices (console) don't need internal details of the processor.
-    public bool SctA { get; private set; } = true;
-    public bool SctQ { get; private set; } = true;
-    public bool SctMD { get; private set; } = true;
-    public bool SctMcs0 { get; private set; } = true;
-    public bool SctMcs1 { get; private set; } = true;
-    public bool SctMcs2 { get; private set; } = true;
+    public bool SctA { get; private set; }
+    public bool SctQ { get; private set; }
+    public bool SctMD { get; private set; }
+    public bool SctMcs0 { get; private set; }
+    public bool SctMcs1 { get; private set; }
 
     //arithmetic sequence control state
     public bool AscDelAdd { get; private set; }
@@ -119,16 +118,20 @@ public class Cpu
     public bool[] SelectiveJumps { get; private set; } = new bool[3];
 
     public bool IsFinalStopped { get; private set; }
-    public bool[] SelectiveStops { get; private set; } = new bool[3];
+    public bool[] SelectiveStops { get; private set; } = new bool[4];
 
     public bool IsManualInterruptArmed { get; private set; }
 
-    public bool IsNormalCondition { get; private set; }
-    public bool IsTestCondition { get; private set; }
+    public bool IsNormalCondition => TypeAFault == false && TypeBFault == false && IsTestCondition == false;
+    public bool IsTestCondition => ExecuteMode != ExecuteMode.HighSpeed || TestNormalSwitch == true || AbnormalNormalDrumSwitch == true;
     public bool IsAbnormalCondition { get; private set; }
     public bool IsOperating { get; private set; }
     public bool TypeAFault => DivFault | SccFault | OverflowFault | PrintFault | TempFault | WaterFault | FpCharOverflow;
     public bool TypeBFault => MatrixDriveFault | TapeFault | MctFault | IOFault | VoltageFault;
+
+    // throw switches. Note the naming convention for throw switches is: the on position label is the first part of the identifier. The off position label as the second part of the identifier, followed by the word switch.
+    public bool TestNormalSwitch { get; private set; }
+    public bool AbnormalNormalDrumSwitch { get; private set; }
 
     //flip-flop indicators Right side Console Panel
     public ulong IOB { get; private set; }
@@ -229,6 +232,7 @@ public class Cpu
     public Cpu(Configuration configuration)
     {
         Console = new Console(this);
+        Drum = new Drum(configuration);
     }
 
     public ulong Cycle(uint targetCycles)
@@ -281,14 +285,212 @@ public class Cpu
         VAK = 0;
         UAK = 0;
         SAR = 0;
-        IoA = 0;
-        IOB = 0;
-        ExecuteMode = ExecuteMode.HighSpeed;
+        ExecuteMode = ExecuteMode.HighSpeed; // as per reference manual paragraph 3-8.
         RunningTimeCycles = 0;
         MasterClockCSSI = true;
         MasterClockCSSII = true;
         MasterClockCRCI = true;
         MasterClockCRCI = true;
+
+        PdcHpc = false;
+        PdcTwc = false;
+        PdcWaitInternal = false;
+        PdcWaitExternal = false;
+        PdcWaitRsc = false;
+        PdcStop = true; // pulse distribution is stopped while the clock is stopped.
+
+        IsOperating = false;
+        StopTape = false;
+        SccFault = false;
+        MctFault = false;
+        DivFault = false;
+        AZero = false;
+        TapeFeed = false;
+
+        Rsc75 = false;
+        RscHoldRpt = false;
+        RscJumpTerm = false;
+        RscInitRpt = false;
+        RscInitTest = false;
+        RscEndRpt = false;
+        RscDelayTest = false;
+        RscAdvAdd = false;
+
+        SccInitRead = false;
+        SccInitWrite = false;
+        SccInitIw0_14 = false;
+        SccInitIw15_29 = false;
+        SccReadQ = false;
+        SccWriteAorQ = false;
+        SccClearA = false;
+
+        SctA = false;
+        SctQ = false;
+        SctMD = false;
+        SctMcs0 = true;// set to true in the image on page 3-3. I believe this is because SAR is reset to 0 and 0 is a core memory address in MCS bank 0
+        SctMcs1 = false;
+
+        AscDelAdd = false;
+        AscSpSubt = false;
+        OverflowFault = false;
+        AscProbeAL = false;
+        AscProbeAR = false;
+        AscProbeB = false;
+        AscProbeC = false;
+        AscProbeD = false;
+        AscProbeE = false;
+
+        InitArithSequenceA_1 = false;
+        InitArithSequenceSP = false;
+        InitArithSequenceAL = false;
+        InitArithSequenceQL = false;
+        InitArithSequenceDiv = false;
+        InitArithSequenceMult = false;
+        InitArithSequenceSeq = false;
+        InitArithSequenceStep = false;
+        InitArithSequenceCase = false;
+        InitArithSequenceCkI = false;
+        InitArithSequenceCkII = false;
+        InitArithSequenceRestX = false;
+        InitArithSequenceMultiStep = false;
+        InitArithSequenceExtSeq = false;
+
+        Halt = false;
+        Interrupt = false;
+
+        for (var i = 0; i < SelectiveJumps.Length; i++)
+        {
+            SelectiveJumps[i] = false;
+        }
+
+        IsFinalStopped = false;
+
+        for (var i = 0; i < SelectiveStops.Length; i++)
+        {
+            SelectiveStops[i] = false;
+        }
+
+        IsManualInterruptArmed = false;
+
+        MatrixDriveFault = false;
+        MctFault = false;
+        TapeFault = false;
+        IOFault = false;
+        VoltageFault = false;
+        DivFault = false;
+        SccFault = false;
+        OverflowFault = false;
+        PrintFault = false;
+        TempFault = false;
+        WaterFault = false;
+        FpCharOverflow = false;
+
+        IsForceStopped = false;
+
+
+        IOB = 0;
+        MtcTapeRegister = 0;
+        MtcTapeControlRegister = 0;
+        MtcBlockCounter = 0;
+        MtcSprocketDelay = 0;
+        MtcControlStop = 0;
+        MtcLeaderDelay = 0;
+        MtcInitialDelay = 0;
+        MtcStartControl = 0;
+        MtcBTK = 0;
+        MtcWK = 0;
+        MtcLK = 0;
+        MtcTSK = 0;
+        MtcWriteResume = 0;
+        MtcMtWriteControl = 0;
+        MtcReadWriteSync = false;
+        MtcTskControl = false;
+        MtcBlShift = false;
+        MtcBlEnd = false;
+        MtcNotReady = false;
+        MtcCkParityError = 0;
+        MtcControlSyncSprocketTest = 0;
+        MtcAlignInputRegister = 0;
+        MtcBlockEnd = 0;
+        MtcRecordEnd = 0;
+        MtcFaultControl = false;
+        MtcBccError = false;
+        MtcBccControl = 0;
+        MtcTrControl = 0;
+        MtcTrControlTcrSync = false;
+        MtcBsk = 0;
+        MtcReadControl = false;
+        MtcWrite = 0;
+        MtcSubt = 0;
+        MtcAdd = 0;
+        MtcDelay = 0;
+        MtcCenterDriveControl = 0;
+
+        ExtFaultIoA1 = false;
+        ExtFaultIoB1 = false;
+        WaitIoARead = false;
+        WaitIoBRead = false;
+        WaitIoAWrite = false;
+        WaitIoBWrite = false;
+        IoaWrite = false;
+        IoBWrite = false;
+        Select = false;
+        IoA = 0;
+
+        FpSRegister = 0;
+        FpDRegister = 0;
+        FpCRegister = 0;
+        FpNormExit = false;
+        FpMooMrp = false;
+        FpUV = false;
+        FpAddSubt = false;
+        FpMulti = false;
+        FpDiv = false;
+        FpSign = false;
+        FpDelayShiftA = false;
+        FpSequenceGates = 0;
+
+        McsAddressRegister[0] = 0;
+        McsAddressRegister[1] = 0;
+        McsPulseDistributor[0] = 0;
+        McsPulseDistributor[1] = 0;
+        McsMonInit[0] = false;
+        McsMonInit[1] = false;
+        McsRead[0] = false;
+        McsRead[1] = false;
+        McsWrite[0] = false;
+        McsWrite[1] = false;
+        McsWaitInit[0] = false;
+        McsWaitInit[1] = false;
+        McsReadWriteEnable[0] = false;
+        McsReadWriteEnable[1] = false;
+        McsWr0_14[0] = false;
+        McsWr0_14[1] = false;
+        McsWr15_29[0] = false;
+        McsWr15_29[1] = false;
+        McsWr30_35[0] = false;
+        McsWr30_35[1] = false;
+        HsPunchRegister = 0;
+        TypewriterRegister = 0;
+        HsPunchInit = false;
+        HsPunchRes = false;
+
+        Drum.Group = 4;
+        Drum.Gs = 0;
+        Drum.AngularIndexCounter = 0;
+        Drum.InitWrite = false;
+        Drum.InitWrite0_14 = false;
+        Drum.InitWrite15_29 = false;
+        Drum.InitRead = false;
+        Drum.InitDelayedRead = false;
+        Drum.ReadLockoutIII = false;
+        Drum.ReadLockoutII = false;
+        Drum.ReadLockoutI = false;
+        Drum.ConincLockout = false;
+        Drum.Preset = false;
+        Drum.AdvanceAik = false;
+        Drum.CpdI = false;
+        Drum.CpdII = false;
     }
 
     public void PowerOnPressed()

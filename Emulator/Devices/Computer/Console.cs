@@ -540,7 +540,6 @@ public class Console
         UpdateIndicator(SctMD, Cpu.SctMD);
         UpdateIndicator(SctMcs0, Cpu.SctMcs0);
         UpdateIndicator(SctMcs1, Cpu.SctMcs1);
-        UpdateIndicator(SctMcs2, Cpu.SctMcs2);
         UpdateIndicator(IOBIndicators, Cpu.IOB);
         UpdateIndicator(MtcTapeRegisterIndicators, Cpu.MtcTapeRegister);
         UpdateIndicator(MtcTapeControlIndicators, Cpu.MtcTapeControlRegister);
@@ -662,5 +661,12 @@ public class Console
         TempFault.Update(Cpu.TempFault ? (ulong)1 : 0);
         WaterFault.Update(Cpu.WaterFault ? (ulong)1 : 0);
         CharOverflowLight.Update(Cpu.FpCharOverflow ? (ulong)1 : 0);
+
+        UpdateIndicator(OperatingRateIndicators[5], Cpu.ExecuteMode == ExecuteMode.HighSpeed);
+        UpdateIndicator(OperatingRateIndicators[4], Cpu.ExecuteMode == ExecuteMode.AutomaticStepOperation);
+        UpdateIndicator(OperatingRateIndicators[3], Cpu.ExecuteMode == ExecuteMode.AutomaticStepClock);
+        UpdateIndicator(OperatingRateIndicators[2], Cpu.ExecuteMode == ExecuteMode.Operation);
+        UpdateIndicator(OperatingRateIndicators[1], Cpu.ExecuteMode == ExecuteMode.Distributor);
+        UpdateIndicator(OperatingRateIndicators[0], Cpu.ExecuteMode == ExecuteMode.Clock);
     }
 }
