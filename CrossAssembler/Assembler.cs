@@ -12,6 +12,8 @@ public class Assembler
     // A label must begin with an alphabetic character followed by 0-31 alphabetic, numeric, minus (-) or underscore characters and is terminated with a full stop '.'. The full stop character is not part of the label.
     // Labels must be unique.
 
+    // two labels are pre-defined A and Q, whose addresses are the low end of the A and Q registers.
+
     // An instruction or directive consists of at least the lowercase mnemonic of the instruction or directive referenced and zero or more parameters required by the instruction or directive. Parameters are separated by the comma ',' character. A parameter maybe a label or number. Decimal numbers are default, postfixing a 'b' for binary or 'o' for octal causes the number to be treated as binary or octal. An instruction or directive may have an optional comment on the same line.
 
     // Whitespace, anywhere that it appears, is ignored. Whitespace can appear inside numbers and is ignored.
@@ -160,7 +162,19 @@ public class Assembler
 
         //Create symbol table.
         int addressCounter = 0;
-        var symbolTable = new List<Symbol>();
+        var symbolTable = new List<Symbol>
+        {
+            // pre-defined labels for the A and Q registers.
+            new() {
+                Label = "A",
+                Address = 13312
+            },
+            new() {
+                Label = "Q",
+                Address = 12800
+            }
+        };
+
         foreach (var sourceStatement in sourceStatements)
         {
             var dataLength = 0;
