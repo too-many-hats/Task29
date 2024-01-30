@@ -1,4 +1,5 @@
 ﻿using Emulator;
+using Emulator.Devices.Computer;
 using FluentAssertions;
 using Xunit;
 
@@ -11,8 +12,6 @@ public class TestModeTests
     {
         var cpuUnderTest = new Installation()
             .Init(TestUtils.GetDefaultConfig()).Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.TestNormalSwitch = true;
 
@@ -28,8 +27,6 @@ public class TestModeTests
         var cpuUnderTest = new Installation()
             .Init(TestUtils.GetDefaultConfig()).Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.AbnormalNormalDrumSwitch = true;
 
         cpuUnderTest.IsTestCondition.Should().BeTrue();
@@ -43,8 +40,6 @@ public class TestModeTests
     {
         var cpuUnderTest = new Installation()
             .Init(TestUtils.GetDefaultConfig()).Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.AbnormalNormalDrumSwitch = true;
 
@@ -66,8 +61,6 @@ public class TestModeTests
         var cpuUnderTest = new Installation()
             .Init(TestUtils.GetDefaultConfig()).Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.TestNormalSwitch = true;
 
         cpuUnderTest.IsTestCondition.Should().BeTrue();
@@ -87,8 +80,6 @@ public class TestModeTests
         var cpuUnderTest = new Installation()
             .Init(TestUtils.GetDefaultConfig()).Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.CL_TCRDisconnectSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -99,5 +90,42 @@ public class TestModeTests
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue("ABNORMAL CONDITION lights up if any test switch is up, no matter if the processor is in NORMAL or TEST modes (maint manual page 49)");
         cpuUnderTest.IsNormalCondition.Should().BeFalse();
         cpuUnderTest.IsTestCondition.Should().BeTrue();
+    }
+
+    [Theory]
+    [InlineData(ExecuteMode.Clock)]
+    [InlineData(ExecuteMode.Distributor)]
+    [InlineData(ExecuteMode.Operation)]
+    [InlineData(ExecuteMode.AutomaticStepOperation)]
+    [InlineData(ExecuteMode.AutomaticStepClock)]
+    public void TestModeEnabledWhenOperatingRateGroupButtonPressed(ExecuteMode executeMode)
+    {
+        var cpuUnderTest = new Installation()
+            .Init(TestUtils.GetDefaultConfig()).Cpu;
+
+        cpuUnderTest.ExecuteMode = executeMode;
+
+        cpuUnderTest.IsTestCondition.Should().BeTrue("Any selection in Operating Rate Group enables TEST mode (reference manual paragraph 3-8)");
+        cpuUnderTest.IsNormalCondition.Should().BeFalse();
+        cpuUnderTest.IsAbnormalCondition.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ReleasingOperatingRateGroupSelectionDisablesTestMode()
+    {
+        var cpuUnderTest = new Installation()
+            .Init(TestUtils.GetDefaultConfig()).Cpu;
+
+        cpuUnderTest.ExecuteMode = ExecuteMode.Clock;
+
+        cpuUnderTest.IsTestCondition.Should().BeTrue("Any selection in Operating Rate Group enables TEST mode (reference manual paragraph 3-8)");
+        cpuUnderTest.IsNormalCondition.Should().BeFalse();
+        cpuUnderTest.IsAbnormalCondition.Should().BeFalse();
+
+        cpuUnderTest.ExecuteMode = ExecuteMode.HighSpeed;
+
+        cpuUnderTest.IsTestCondition.Should().BeFalse("HighSpeed is required for NORMAL operation and disables TEST mode");
+        cpuUnderTest.IsNormalCondition.Should().BeTrue();
+        cpuUnderTest.IsAbnormalCondition.Should().BeFalse();
     }
 }

@@ -112,7 +112,7 @@ public class Cpu
     public int Mpd { get; private set; }
 
     // center console panel lower section state.
-    public ExecuteMode ExecuteMode { get; private set; }
+    public ExecuteMode ExecuteMode { get; set; }
     public int OperatingRate { get; private set; } = int.MaxValue; // the number of cycles executed per-second, between 5-35. Only used when in TEST mode and the START key is pressed.
 
     public bool[] SelectiveJumps { get; private set; } = new bool[3];

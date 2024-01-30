@@ -14,8 +14,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.IsAbnormalCondition.Should().BeFalse();
     }
 
@@ -26,8 +24,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.CL_TCRDisconnectSwitch = true;
 
@@ -45,8 +41,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.CL_TCRDisconnectSwitch = true;
         cpuUnderTest.CL_TRDisconnectSwitch = true;
@@ -164,8 +158,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.CL_TCRDisconnectSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -181,8 +173,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.CL_TRDisconnectSwitch = true;
 
@@ -200,8 +190,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.IOB_TCRDisconnectSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -217,8 +205,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.IOB_TRDisconnectSwitch = true;
 
@@ -236,8 +222,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.IOB_BKDisconnectSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -253,8 +237,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.TR_IOBDisconnectSwitch = true;
 
@@ -272,8 +254,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.StartDisconnectSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -289,8 +269,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.ErrorSignalDisconnectSwitch = true;
 
@@ -308,8 +286,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.ErrorSignalDisconnectSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -325,8 +301,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.ErrorSignalDisconnectSwitch = true;
 
@@ -344,8 +318,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectMdWriteVoltage4Switch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -361,8 +333,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectMdWriteVoltage5Switch = true;
 
@@ -380,8 +350,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectMdWriteVoltage6Switch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -397,8 +365,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectMdWriteVoltage7Switch = true;
 
@@ -416,8 +382,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectClearASwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -433,8 +397,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectClearXSwitch = true;
 
@@ -452,8 +414,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectClearQSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -469,8 +429,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectClearSARSwitch = true;
 
@@ -488,8 +446,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectClearPAKSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -505,8 +461,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectClearPCRSwitch = true;
 
@@ -524,8 +478,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectInitiateWrite0_35Switch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -541,8 +493,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectInitiateWrite0_14Switch = true;
 
@@ -560,8 +510,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectInitiateWrite15_29Switch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -577,8 +525,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.F140001_00000Switch = true;
 
@@ -596,8 +542,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.SingleMcsSelectionSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -613,8 +557,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.OscDrumSwitch = true;
 
@@ -632,8 +574,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectStopSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -649,8 +589,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectSARToPAKSwitch = true;
 
@@ -668,8 +606,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectPAKToSARSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -685,8 +621,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectVAKToSARSwitch = true;
 
@@ -704,8 +638,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectQ1ToX1Switch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -721,8 +653,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectXToPCRSwitch = true;
 
@@ -740,8 +670,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectAdvPAKSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -757,8 +685,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.DisconnectBackSKSwitch = true;
 
@@ -776,8 +702,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.DisconnectWaitInitSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -793,8 +717,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.ForceMcZeroSwitch = true;
 
@@ -812,8 +734,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.ForceMcOneSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -829,8 +749,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.PtAmpMarginalCheckSwitch = true;
 
@@ -848,8 +766,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.Mcs0AmpMarginalCheckSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -865,8 +781,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.Mcs1AmpMarginalCheckSwitch = true;
 
@@ -884,8 +798,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.MDAmpMarginalCheckSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -901,8 +813,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.MTAmpMarginalCheckSwitch = true;
 
@@ -920,8 +830,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.ContReduceHeaterVoltageSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -937,8 +845,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.ArithReduceHeaterVoltageSwitch = true;
 
@@ -956,8 +862,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.Mcs0ReduceHeaterVoltageSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -973,8 +877,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.Mcs1ReduceHeaterVoltageSwitch = true;
 
@@ -992,8 +894,6 @@ public class AbnormalConditionTests
 
         var cpuUnderTest = installation.Cpu;
 
-        cpuUnderTest.Console.PowerOnPressed();
-
         cpuUnderTest.MTReduceHeaterVoltageSwitch = true;
 
         cpuUnderTest.IsAbnormalCondition.Should().BeTrue();
@@ -1009,8 +909,6 @@ public class AbnormalConditionTests
             .Init(TestUtils.GetDefaultConfig());
 
         var cpuUnderTest = installation.Cpu;
-
-        cpuUnderTest.Console.PowerOnPressed();
 
         cpuUnderTest.MDReduceHeaterVoltageSwitch = true;
 

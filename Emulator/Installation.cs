@@ -22,6 +22,7 @@ public class Installation
     public Installation Init(Configuration configuration)
     {
         Cpu = new Cpu(configuration);
+        Cpu.Console.PowerOnPressed();
 
         return this;
     }
