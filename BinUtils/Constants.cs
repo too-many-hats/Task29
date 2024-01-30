@@ -21,4 +21,9 @@ public static class Constants
     /// Mask for the low 15 bits of a word.
     /// </summary>
     public readonly static ulong AddressMask = 0b111_111_111_111_111;
+
+    /// <summary>
+    /// Mask for the low 6 bits of a word.
+    /// </summary>
+    public readonly static ulong SixBitMask = 0b111_111;
 }

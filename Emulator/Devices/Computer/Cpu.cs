@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using BinUtils;
+using System.Diagnostics;
 
 namespace Emulator.Devices.Computer;
 
@@ -284,14 +285,86 @@ public class Cpu
     // magnetic drum section is managed by the magnetic drum device.
 
     public ulong RunningTimeCycles { get; private set; } // as a ulong this is sufficient capacity for 584,942 years running time, at the risk of a Y2K event, I think this is enough for our project.
+    public ulong Delay { get; private set; } // Number of cycles to wait for machine generated waits.
     public int MainPulseDistributor { get; private set; }
 
     private readonly Random random = new();
+
+    // The 1103A commands. These are named to match the Timing Sequences manual and Maint manual as closely as possible.
+    private readonly Command ClearX;
+    private readonly Command ClearPCR;
+    private readonly Command SARtoF3;
+    private readonly Command PAKtoSAR;
+    private readonly Command AdvancePAK;
+    private readonly Command ClearSAR;
+    private readonly Command XtoPCR;
+    private readonly Command InitiateRead_WaitInternalReference;
+
+    private readonly List<Command> Commands;
 
     public Cpu(Configuration configuration)
     {
         Console = new Console(this);
         Drum = new Drum(configuration);
+
+        // command implementations.
+        ClearX = new Command((command) =>
+        {
+            X = 0;
+
+            command.Complete();
+        });
+
+        ClearPCR = new Command((command) =>
+        {
+            VAK = 0;
+            UAK = 0;
+            MCR = 0;
+
+            command.Complete();
+        });
+
+        SARtoF3 = new Command((command) =>
+        {
+            throw new NotImplementedException();
+        });
+
+        PAKtoSAR = new Command((command) =>
+        {
+            SetSAR(PAK);
+
+            command.Complete();
+        });
+
+        AdvancePAK = new Command((command) =>
+        {
+            PAK++;
+
+            command.Complete();
+        });
+
+        ClearSAR = new Command((command) =>
+        {
+            SetSAR(0);
+
+            command.Complete();
+        });
+
+        XtoPCR = new Command((command) =>
+        {
+            MCR = (uint)(X >> 30 & Constants.SixBitMask);
+            UAK = (uint)(X >> 15 & Constants.AddressMask);
+            VAK = (uint)(X & Constants.AddressMask);
+
+            command.Complete();
+        });
+
+        InitiateRead_WaitInternalReference = new Command((command) =>
+        {
+
+        });
+
+        Commands = [ClearX, ClearPCR, SARtoF3, PAKtoSAR, AdvancePAK, ClearSAR, XtoPCR, InitiateRead_WaitInternalReference];
     }
 
     public ulong Cycle(uint targetCycles)
@@ -326,7 +399,44 @@ public class Cpu
     // Executes a single 2 microsecond cycle. This method doesn't check pre-cycle conditions. Use Cycle(uint) as the entry point.
     private void ExecuteSingleCycle()
     {
-        RunningTimeCycles += 2;
+        RunningTimeCycles += 1;
+
+        // some operations cause a delay. Consume the delay here.
+        if (Delay > 0)
+        {
+            Delay--;
+            return;
+        }
+
+        if (MainPulseDistributor == 6)
+        {
+            ClearPCR.Execute();
+
+            if (Interrupt)
+            {
+                SARtoF3.Execute();
+            }
+            else
+            {
+                PAKtoSAR.Execute();
+                AdvancePAK.Execute();
+            }
+
+            ClearX.Execute();
+            InitiateRead_WaitInternalReference.Execute();
+
+            if (PdcWaitInternal == false) // the read has completed so we can advance.
+            {
+                SetNextMainPulse(7);
+            }
+        }
+        else if (MainPulseDistributor == 7)
+        {
+            ClearSAR.Execute();
+            XtoPCR.Execute();
+            InitiateDelay(1);
+            SetNextMainPulse(0);
+        }
     }
 
     public void MasterClearPressed()
@@ -336,7 +446,7 @@ public class Cpu
             return;
         }
 
-        MainPulseDistributor = 6;
+        SetNextMainPulse(6);
         PAK = 16384;
         A = 0;
         Q = 0;
@@ -344,7 +454,7 @@ public class Cpu
         MCR = 0;
         VAK = 0;
         UAK = 0;
-        SAR = 0;
+        SetSAR(0);
         ExecuteMode = ExecuteMode.HighSpeed; // as per reference manual paragraph 3-8.
         RunningTimeCycles = 0;
         MasterClockCSSI = true;
@@ -551,6 +661,8 @@ public class Cpu
         Drum.AdvanceAik = false;
         Drum.CpdI = false;
         Drum.CpdII = false;
+
+        Delay = 0;
     }
 
     private void SetSAR(uint address)
@@ -572,7 +684,7 @@ public class Cpu
             SctMcs0 = true;
             return;
         }
-        else if (SAR >= 12288 && SAR <= 12799) // these addresses are "Unassigned" and SC fault (timing manual pages 57-60)
+        else if (SAR >= 12288 && SAR <= 12799) // these addresses are "Unassigned" and SCC fault (timing manual pages 57-60)
         {
             SccFault = true;
             return;
@@ -594,8 +706,24 @@ public class Cpu
         }
     }
 
+    public void SetNextMainPulse(int nextMainPulse)
+    {
+        MainPulseDistributor = nextMainPulse;
+
+        // with the main pulse completed, reset each command for the next main pulse.
+        foreach(var command in Commands)
+        {
+            command.IsComplete = false;
+        }
+    }
+
     public void PowerOnPressed()
     {
         MasterClearPressed();
+    }
+
+    private void InitiateDelay(uint clockCycles)
+    {
+        Delay = clockCycles;
     }
 }
