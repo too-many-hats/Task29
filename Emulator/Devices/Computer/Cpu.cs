@@ -124,14 +124,73 @@ public class Cpu
 
     public bool IsNormalCondition => TypeAFault == false && TypeBFault == false && IsTestCondition == false;
     public bool IsTestCondition => ExecuteMode != ExecuteMode.HighSpeed || TestNormalSwitch == true || AbnormalNormalDrumSwitch == true;
-    public bool IsAbnormalCondition { get; private set; }
+
+    // as per maint manual, any which in the Test Switch Group or MD Disconnect group enables ABNORMAL CONDITION.
+    public bool IsAbnormalCondition => CL_TCRDisconnectSwitch || CL_TRDisconnectSwitch || IOB_TCRDisconnectSwitch || IOB_TRDisconnectSwitch || IOB_BKDisconnectSwitch || TR_IOBDisconnectSwitch || StartDisconnectSwitch || ErrorSignalDisconnectSwitch || ReadDisconnectSwitch || WriteDisconnectSwitch || DisconnectMdWriteVoltage4Switch || DisconnectMdWriteVoltage5Switch || DisconnectMdWriteVoltage6Switch || DisconnectMdWriteVoltage7Switch || DisconnectClearASwitch || DisconnectClearXSwitch || DisconnectClearQSwitch || DisconnectClearSARSwitch || DisconnectClearPAKSwitch || DisconnectClearPCRSwitch || DisconnectInitiateWrite0_35Switch || DisconnectInitiateWrite0_14Switch || DisconnectInitiateWrite15_29Switch || F140001_00000Switch || SingleMcsSelectionSwitch || OscDrumSwitch || DisconnectStopSwitch || DisconnectSARToPAKSwitch || DisconnectVAKToSARSwitch || DisconnectQ1ToX1Switch || DisconnectXToPCRSwitch || DisconnectAdvPAKSwitch || DisconnectBackSKSwitch || DisconnectWaitInitSwitch || ForceMcZeroSwitch || ForceMcOneSwitch || PtAmpMarginalCheckSwitch || Mcs0AmpMarginalCheckSwitch || Mcs1AmpMarginalCheckSwitch || MDAmpMarginalCheckSwitch || MTAmpMarginalCheckSwitch || ContReduceHeaterVoltageSwitch || ArithReduceHeaterVoltageSwitch || Mcs0ReduceHeaterVoltageSwitch || Mcs1ReduceHeaterVoltageSwitch || MTReduceHeaterVoltageSwitch || MDReduceHeaterVoltageSwitch || DisconnectPAKToSARSwitch;
+
     public bool IsOperating { get; private set; }
     public bool TypeAFault => DivFault | SccFault | OverflowFault | PrintFault | TempFault | WaterFault | FpCharOverflow;
     public bool TypeBFault => MatrixDriveFault | TapeFault | MctFault | IOFault | VoltageFault;
 
-    // throw switches. Note the naming convention for throw switches is: the on position label is the first part of the identifier. The off position label as the second part of the identifier, followed by the word switch.
-    public bool TestNormalSwitch { get; private set; }
-    public bool AbnormalNormalDrumSwitch { get; private set; }
+    // throw switches.
+    //
+    // NOTE: the naming convention for throw switches is: the on position label is the first part of the identifier. The off position label as the second part of the identifier, followed by the word switch.
+
+    // NOTE: There are no event handlers for throw switches, there are pure physical devices with only an on/off state. On the next cycle the CPU can act on the new state. These are not affected by power status or MASTER CLEAR.
+    public bool TestNormalSwitch { get; set; }
+    public bool AbnormalNormalDrumSwitch { get; set; }
+    public bool CL_TCRDisconnectSwitch { get; set; }
+    public bool CL_TRDisconnectSwitch { get; set; }
+    public bool IOB_TCRDisconnectSwitch { get; set; }
+    public bool IOB_TRDisconnectSwitch { get; set; }
+    public bool IOB_BKDisconnectSwitch { get; set; }
+    public bool TR_IOBDisconnectSwitch { get; set; }
+    public bool StartDisconnectSwitch { get; set; }
+    public bool ErrorSignalDisconnectSwitch { get; set; }
+    public bool ReadDisconnectSwitch { get; set; }
+    public bool WriteDisconnectSwitch { get; set; }
+
+    public bool DisconnectMdWriteVoltage4Switch { get; set; }
+    public bool DisconnectMdWriteVoltage5Switch { get; set; }
+    public bool DisconnectMdWriteVoltage6Switch { get; set; }
+    public bool DisconnectMdWriteVoltage7Switch { get; set; }
+
+    public bool DisconnectClearASwitch { get; set; }
+    public bool DisconnectClearXSwitch { get; set; }
+    public bool DisconnectClearQSwitch { get; set; }
+    public bool DisconnectClearSARSwitch { get; set; }
+    public bool DisconnectClearPAKSwitch { get; set; }
+    public bool DisconnectClearPCRSwitch { get; set; }
+    public bool DisconnectInitiateWrite0_35Switch { get; set; }
+    public bool DisconnectInitiateWrite0_14Switch { get; set; }
+    public bool DisconnectInitiateWrite15_29Switch { get; set; }
+    public bool F140001_00000Switch { get; set; }
+    public bool SingleMcsSelectionSwitch { get; set; }
+    public bool OscDrumSwitch { get; set; }
+    public bool DisconnectStopSwitch { get; set; }
+    public bool DisconnectSARToPAKSwitch { get; set; }
+    public bool DisconnectPAKToSARSwitch { get; set; }
+    public bool DisconnectVAKToSARSwitch { get; set; }
+    public bool DisconnectQ1ToX1Switch { get; set; } // what looks like a '1' in the image probably stands for complement.
+    public bool DisconnectXToPCRSwitch { get; set; }
+    public bool DisconnectAdvPAKSwitch { get; set; }
+    public bool DisconnectBackSKSwitch { get; set; }
+    public bool DisconnectWaitInitSwitch { get; set; }
+    public bool ForceMcZeroSwitch { get; set; }
+    public bool ForceMcOneSwitch { get; set; }
+
+    public bool PtAmpMarginalCheckSwitch { get; set; }
+    public bool Mcs0AmpMarginalCheckSwitch { get; set; }
+    public bool Mcs1AmpMarginalCheckSwitch { get; set; }
+    public bool MDAmpMarginalCheckSwitch { get; set; }
+    public bool MTAmpMarginalCheckSwitch { get; set; }
+
+    public bool ContReduceHeaterVoltageSwitch { get; set; }
+    public bool ArithReduceHeaterVoltageSwitch { get; set; }
+    public bool Mcs0ReduceHeaterVoltageSwitch { get; set; }
+    public bool Mcs1ReduceHeaterVoltageSwitch { get; set; }
+    public bool MTReduceHeaterVoltageSwitch { get; set; }
+    public bool MDReduceHeaterVoltageSwitch { get; set; }
 
     //flip-flop indicators Right side Console Panel
     public ulong IOB { get; private set; }
@@ -253,7 +312,7 @@ public class Cpu
             }
 
             // at the end of each cycle record which flip-flop circuits are HIGH. Essentially each flip-flop is connected to an indicator on the console. By counting for how many cycles a flip-flop is high, we can calculate the brightness of each indicator blub in each frame.
-            if ((i % 2)  == 0)
+            if ((i % 2) == 0)
             {
                 Console.UpdateIndicatorStatusEndOfCycle();
             }
@@ -281,6 +340,7 @@ public class Cpu
         PAK = 16384;
         A = 0;
         Q = 0;
+        //X register intentionally missing. Maint manual states MASTER CLEAR effects all flip-flop except the X register for some reason.
         MCR = 0;
         VAK = 0;
         UAK = 0;
