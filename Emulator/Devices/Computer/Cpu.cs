@@ -669,6 +669,12 @@ public class Cpu
     {
         SAR = address; // reference manual (paragraph 1-23) states an address is loaded into SAR, even in the case of a SCC fault. Because Storage Class Control receives its input from SAR in order to determine if a fault is required.
 
+        SctMcs0 = false;
+        SctMcs1 = false;
+        SctQ = false;
+        SctA = false;
+        SctMD = false;
+
         if (SAR >= 0 && SAR <= 4095)
         {
             SctMcs0 = true;

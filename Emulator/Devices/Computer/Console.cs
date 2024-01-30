@@ -668,5 +668,14 @@ public class Console
         UpdateIndicator(OperatingRateIndicators[2], Cpu.ExecuteMode == ExecuteMode.Operation);
         UpdateIndicator(OperatingRateIndicators[1], Cpu.ExecuteMode == ExecuteMode.Distributor);
         UpdateIndicator(OperatingRateIndicators[0], Cpu.ExecuteMode == ExecuteMode.Clock);
+
+        MainPulseTranslatorIndicators[0].Update(Cpu.MainPulseDistributor == 0 ? (ulong)1 : 0);
+        MainPulseTranslatorIndicators[1].Update(Cpu.MainPulseDistributor == 1 ? (ulong)1 : 0);
+        MainPulseTranslatorIndicators[2].Update(Cpu.MainPulseDistributor == 2 ? (ulong)1 : 0);
+        MainPulseTranslatorIndicators[3].Update(Cpu.MainPulseDistributor == 3 ? (ulong)1 : 0);
+        MainPulseTranslatorIndicators[4].Update(Cpu.MainPulseDistributor == 4 ? (ulong)1 : 0);
+        MainPulseTranslatorIndicators[5].Update(Cpu.MainPulseDistributor == 5 ? (ulong)1 : 0);
+        MainPulseTranslatorIndicators[6].Update(Cpu.MainPulseDistributor == 6 ? (ulong)1 : 0);
+        MainPulseTranslatorIndicators[7].Update(Cpu.MainPulseDistributor == 7 ? (ulong)1 : 0);
     }
 }
