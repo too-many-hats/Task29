@@ -24,4 +24,5 @@ public class Drum
     public bool CpdI { get; set; }
     public bool CpdII { get; set; }
     public bool InitWrite15_29 { get; set; }
+    public ulong[] Data { get; set; } = new ulong[17024]; //16,384 words + 640 words of reserve space.
 }

@@ -553,6 +553,47 @@ public class Cpu
         Drum.CpdII = false;
     }
 
+    private void SetSAR(uint address)
+    {
+        SAR = address; // reference manual (paragraph 1-23) states an address is loaded into SAR, even in the case of a SCC fault. Because Storage Class Control receives its input from SAR in order to determine if a fault is required.
+
+        if (SAR >= 0 && SAR <= 4095)
+        {
+            SctMcs0 = true;
+            return;
+        }
+        else if (SAR >= 4096 && SAR <= 8191)
+        {
+            SctMcs1 = true;
+            return;
+        }
+        else if (SAR >= 8192 && SAR <= 12287) // referencing non-existent memory bank. Wraps around to zero. See reference manual paragraph 1-21.
+        {
+            SctMcs0 = true;
+            return;
+        }
+        else if (SAR >= 12288 && SAR <= 12799) // these addresses are "Unassigned" and SC fault (timing manual pages 57-60)
+        {
+            SccFault = true;
+            return;
+        }
+        else if (SAR >= 12800 && SAR <= 13311)
+        {
+            SctQ = true;
+            return;
+        }
+        else if (SAR >= 13312 && SAR <= 16383)
+        {
+            SctA = true;
+            return;
+        }
+        else if (SAR >= 16384 && SAR <= 32767)
+        {
+            SctMD = true;
+            return;
+        }
+    }
+
     public void PowerOnPressed()
     {
         MasterClearPressed();
