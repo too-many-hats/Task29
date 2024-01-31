@@ -614,8 +614,8 @@ public class Console
         UpdateIndicator(McsWaitInit[1], Cpu.McsWaitInit[1]);
         UpdateIndicator(McsReadWriteEnable[0], Cpu.McsReadWriteEnable[0]);
         UpdateIndicator(McsReadWriteEnable[1], Cpu.McsReadWriteEnable[1]);
-        UpdateIndicator(McsEnId[0], Cpu.McsEnId[0]);
-        UpdateIndicator(McsEnId[1], Cpu.McsEnId[1]);
+        UpdateIndicator(McsEnId[0], Cpu.McsEnableInhibitDisturb[0]);
+        UpdateIndicator(McsEnId[1], Cpu.McsEnableInhibitDisturb[1]);
         UpdateIndicator(McsWr0_14[0], Cpu.McsWr0_14[0]);
         UpdateIndicator(McsWr0_14[1], Cpu.McsWr0_14[1]);
         UpdateIndicator(McsWr30_35[1], Cpu.McsWr30_35[1]);
@@ -677,5 +677,22 @@ public class Console
         MainPulseTranslatorIndicators[5].Update(Cpu.MainPulseDistributor == 5 ? (ulong)1 : 0);
         MainPulseTranslatorIndicators[6].Update(Cpu.MainPulseDistributor == 6 ? (ulong)1 : 0);
         MainPulseTranslatorIndicators[7].Update(Cpu.MainPulseDistributor == 7 ? (ulong)1 : 0);
+
+        SelectiveStopsIndicators[0].Update(Cpu.IsProgramStopped ? (ulong)1 : 0);
+    }
+
+    public void ClearPAK()
+    {
+        Cpu.ClearPAK();
+    }
+
+    public void SetXTo(ulong value)
+    {
+        Cpu.SetXto(value);
+    }
+
+    public void SetPAKTo(uint value)
+    {
+        Cpu.SetPAKto(value);
     }
 }

@@ -7,121 +7,121 @@ public class Cpu
 {
     public static uint ClockCycleMicroseconds => 2; // the machine operates at 500,000 clock cycles per second. So 2 microseconds per clock cycle. All timing in the machine is a multiple of this value.
 
-    public ulong[] Memory { get; private set; } = new ulong[8192];
-    public Drum Drum { get; private set; }
-    public Console Console { get; private set; }
+    public ulong[] Memory { get; set; } = new ulong[8192];
+    public Drum Drum { get; set; }
+    public Console Console { get; set; }
 
     //main operating registers
     // top left of the center console panel
-    public ulong Q { get; private set; }
-    public ulong X { get; private set; }
-    public UInt128 A { get; private set; }
-    public uint MCR { get; private set; } //Master Control Register (holds opcode during execution)
-    public uint VAK { get; private set; } // V Address Kounter 
-    public uint UAK { get; private set; } // U Address Kounter
-    public uint SAR { get; private set; } // Storage Address Register
-    public uint PAK { get; private set; } // Program Address Kounter
-    public bool Halt { get; private set; }
-    public bool Interrupt { get; private set; }
+    public ulong Q { get; set; }
+    public ulong X { get; set; }
+    public UInt128 A { get; set; }
+    public uint MCR { get; set; } //Master Control Register (holds opcode during execution)
+    public uint VAK { get; set; } // V Address Kounter 
+    public uint UAK { get; set; } // U Address Kounter
+    public uint SAR { get; set; } // Storage Address Register
+    public uint PAK { get; set; } // Program Address Kounter
+    public bool Halt { get; set; }
+    public bool Interrupt { get; set; }
 
-    public bool OverflowFault { get; private set; }
-    public bool PrintFault { get; private set; }
-    public bool TempFault { get; private set; }
-    public bool WaterFault { get; private set; }
-    public bool MatrixDriveFault { get; private set; }
-    public bool TapeFault { get; private set; }
-    public bool IOFault { get; private set; }
-    public bool VoltageFault { get; private set; }
+    public bool OverflowFault { get; set; }
+    public bool PrintFault { get; set; }
+    public bool TempFault { get; set; }
+    public bool WaterFault { get; set; }
+    public bool MatrixDriveFault { get; set; }
+    public bool TapeFault { get; set; }
+    public bool IOFault { get; set; }
+    public bool VoltageFault { get; set; }
 
-    public bool IsForceStopped { get; private set; }
+    public bool IsForceStopped { get; set; }
 
 
     // storage class control state
-    public bool SccInitRead { get; private set; }
-    public bool SccInitWrite { get; private set; }
-    public bool SccInitIw0_14 { get; private set; }
-    public bool SccInitIw15_29 { get; private set; }
-    public bool SccReadQ { get; private set; }
-    public bool SccWriteAorQ { get; private set; }
-    public bool SccClearA { get; private set; }
+    public bool SccInitRead { get; set; }
+    public bool SccInitWrite { get; set; }
+    public bool SccInitIw0_14 { get; set; }
+    public bool SccInitIw15_29 { get; set; }
+    public bool SccReadQ { get; set; }
+    public bool SccWriteAorQ { get; set; }
+    public bool SccClearA { get; set; }
 
     //storage class control translator state. Managed by the CPU so other devices (console) don't need internal details of the processor.
-    public bool SctA { get; private set; }
-    public bool SctQ { get; private set; }
-    public bool SctMD { get; private set; }
-    public bool SctMcs0 { get; private set; }
-    public bool SctMcs1 { get; private set; }
+    public bool SctA { get; set; }
+    public bool SctQ { get; set; }
+    public bool SctMD { get; set; }
+    public bool SctMcs0 { get; set; }
+    public bool SctMcs1 { get; set; }
 
     //arithmetic sequence control state
-    public bool AscDelAdd { get; private set; }
-    public bool AscSpSubt { get; private set; }
-    public bool AscProbeAL { get; private set; }
-    public bool AscProbeAR { get; private set; }
-    public bool AscProbeB { get; private set; }
-    public bool AscProbeC { get; private set; }
-    public bool AscProbeD { get; private set; }
-    public bool AscProbeE { get; private set; }
-    public bool InitArithSequenceLog { get; private set; }
-    public bool InitArithSequenceA_1 { get; private set; }
-    public bool InitArithSequenceSP { get; private set; }
-    public bool InitArithSequenceAL { get; private set; }
-    public bool InitArithSequenceQL { get; private set; }
-    public bool InitArithSequenceDiv { get; private set; }
-    public bool InitArithSequenceMult { get; private set; }
-    public bool InitArithSequenceSeq { get; private set; }
-    public bool InitArithSequenceStep { get; private set; }
-    public bool InitArithSequenceCase { get; private set; }
-    public bool InitArithSequenceCkI { get; private set; }
-    public bool InitArithSequenceCkII { get; private set; }
-    public bool InitArithSequenceRestX { get; private set; }
-    public bool InitArithSequenceMultiStep { get; private set; }
-    public bool InitArithSequenceExtSeq { get; private set; }
+    public bool AscDelAdd { get; set; }
+    public bool AscSpSubt { get; set; }
+    public bool AscProbeAL { get; set; }
+    public bool AscProbeAR { get; set; }
+    public bool AscProbeB { get; set; }
+    public bool AscProbeC { get; set; }
+    public bool AscProbeD { get; set; }
+    public bool AscProbeE { get; set; }
+    public bool InitArithSequenceLog { get; set; }
+    public bool InitArithSequenceA_1 { get; set; }
+    public bool InitArithSequenceSP { get; set; }
+    public bool InitArithSequenceAL { get; set; }
+    public bool InitArithSequenceQL { get; set; }
+    public bool InitArithSequenceDiv { get; set; }
+    public bool InitArithSequenceMult { get; set; }
+    public bool InitArithSequenceSeq { get; set; }
+    public bool InitArithSequenceStep { get; set; }
+    public bool InitArithSequenceCase { get; set; }
+    public bool InitArithSequenceCkI { get; set; }
+    public bool InitArithSequenceCkII { get; set; }
+    public bool InitArithSequenceRestX { get; set; }
+    public bool InitArithSequenceMultiStep { get; set; }
+    public bool InitArithSequenceExtSeq { get; set; }
 
     //repeat sequence control state
-    public bool Rsc75 { get; private set; }
-    public bool RscHoldRpt { get; private set; }
-    public bool RscJumpTerm { get; private set; }
-    public bool RscInitRpt { get; private set; }
-    public bool RscInitTest { get; private set; }
-    public bool RscEndRpt { get; private set; }
-    public bool RscDelayTest { get; private set; }
-    public bool RscAdvAdd { get; private set; }
+    public bool Rsc75 { get; set; }
+    public bool RscHoldRpt { get; set; }
+    public bool RscJumpTerm { get; set; }
+    public bool RscInitRpt { get; set; }
+    public bool RscInitTest { get; set; }
+    public bool RscEndRpt { get; set; }
+    public bool RscDelayTest { get; set; }
+    public bool RscAdvAdd { get; set; }
 
     //faults and tape state (center left section, center console panel)
-    public bool StopTape { get; private set; }
-    public bool SccFault { get; private set; }
-    public bool MctFault { get; private set; }
-    public bool DivFault { get; private set; }
-    public bool AZero { get; private set; }
-    public bool TapeFeed { get; private set; }
+    public bool StopTape { get; set; }
+    public bool SccFault { get; set; }
+    public bool MctFault { get; set; }
+    public bool DivFault { get; set; }
+    public bool AZero { get; set; }
+    public bool TapeFeed { get; set; }
 
     //master clock state
-    public bool MasterClockCSSI { get; private set; }
-    public bool MasterClockCSSII { get; private set; }
-    public bool MasterClockCRCI { get; private set; }
-    public bool MasterClockCRCII { get; private set; }
+    public bool MasterClockCSSI { get; set; }
+    public bool MasterClockCSSII { get; set; }
+    public bool MasterClockCRCI { get; set; }
+    public bool MasterClockCRCII { get; set; }
 
     //pulse distribution control state
-    public bool PdcHpc { get; private set; }
-    public bool PdcTwc { get; private set; }
-    public bool PdcWaitInternal { get; private set; }
-    public bool PdcWaitExternal { get; private set; }
-    public bool PdcWaitRsc { get; private set; }
-    public bool PdcStop { get; private set; }
+    public bool PdcHpc { get; set; }
+    public bool PdcTwc { get; set; }
+    public bool PdcWaitInternal { get; set; }
+    public bool PdcWaitExternal { get; set; }
+    public bool PdcWaitRsc { get; set; }
+    public bool PdcStop { get; set; }
 
     //MPD state
-    public int Mpd { get; private set; }
+    public int Mpd { get; set; }
 
     // center console panel lower section state.
     public ExecuteMode ExecuteMode { get; set; }
-    public int OperatingRate { get; private set; } = int.MaxValue; // the number of cycles executed per-second, between 5-35. Only used when in TEST mode and the START key is pressed.
+    public int OperatingRate { get; set; } = int.MaxValue; // the number of cycles executed per-second, between 5-35. Only used when in TEST mode and the START key is pressed.
 
-    public bool[] SelectiveJumps { get; private set; } = new bool[3];
+    public bool[] SelectiveJumps { get; set; } = new bool[3];
 
-    public bool IsFinalStopped { get; private set; }
-    public bool[] SelectiveStops { get; private set; } = new bool[4];
+    public bool IsProgramStopped { get; set; }
+    public bool[] SelectiveStops { get; set; } = new bool[4];
 
-    public bool IsManualInterruptArmed { get; private set; }
+    public bool IsManualInterruptArmed { get; set; }
 
     public bool IsNormalCondition => TypeAFault == false && TypeBFault == false && IsTestCondition == false;
     public bool IsTestCondition => ExecuteMode != ExecuteMode.HighSpeed || TestNormalSwitch == true || AbnormalNormalDrumSwitch == true;
@@ -129,7 +129,7 @@ public class Cpu
     // as per maint manual, any which in the Test Switch Group or MD Disconnect group enables ABNORMAL CONDITION.
     public bool IsAbnormalCondition => CL_TCRDisconnectSwitch || CL_TRDisconnectSwitch || IOB_TCRDisconnectSwitch || IOB_TRDisconnectSwitch || IOB_BKDisconnectSwitch || TR_IOBDisconnectSwitch || StartDisconnectSwitch || ErrorSignalDisconnectSwitch || ReadDisconnectSwitch || WriteDisconnectSwitch || DisconnectMdWriteVoltage4Switch || DisconnectMdWriteVoltage5Switch || DisconnectMdWriteVoltage6Switch || DisconnectMdWriteVoltage7Switch || DisconnectClearASwitch || DisconnectClearXSwitch || DisconnectClearQSwitch || DisconnectClearSARSwitch || DisconnectClearPAKSwitch || DisconnectClearPCRSwitch || DisconnectInitiateWrite0_35Switch || DisconnectInitiateWrite0_14Switch || DisconnectInitiateWrite15_29Switch || F140001_00000Switch || SingleMcsSelectionSwitch || OscDrumSwitch || DisconnectStopSwitch || DisconnectSARToPAKSwitch || DisconnectVAKToSARSwitch || DisconnectQ1ToX1Switch || DisconnectXToPCRSwitch || DisconnectAdvPAKSwitch || DisconnectBackSKSwitch || DisconnectWaitInitSwitch || ForceMcZeroSwitch || ForceMcOneSwitch || PtAmpMarginalCheckSwitch || Mcs0AmpMarginalCheckSwitch || Mcs1AmpMarginalCheckSwitch || MDAmpMarginalCheckSwitch || MTAmpMarginalCheckSwitch || ContReduceHeaterVoltageSwitch || ArithReduceHeaterVoltageSwitch || Mcs0ReduceHeaterVoltageSwitch || Mcs1ReduceHeaterVoltageSwitch || MTReduceHeaterVoltageSwitch || MDReduceHeaterVoltageSwitch || DisconnectPAKToSARSwitch || TestNormalSwitch || AbnormalNormalDrumSwitch;
 
-    public bool IsOperating { get; private set; }
+    public bool IsOperating { get; set; }
     public bool TypeAFault => DivFault | SccFault | OverflowFault | PrintFault | TempFault | WaterFault | FpCharOverflow;
     public bool TypeBFault => MatrixDriveFault | TapeFault | MctFault | IOFault | VoltageFault;
 
@@ -194,99 +194,100 @@ public class Cpu
     public bool MDReduceHeaterVoltageSwitch { get; set; }
 
     //flip-flop indicators Right side Console Panel
-    public ulong IOB { get; private set; }
+    public ulong IOB { get; set; }
 
     //magnetic tape control
-    public ulong MtcTapeRegister { get; private set; }
-    public ulong MtcTapeControlRegister { get; private set; }
-    public ulong MtcBlockCounter { get; private set; }
-    public uint MtcSprocketDelay { get; private set; }
-    public uint MtcControlStop { get; private set; }
-    public uint MtcLeaderDelay { get; private set; }
-    public uint MtcInitialDelay { get; private set; }
-    public uint MtcStartControl { get; private set; }
-    public uint MtcBTK { get; private set; }
-    public uint MtcWK { get; private set; }
-    public uint MtcLK { get; private set; }
-    public uint MtcTSK { get; private set; }
-    public uint MtcWriteResume { get; private set; }
-    public uint MtcMtWriteControl { get; private set; }
-    public bool MtcReadWriteSync { get; private set; }
-    public bool MtcTskControl { get; private set; }
-    public bool MtcBlShift { get; private set; }
-    public bool MtcBlEnd { get; private set; }
-    public bool MtcNotReady { get; private set; }
-    public uint MtcCkParityError { get; private set; }
-    public uint MtcControlSyncSprocketTest { get; private set; }
-    public uint MtcAlignInputRegister { get; private set; }
-    public uint MtcBlockEnd { get; private set; }
-    public uint MtcEnd { get; private set; }
-    public uint MtcRecordEnd { get; private set; }
-    public bool MtcFaultControl { get; private set; }
-    public bool MtcBccError { get; private set; }
-    public uint MtcBccControl { get; private set; }
-    public uint MtcTrControl { get; private set; }
-    public bool MtcTrControlTcrSync { get; private set; }
-    public uint MtcBsk { get; private set; }
-    public bool MtcReadControl { get; private set; }
-    public uint MtcWrite { get; private set; }
-    public uint MtcSubt { get; private set; }
-    public uint MtcAdd { get; private set; }
-    public uint MtcDelay { get; private set; }
-    public uint MtcCenterDriveControl { get; private set; }
+    public ulong MtcTapeRegister { get; set; }
+    public ulong MtcTapeControlRegister { get; set; }
+    public ulong MtcBlockCounter { get; set; }
+    public uint MtcSprocketDelay { get; set; }
+    public uint MtcControlStop { get; set; }
+    public uint MtcLeaderDelay { get; set; }
+    public uint MtcInitialDelay { get; set; }
+    public uint MtcStartControl { get; set; }
+    public uint MtcBTK { get; set; }
+    public uint MtcWK { get; set; }
+    public uint MtcLK { get; set; }
+    public uint MtcTSK { get; set; }
+    public uint MtcWriteResume { get; set; }
+    public uint MtcMtWriteControl { get; set; }
+    public bool MtcReadWriteSync { get; set; }
+    public bool MtcTskControl { get; set; }
+    public bool MtcBlShift { get; set; }
+    public bool MtcBlEnd { get; set; }
+    public bool MtcNotReady { get; set; }
+    public uint MtcCkParityError { get; set; }
+    public uint MtcControlSyncSprocketTest { get; set; }
+    public uint MtcAlignInputRegister { get; set; }
+    public uint MtcBlockEnd { get; set; }
+    public uint MtcEnd { get; set; }
+    public uint MtcRecordEnd { get; set; }
+    public bool MtcFaultControl { get; set; }
+    public bool MtcBccError { get; set; }
+    public uint MtcBccControl { get; set; }
+    public uint MtcTrControl { get; set; }
+    public bool MtcTrControlTcrSync { get; set; }
+    public uint MtcBsk { get; set; }
+    public bool MtcReadControl { get; set; }
+    public uint MtcWrite { get; set; }
+    public uint MtcSubt { get; set; }
+    public uint MtcAdd { get; set; }
+    public uint MtcDelay { get; set; }
+    public uint MtcCenterDriveControl { get; set; }
 
     // IOA section state
-    public bool ExtFaultIoA1 { get; private set; }
-    public bool ExtFaultIoB1 { get; private set; }
-    public bool WaitIoARead { get; private set; }
-    public bool WaitIoBRead { get; private set; }
-    public bool WaitIoAWrite { get; private set; }
-    public bool WaitIoBWrite { get; private set; }
-    public bool IoaWrite { get; private set; }
-    public bool IoBWrite { get; private set; }
-    public bool Select { get; private set; }
-    public uint IoA { get; private set; }
+    public bool ExtFaultIoA1 { get; set; }
+    public bool ExtFaultIoB1 { get; set; }
+    public bool WaitIoARead { get; set; }
+    public bool WaitIoBRead { get; set; }
+    public bool WaitIoAWrite { get; set; }
+    public bool WaitIoBWrite { get; set; }
+    public bool IoaWrite { get; set; }
+    public bool IoBWrite { get; set; }
+    public bool Select { get; set; }
+    public uint IoA { get; set; }
 
     // floating point section state.
-    public uint FpSRegister { get; private set; }
-    public uint FpDRegister { get; private set; }
-    public uint FpCRegister { get; private set; }
-    public bool FpNormExit { get; private set; }
-    public bool FpMooMrp { get; private set; }
-    public bool FpUV { get; private set; }
-    public bool FpAddSubt { get; private set; }
-    public bool FpMulti { get; private set; }
-    public bool FpDiv { get; private set; }
-    public bool FpSign { get; private set; }
-    public bool FpDelayShiftA { get; private set; }
-    public bool FpCharOverflow { get; private set; }
-    public uint FpSequenceGates { get; private set; }
+    public uint FpSRegister { get; set; }
+    public uint FpDRegister { get; set; }
+    public uint FpCRegister { get; set; }
+    public bool FpNormExit { get; set; }
+    public bool FpMooMrp { get; set; }
+    public bool FpUV { get; set; }
+    public bool FpAddSubt { get; set; }
+    public bool FpMulti { get; set; }
+    public bool FpDiv { get; set; }
+    public bool FpSign { get; set; }
+    public bool FpDelayShiftA { get; set; }
+    public bool FpCharOverflow { get; set; }
+    public uint FpSequenceGates { get; set; }
 
     // Console left side panel state
     //Magnetic Core Storage section. There are two core storage units, hence 2 copies of each circuit.
-    public uint[] McsAddressRegister { get; private set; } = new uint[2];
-    public uint[] McsPulseDistributor { get; private set; } = new uint[2];
-    public bool[] McsMonInit { get; private set; } = new bool[2];
-    public bool[] McsRead { get; private set; } = new bool[2];
-    public bool[] McsWrite { get; private set; } = new bool[2];
-    public bool[] McsWaitInit { get; private set; } = new bool[2];
-    public bool[] McsReadWriteEnable { get; private set; } = new bool[2];
-    public bool[] McsEnId { get; private set; } = new bool[2]; //can't properly read the label
-    public bool[] McsWr0_14 { get; private set; } = new bool[2];
-    public bool[] McsWr15_29 { get; private set; } = new bool[2];
-    public bool[] McsWr30_35 { get; private set; } = new bool[2];
+    public uint[] McsAddressRegister { get; set; } = new uint[2];
+    public uint[] McsPulseDistributor { get; set; } = new uint[2];
+    public bool[] McsMonInit { get; set; } = new bool[2];
+    public bool[] McsRead { get; set; } = new bool[2];
+    public bool[] McsWrite { get; set; } = new bool[2];
+    public bool[] McsWaitInit { get; set; } = new bool[2];
+    public bool[] McsReadWriteEnable { get; set; } = new bool[2];
+    public bool[] McsEnableInhibitDisturb { get; set; } = new bool[2]; //can't properly read the label
+    public bool[] McsWr0_14 { get; set; } = new bool[2];
+    public bool[] McsWr15_29 { get; set; } = new bool[2];
+    public bool[] McsWr30_35 { get; set; } = new bool[2];
+    public bool[] McsHoldWaitInitNextCycle { get; set; } = new bool[2];
 
-    public uint HsPunchRegister { get; private set; }
-    public bool HsPunchInit { get; private set; }
-    public bool HsPunchRes { get; private set; }
+    public uint HsPunchRegister { get; set; }
+    public bool HsPunchInit { get; set; }
+    public bool HsPunchRes { get; set; }
 
-    public uint TypewriterRegister { get; private set; }
+    public uint TypewriterRegister { get; set; }
 
     // magnetic drum section is managed by the magnetic drum device.
 
-    public ulong RunningTimeCycles { get; private set; } // as a ulong this is sufficient capacity for 584,942 years running time, at the risk of a Y2K event, I think this is enough for our project.
-    public ulong Delay { get; private set; } // Number of cycles to wait for machine generated waits.
-    public int MainPulseDistributor { get; private set; }
+    public ulong RunningTimeCycles { get; set; } // as a ulong this is sufficient capacity for 584,942 years running time, at the risk of a Y2K event, I think this is enough for our project.
+    public ulong Delay { get; set; } // Number of cycles to wait for machine generated waits.
+    public int MainPulseDistributor { get; set; }
 
     private readonly Random random = new();
 
@@ -361,7 +362,79 @@ public class Cpu
 
         InitiateRead_WaitInternalReference = new Command((command) =>
         {
+            PdcWaitInternal = true;
 
+            if (SccInitRead == false) // first cycle just sets init read.
+            {
+                SccInitRead = true;
+
+                var coreBank = SctMcs0 == true ? 0 : 1;
+                if (SctMcs0 == true || SctMcs1 == true)
+                {
+                    // MC address registers are 12 bit, and wrap around when a larger address is given. See reference manual page 1-6.
+                    McsAddressRegister[coreBank] = SAR & 0b111_111_111_111;
+                }
+
+                return;
+            }
+            
+            if (SctMcs0 == true || SctMcs1 == true)
+            {
+                // see page 66 timing manual for details of the below logic.
+                var coreBank = SctMcs0 == true ? 0 : 1;
+                var executeAllInAutomatic = ExecuteMode == ExecuteMode.Clock || ExecuteMode == ExecuteMode.AutomaticStepClock;
+
+                if (McsWaitInit[coreBank] == true && McsPulseDistributor[coreBank] == 0)
+                {
+                    return; // 1 cycle delay because we've tried to start a core reference back-to-back with the last reference without the required 1 cycle wait. See timing manual page 70.
+                }
+
+                if (McsWaitInit[coreBank] == false || executeAllInAutomatic) // MCP-0
+                {
+                    McsWaitInit[coreBank] = true;
+                    McsReadWriteEnable[coreBank] = true;
+                    McsPulseDistributor[coreBank] = 1;
+                    return;
+                }
+                else if (McsMonInit[coreBank] == false || executeAllInAutomatic) // MCP-1
+                {
+                    McsRead[coreBank] = true;
+                    McsMonInit[coreBank] = true;
+                    McsPulseDistributor[coreBank] = 2;
+                    X = Memory[McsAddressRegister[coreBank] + (coreBank * 4096)];
+                    return;
+                }
+                else if (McsRead[coreBank] == true || executeAllInAutomatic) // MCP-2
+                {
+                    McsRead[coreBank] = false;
+                    McsPulseDistributor[coreBank] = 3;
+                    McsEnableInhibitDisturb[coreBank] = true;
+
+                    // MCP-3. Magnetic Core Pulse 3 is merged into MCP-2. This is not realistic, however the core clock is faster than the CPU clock, there are 5 core cycles in the space of 4 CPU cycles. The complexity involved for just one minor indicator isn't worth it.
+                    McsPulseDistributor[coreBank] = 4;
+                    McsWrite[coreBank] = true;
+                }
+                //else if (McsEnId[coreBank] == true) // MCP-3
+                //{
+                //    McsPulseDistributor[coreBank] = 4;
+                //    McsWrite[coreBank] = true;
+                //}
+                else if (McsWrite[coreBank] == true || executeAllInAutomatic) // MCP-4
+                {
+                    McsPulseDistributor[coreBank] = 0;
+                    McsWrite[coreBank] = false;
+                    McsMonInit[coreBank] = false;
+                    McsEnableInhibitDisturb[coreBank] = false;
+                    McsReadWriteEnable[coreBank] = false;
+                    PdcWaitInternal = false;
+                    McsHoldWaitInitNextCycle[coreBank] = true;
+                }
+
+                if (executeAllInAutomatic)
+                {
+                    RunningTimeCycles += 4;
+                }
+            }
         });
 
         Commands = [ClearX, ClearPCR, SARtoF3, PAKtoSAR, AdvancePAK, ClearSAR, XtoPCR, InitiateRead_WaitInternalReference];
@@ -373,15 +446,33 @@ public class Cpu
 
         for (var i = 0; i < targetCycles; i++)
         {
-            if (true)
+            if (IsProgramStopped) // MASTER CLEAR is the only to reset the IsFinalStopped flip-flop (timing manual page 47.)
+            {
+
+            }
+            else if (Delay > 0)// some operations cause a delay. Consume the delay here.
+            {
+                Delay--;
+            }
+            else
             {
                 ExecuteSingleCycle();
             }
 
-            // test the blinking lights on the console.
-            if ((i % 8000) == 0)
+            // core memory has a 1 cycle lockout after the last magnetic core pulse. Clear the lockout once we no longer need to hold it.
+            for (var j = 0; j < McsWaitInit.Length; j++)
             {
-                X = (ulong)random.NextInt64(0, 688888888888);
+                if (McsPulseDistributor[j] == 0)
+                {
+                    if (McsHoldWaitInitNextCycle[j] == true)
+                    {
+                        McsHoldWaitInitNextCycle[j] = false;
+                    }
+                    else
+                    {
+                        McsWaitInit[j] = false;
+                    }
+                }
             }
 
             // at the end of each cycle record which flip-flop circuits are HIGH. Essentially each flip-flop is connected to an indicator on the console. By counting for how many cycles a flip-flop is high, we can calculate the brightness of each indicator blub in each frame.
@@ -401,14 +492,20 @@ public class Cpu
     {
         RunningTimeCycles += 1;
 
-        // some operations cause a delay. Consume the delay here.
-        if (Delay > 0)
+        if (MainPulseDistributor == 0)
         {
-            Delay--;
-            return;
+            if (MCR == Instructions.ProgramStop.Opcode)
+            {
+                ClearX.Execute();
+                IsProgramStopped = true;
+            }
+            else
+            {
+                MctFault = true;
+                return;
+            }
         }
-
-        if (MainPulseDistributor == 6)
+        else if (MainPulseDistributor == 6)
         {
             ClearPCR.Execute();
 
@@ -447,7 +544,7 @@ public class Cpu
         }
 
         SetNextMainPulse(6);
-        PAK = 16384;
+        PAK = 0;// 16384;
         A = 0;
         Q = 0;
         //X register intentionally missing. Maint manual states MASTER CLEAR effects all flip-flop except the X register for some reason.
@@ -533,7 +630,7 @@ public class Cpu
             SelectiveJumps[i] = false;
         }
 
-        IsFinalStopped = false;
+        IsProgramStopped = false;
 
         for (var i = 0; i < SelectiveStops.Length; i++)
         {
@@ -690,7 +787,7 @@ public class Cpu
             SctMcs0 = true;
             return;
         }
-        else if (SAR >= 12288 && SAR <= 12799) // these addresses are "Unassigned" and SCC fault (timing manual pages 57-60)
+        else if (SAR >= 12288 && SAR <= 12799) // these addresses are "Unassigned" and SCC fault (timing manual pages 60-63)
         {
             SccFault = true;
             return;
@@ -731,5 +828,30 @@ public class Cpu
     private void InitiateDelay(uint clockCycles)
     {
         Delay = clockCycles;
+    }
+
+    public void ClearPAK()
+    {
+        PAK = 0;
+    }
+
+    public void SetXto(ulong value)
+    {
+        X = value & Constants.WordMask;
+    }
+
+    public void SetPAKto(uint value)
+    {
+        PAK = value & (uint)Constants.AddressMask;
+    }
+
+    public void SetSARto(uint value)
+    {
+        SetSAR(value);
+    }
+
+    public void SetMCRto(uint value)
+    {
+        MCR = value & (uint)Constants.SixBitMask;
     }
 }

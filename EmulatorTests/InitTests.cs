@@ -112,7 +112,7 @@ public class InitTests
         Assert.False(cpuUnderTest.SelectiveJumps[1]);
         Assert.False(cpuUnderTest.SelectiveJumps[2]);
 
-        cpuUnderTest.IsFinalStopped.Should().Be(false);
+        cpuUnderTest.IsProgramStopped.Should().Be(false);
         Assert.False(cpuUnderTest.SelectiveStops[0]);
         Assert.False(cpuUnderTest.SelectiveStops[1]);
         Assert.False(cpuUnderTest.SelectiveStops[2]);
