@@ -695,4 +695,9 @@ public class Console
     {
         Cpu.SetPAKto(value);
     }
+
+    public void StartPressed()
+    {
+        Cpu.StartPressed();
+    }
 }

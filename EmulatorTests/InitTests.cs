@@ -246,9 +246,4 @@ public class InitTests
         cpuUnderTest.Drum.CpdI.Should().Be(false);
         cpuUnderTest.Drum.CpdII.Should().Be(false);
     }
-
-    private void AssertCpusEqual(Cpu sut, Cpu knownCorrect)
-    {
-        Assert.Equal(sut.IsOperating, knownCorrect.IsOperating);
-    }
 }

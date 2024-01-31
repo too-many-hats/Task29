@@ -126,7 +126,7 @@ public class Cpu
     public bool IsNormalCondition => TypeAFault == false && TypeBFault == false && IsTestCondition == false;
     public bool IsTestCondition => ExecuteMode != ExecuteMode.HighSpeed || TestNormalSwitch == true || AbnormalNormalDrumSwitch == true;
 
-    // as per maint manual, any which in the Test Switch Group or MD Disconnect group enables ABNORMAL CONDITION.
+    // as per maint manual, any switch set to up in the Test Switch Group or MD Disconnect group enables ABNORMAL CONDITION.
     public bool IsAbnormalCondition => CL_TCRDisconnectSwitch || CL_TRDisconnectSwitch || IOB_TCRDisconnectSwitch || IOB_TRDisconnectSwitch || IOB_BKDisconnectSwitch || TR_IOBDisconnectSwitch || StartDisconnectSwitch || ErrorSignalDisconnectSwitch || ReadDisconnectSwitch || WriteDisconnectSwitch || DisconnectMdWriteVoltage4Switch || DisconnectMdWriteVoltage5Switch || DisconnectMdWriteVoltage6Switch || DisconnectMdWriteVoltage7Switch || DisconnectClearASwitch || DisconnectClearXSwitch || DisconnectClearQSwitch || DisconnectClearSARSwitch || DisconnectClearPAKSwitch || DisconnectClearPCRSwitch || DisconnectInitiateWrite0_35Switch || DisconnectInitiateWrite0_14Switch || DisconnectInitiateWrite15_29Switch || F140001_00000Switch || SingleMcsSelectionSwitch || OscDrumSwitch || DisconnectStopSwitch || DisconnectSARToPAKSwitch || DisconnectVAKToSARSwitch || DisconnectQ1ToX1Switch || DisconnectXToPCRSwitch || DisconnectAdvPAKSwitch || DisconnectBackSKSwitch || DisconnectWaitInitSwitch || ForceMcZeroSwitch || ForceMcOneSwitch || PtAmpMarginalCheckSwitch || Mcs0AmpMarginalCheckSwitch || Mcs1AmpMarginalCheckSwitch || MDAmpMarginalCheckSwitch || MTAmpMarginalCheckSwitch || ContReduceHeaterVoltageSwitch || ArithReduceHeaterVoltageSwitch || Mcs0ReduceHeaterVoltageSwitch || Mcs1ReduceHeaterVoltageSwitch || MTReduceHeaterVoltageSwitch || MDReduceHeaterVoltageSwitch || DisconnectPAKToSARSwitch || TestNormalSwitch || AbnormalNormalDrumSwitch;
 
     public bool IsOperating { get; set; }
@@ -288,6 +288,9 @@ public class Cpu
     public ulong RunningTimeCycles { get; set; } // as a ulong this is sufficient capacity for 584,942 years running time, at the risk of a Y2K event, I think this is enough for our project.
     public ulong Delay { get; set; } // Number of cycles to wait for machine generated waits.
     public int MainPulseDistributor { get; set; }
+    private bool CanExecuteNextCycle => 
+        TypeAFault == false && TypeBFault == false && IsForceStopped == false && IsProgramStopped == false && SelectiveStops.All(x => x == false) 
+        && (IsAbnormalCondition == false || IsAbnormalCondition && IsTestCondition); // an abnormal condition if the machine is not in test mode stops execution. (maint manual page 50)
 
     private readonly Random random = new();
 
@@ -442,13 +445,20 @@ public class Cpu
 
     public ulong Cycle(uint targetCycles)
     {
+        Cycle(targetCycles, false);
+
+        return 0;
+    }
+
+    private ulong Cycle(uint targetCycles, bool step)
+    {
         Debug.WriteLine("Target cycles: " + targetCycles);
 
         for (var i = 0; i < targetCycles; i++)
         {
-            if (IsProgramStopped) // MASTER CLEAR is the only to reset the IsFinalStopped flip-flop (timing manual page 47.)
+            if (CanExecuteNextCycle == false) // a fault or software stop means the CPU cannot execute this cycle, no matter what.
             {
-
+                IsOperating = false;
             }
             else if (Delay > 0)// some operations cause a delay. Consume the delay here.
             {
@@ -459,7 +469,7 @@ public class Cpu
                 ExecuteSingleCycle();
             }
 
-            // core memory has a 1 cycle lockout after the last magnetic core pulse. Clear the lockout once we no longer need to hold it.
+            // core memory has a 1 cycle lockout after the last magnetic core pulse. Clear the lockout once we no longer need to hold it. Core memory has a separate clock from the CPU, which is why this code is separate from the CPU cycle execution.
             for (var j = 0; j < McsWaitInit.Length; j++)
             {
                 if (McsPulseDistributor[j] == 0)
@@ -480,6 +490,8 @@ public class Cpu
             {
                 Console.UpdateIndicatorStatusEndOfCycle();
             }
+
+            // update the IO devices.
         }
 
         Console.EndFrame();
@@ -544,7 +556,7 @@ public class Cpu
         }
 
         SetNextMainPulse(6);
-        PAK = 0;// 16384;
+        PAK = 16384;
         A = 0;
         Q = 0;
         //X register intentionally missing. Maint manual states MASTER CLEAR effects all flip-flop except the X register for some reason.
@@ -853,5 +865,16 @@ public class Cpu
     public void SetMCRto(uint value)
     {
         MCR = value & (uint)Constants.SixBitMask;
+    }
+
+    public void StartPressed()
+    {
+        IsOperating = true; // IsOperating may immediately be set back to false before the next cycle if a fault or stop is preventing execution.
+        IsForceStopped = false;
+    }
+
+    public void StepPressed(uint targetCycles)
+    {
+        Cycle(targetCycles, true);
     }
 }
