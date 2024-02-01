@@ -463,7 +463,8 @@ public class Cpu
                 IsOperating = false;
                 // TODO: This needs to set clock release flip-flop properly.
             }
-            else
+
+            if (IsOperating)
             {
                 ExecuteSingleCycle();
             }
@@ -485,7 +486,7 @@ public class Cpu
             }
 
             // at the end of each cycle record which flip-flop circuits are HIGH. Essentially each flip-flop is connected to an indicator on the console. By counting for how many cycles a flip-flop is high, we can calculate the brightness of each indicator blub in each frame.
-            if ((i % 2) == 0)
+            if ((i % 5) == 0)
             {
                 Console.UpdateIndicatorStatusEndOfCycle();
             }
@@ -509,6 +510,7 @@ public class Cpu
             {
                 ClearX.Execute();
                 IsProgramStopped = true;
+                IsOperating = false;
             }
             else
             {
@@ -881,7 +883,13 @@ public class Cpu
 
     public void StepPressed(uint targetCycles)
     {
+        IsOperating = true; // IsOperating may immediately be set back to false before the next cycle if a fault or stop is preventing execution.
         Cycle(targetCycles, true);
+    }
+
+    public void ForceStopPressed()
+    {
+        IsForceStopped = true;
     }
 
     public void SetUAKto(uint value)

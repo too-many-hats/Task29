@@ -16,10 +16,12 @@ public class ProgramStopTests
         TestUtils.PowerOnAndLoad(installation, "ps,0,0");
 
         var cpuUnderTest = installation.Cpu;
+
         var referenceCpu = new Cpu(TestUtils.GetDefaultConfig());
         referenceCpu.PowerOnPressed();
         referenceCpu.Memory[0] = cpuUnderTest.Memory[0];
 
+        referenceCpu.IsOperating = true;
         referenceCpu.SetPAKto(1);
         referenceCpu.RunningTimeCycles = 7;
         referenceCpu.MainPulseDistributor = 0; // next cycle will be to execute instruction.
@@ -34,6 +36,7 @@ public class ProgramStopTests
         cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
 
         referenceCpu.IsProgramStopped = true;
+        referenceCpu.IsOperating = false;
         referenceCpu.SetXto(0); // test that clear X was executed.
         referenceCpu.RunningTimeCycles = 8;
 

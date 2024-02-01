@@ -12,6 +12,8 @@ public class CenterConsolePanel : Window
     private nint MctLightOnTexture;
     private nint MctLightOffTexture;
     private IndicatorRenderer IndicatorRenderer { get; set; }
+    private ButtonTextures ButtonTextures { get; set; }
+    private LargeButtonRenderer LargeButtonRenderer { get; set; }
 
     public CenterConsolePanel(Cpu cpu, Configuration configuration):base(configuration)
     {
@@ -37,6 +39,11 @@ public class CenterConsolePanel : Window
         MctLightOffTexture = SDL_image.IMG_LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoroff.png");
         IndicatorRenderer = new IndicatorRenderer(Renderer, LightTexturesLoader.Load(Renderer));
 
+        ButtonTextures = new ButtonTextures().Load(Renderer);
+        LargeButtonRenderer = new LargeButtonRenderer(ButtonTextures);
+
+        LargeButtonRenderer.CreateMultiple(2300, 1090, Console.MasterClearPressed, Console.StepPressed, Console.StartPressed, Console.ForceStopPressed);
+
         return this;
     }
 
@@ -48,7 +55,23 @@ public class CenterConsolePanel : Window
             // Console.WriteLine($"There was an issue with clearing the render surface. {SDL.SDL_GetError()}");
         }
 
+        LargeButtonRenderer.RenderAll(Renderer);
+
         IndicatorRenderer.RenderIndicators(Console.AIndicators, 0, 150, true, 3, true);
+
+        //for (int i = 0; i < Console.AIndicators.Length; i++)
+        //{
+        //    var destRect = new SDL.SDL_Rect
+        //    {
+        //        h = 26,
+        //        w = 26,
+        //        x = 0 + 53 * i + 9,
+        //        y = 250
+        //    };
+
+        //    SDL.SDL_RenderCopy(Renderer, ButtonTextures.ClearButton, ref ButtonTextures.SourceRect, ref destRect);
+        //}
+
         IndicatorRenderer.RenderIndicators(Console.QIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 0, true, 3, true);
         IndicatorRenderer.RenderIndicators(Console.XIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 300, true, 3, true);
         IndicatorRenderer.RenderIndicators(Console.MCRIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 450, true, 3, true);
@@ -181,6 +204,11 @@ public class CenterConsolePanel : Window
 
         // Switches out the currently presented render surface with the one we just did work on.
         SDL.SDL_RenderPresent(Renderer);
+    }
+
+    public override void HandleEvent(SDL.SDL_Event e)
+    {
+        LargeButtonRenderer.TestHitsAndFireCallbacks(e);
     }
 
     public override void Close()

@@ -26,6 +26,7 @@ public class InstructionReadTests
         cpuUnderTest.Memory[1] = cpuUnderTest.Memory[0];
 
         referenceCpu.SetPAKto(2);
+        referenceCpu.IsOperating = true;
         referenceCpu.SetSARto(1);
         referenceCpu.SccInitRead = true; // on the first cycle the core memory read for the next instruction is started.
         referenceCpu.PdcWaitInternal = true; // on the first cycle the core memory read for the next instruction is started.
@@ -37,6 +38,7 @@ public class InstructionReadTests
         cpuUnderTest.SetUAKto(5); // tests that the ClearPCR command was executed.
         cpuUnderTest.SetXto(5); // tests that the ClearX command was executed.
 
+        cpuUnderTest.StartPressed();
         cpuUnderTest.Cycle(1);
 
         cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
@@ -91,6 +93,7 @@ public class InstructionReadTests
         referenceCpu.PowerOnPressed();
         referenceCpu.Memory[0] = cpuUnderTest.Memory[0];
 
+        referenceCpu.IsOperating = true;
         referenceCpu.SetPAKto(13313); // accumulator address + 1
         referenceCpu.SetSARto(0); // according to the reference manual paragraph  3-43 there is no indication of the location of the faulty instruction, so SAR must be cleared.
         referenceCpu.SccInitRead = false; // the SCC fault ends the read command
@@ -104,6 +107,7 @@ public class InstructionReadTests
         cpuUnderTest.SetVAKto(5); // tests that the ClearPCR command was executed.
         cpuUnderTest.SetUAKto(5); // tests that the ClearPCR command was executed.
         cpuUnderTest.SetXto(5); // tests that the ClearX command was executed.
+        cpuUnderTest.StartPressed();
 
         cpuUnderTest.Cycle(1);
 

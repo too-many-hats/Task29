@@ -700,4 +700,19 @@ public class Console
     {
         Cpu.StartPressed();
     }
+
+    public void MasterClearPressed()
+    {
+        Cpu.MasterClearPressed();
+    }
+
+    public void StepPressed()
+    {
+        Cpu.StepPressed(1);
+    }
+
+    public void ForceStopPressed()
+    {
+        Cpu.ForceStopPressed();
+    }
 }

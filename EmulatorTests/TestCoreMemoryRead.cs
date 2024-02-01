@@ -24,6 +24,7 @@ public class TestCoreMemoryRead
         var cpuUnderTest = installation.Cpu;
         var referenceCpu = new Cpu(TestUtils.GetDefaultConfig());
         referenceCpu.PowerOnPressed();
+        referenceCpu.IsOperating = true;
         referenceCpu.Memory[0] = cpuUnderTest.Memory[0];
 
         cpuUnderTest.Memory[physicalStartAddress] = cpuUnderTest.Memory[0];
