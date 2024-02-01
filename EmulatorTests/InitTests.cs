@@ -137,7 +137,6 @@ public class InitTests
         cpuUnderTest.TypeBFault.Should().Be(false);
 
         cpuUnderTest.RunningTimeCycles.Should().Be(0);
-        cpuUnderTest.Delay.Should().Be(0);
 
         // right side panel
         cpuUnderTest.IOB.Should().Be(0);

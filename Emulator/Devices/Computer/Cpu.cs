@@ -365,15 +365,15 @@ public class Cpu
 
         InitiateRead_WaitInternalReference = new Command((command) =>
         {
-            PdcWaitInternal = true;
-
-            if (SccInitRead == false) // first cycle just sets init read.
+            if (SccInitRead == false && PdcWaitInternal == false) // first cycle just sets init read.
             {
                 SccInitRead = true;
+                PdcWaitInternal = true;
 
-                var coreBank = SctMcs0 == true ? 0 : 1;
                 if (SctMcs0 == true || SctMcs1 == true)
                 {
+                    var coreBank = SctMcs0 == true ? 0 : 1;
+
                     // MC address registers are 12 bit, and wrap around when a larger address is given. See reference manual page 1-6.
                     McsAddressRegister[coreBank] = SAR & 0b111_111_111_111;
                 }
@@ -391,6 +391,8 @@ public class Cpu
                 {
                     return; // 1 cycle delay because we've tried to start a core reference back-to-back with the last reference without the required 1 cycle wait. See timing manual page 70.
                 }
+
+                SccInitRead = false; // timing manual, page 61. By this point the read has been initialised and we are executing. PDC continues to stop the CPU clock until the read is completed. This must occur after the WaitInit lockout check above.
 
                 if (McsWaitInit[coreBank] == false || executeAllInAutomatic) // MCP-0
                 {
@@ -459,10 +461,7 @@ public class Cpu
             if (CanExecuteNextCycle == false) // a fault or software stop means the CPU cannot execute this cycle, no matter what.
             {
                 IsOperating = false;
-            }
-            else if (Delay > 0)// some operations cause a delay. Consume the delay here.
-            {
-                Delay--;
+                // TODO: This needs to set clock release flip-flop properly.
             }
             else
             {
@@ -534,6 +533,17 @@ public class Cpu
             ClearX.Execute();
             InitiateRead_WaitInternalReference.Execute();
 
+            // special case when fetching an instruction from A or an unassigned address. An SCC fault occurs, MPD is 7 and "no indication is given of the faulty instruction" (reference manual paragraph 3-43). The manual does not say exactly how this condition is determined or what MP it occurs in. That the MP is 7 and SAR is cleared makes me think that the read occurs normally on MP6 and the error is detected in MP7. But this doesn't match the behaviour of a normal read.
+            if (SctA || SccFault)
+            {
+                SccFault = true;
+                SetSAR(0);
+                SetNextMainPulse(7);
+                PdcWaitInternal = false;
+                SccInitRead = false;
+                return;
+            }
+
             if (PdcWaitInternal == false) // the read has completed so we can advance.
             {
                 SetNextMainPulse(7);
@@ -541,10 +551,13 @@ public class Cpu
         }
         else if (MainPulseDistributor == 7)
         {
+            if (ClearSAR.IsComplete) // in the first cycle of MP7, the ClearSAR command is incomplete, so the main pulse does not advance, but the commands are executed. In the second cycle of MP7, ClearSAR is complete and we advance the main pulse. This ensures MP7 has a delay after the first cycle. Timing manual page 11 describes the delay.
+            {
+                SetNextMainPulse(0);
+            }
+
             ClearSAR.Execute();
             XtoPCR.Execute();
-            InitiateDelay(1);
-            SetNextMainPulse(0);
         }
     }
 
@@ -770,8 +783,6 @@ public class Cpu
         Drum.AdvanceAik = false;
         Drum.CpdI = false;
         Drum.CpdII = false;
-
-        Delay = 0;
     }
 
     private void SetSAR(uint address)
@@ -837,11 +848,6 @@ public class Cpu
         MasterClearPressed();
     }
 
-    private void InitiateDelay(uint clockCycles)
-    {
-        Delay = clockCycles;
-    }
-
     public void ClearPAK()
     {
         PAK = 0;
@@ -876,5 +882,15 @@ public class Cpu
     public void StepPressed(uint targetCycles)
     {
         Cycle(targetCycles, true);
+    }
+
+    public void SetUAKto(uint value)
+    {
+        UAK = value & (uint)Constants.AddressMask;
+    }
+
+    public void SetVAKto(uint value)
+    {
+        VAK = value & (uint)Constants.AddressMask;
     }
 }

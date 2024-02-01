@@ -49,7 +49,7 @@ public class TestCoreMemoryRead
 
         cpuUnderTest.Cycle(1); //MCP-0
 
-        referenceCpu.SccInitRead = true;
+        referenceCpu.SccInitRead = false;
         referenceCpu.RunningTimeCycles = 2;
         referenceCpu.PdcWaitInternal = true;
         referenceCpu.McsPulseDistributor[coreBank] = 1;
@@ -60,7 +60,6 @@ public class TestCoreMemoryRead
 
         cpuUnderTest.Cycle(1); //MCP-1
 
-        referenceCpu.SccInitRead = true;
         referenceCpu.RunningTimeCycles = 3;
         referenceCpu.PdcWaitInternal = true;
         referenceCpu.McsPulseDistributor[coreBank] = 2;
@@ -104,10 +103,9 @@ public class TestCoreMemoryRead
 
         referenceCpu.RunningTimeCycles = 6;
         referenceCpu.McsWaitInit[coreBank] = false;
-        referenceCpu.Delay = 1;
         referenceCpu.SetSARto(0);
         referenceCpu.SetMCRto(47);
-        referenceCpu.MainPulseDistributor = 0;
+        referenceCpu.MainPulseDistributor = 7; // MP7 lasts for two cycles so we haven't advanced yet.
 
         cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
     }
