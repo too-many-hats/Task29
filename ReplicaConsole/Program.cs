@@ -17,20 +17,31 @@ var configuration = ConfigurationLoader.Load("");
 var installation = new Installation().Init(configuration);
 
 var centerConsoleWindow = new CenterConsolePanel(installation.Cpu, configuration).Init();
-var leftConsoleWindow = new LeftConsolePanel(installation.Cpu, configuration).Init();
-var rightConsoleWindow = new RightConsolePanel(installation.Cpu, configuration).Init();
+
 var windows = new List<IWindow>
 {
     centerConsoleWindow,
-    leftConsoleWindow,
-    rightConsoleWindow
 };
 
-var centerWindowPosition = centerConsoleWindow.GetPositionSize();
-var leftWindowPosition = leftConsoleWindow.GetPositionSize();
+if (configuration.HideConsoleSideWings == false)
+{
+    var leftConsoleWindow = new LeftConsolePanel(installation.Cpu, configuration).Init();
+    var rightConsoleWindow = new RightConsolePanel(installation.Cpu, configuration).Init();
 
-leftConsoleWindow.SetPosition(centerWindowPosition.X - leftWindowPosition.Width, centerWindowPosition.Y);
-rightConsoleWindow.SetPosition(centerWindowPosition.X + centerWindowPosition.Width, centerWindowPosition.Y);
+    windows.Add(leftConsoleWindow);
+    windows.Add(rightConsoleWindow);
+
+    var centerWindowPosition = centerConsoleWindow.GetPositionSize();
+    var leftWindowPosition = leftConsoleWindow.GetPositionSize();
+
+    // TODO: this code does not handle display scaling at all, It also only works if you have a 4k monitor to the left of your primary display. It'll do for testing.
+    centerConsoleWindow.SetPosition(-2880, centerWindowPosition.Y);
+
+    var centerWindowPositionUpdated = centerConsoleWindow.GetPositionSize(); // get the updated position
+
+    leftConsoleWindow.SetPosition(centerWindowPositionUpdated.X - leftWindowPosition.Width, centerWindowPositionUpdated.Y);
+    rightConsoleWindow.SetPosition(centerWindowPositionUpdated.X + centerWindowPositionUpdated.Width, centerWindowPositionUpdated.Y);
+}
 
 //var font = SDL_ttf.TTF_OpenFont(@"C:\wd\Project702\Roboto-Regular.ttf", 12);
 //var textSurface = SDL_ttf.TTF_RenderText_Solid(font, "Message", new SDL.SDL_Color { b = 210, g = 50, r = 255});

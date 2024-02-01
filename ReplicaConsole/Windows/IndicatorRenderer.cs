@@ -106,8 +106,15 @@ public class IndicatorRenderer
         var onOffTextures = LightOffTextures.First(x => x.LightType == indicator.Type);
 
         var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
+        var maximumPossibleIntensity = 6800;
+
+        if (totalCyclesIndicatorOn > maximumPossibleIntensity)
+        {
+            totalCyclesIndicatorOn = maximumPossibleIntensity;
+        }
+
         SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
-        SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(totalCyclesIndicatorOn / 66.66));
+        SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(totalCyclesIndicatorOn / 26.66));
         SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);
     }
 }

@@ -18,4 +18,9 @@ public class Configuration
     /// The drum address interlace setting, must be either 4, 8, 16, 32 or 64. See reference manual for details. Just like real machine, interlace selection is hardware circuitry and cannot be changed while the machine is running.
     /// </summary>
     public DrumInterlace DrumInterlace { get; set; } = DrumInterlace.Addresses16;
+
+    /// <summary>
+    /// Hides or shows the side wings left and right of the center console. Other than for visual effect, they are only needed if using the High-Speed punch or tape reader.
+    /// </summary>
+    public bool HideConsoleSideWings { get; set; } = false;
 }

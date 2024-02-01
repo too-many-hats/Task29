@@ -1,4 +1,5 @@
 {
   "SimulateActualTime": false,
-  "UiScaleFactor": 0.5
+  "UiScaleFactor": 0.5,
+  "HideConsoleSideWings": false
 }
