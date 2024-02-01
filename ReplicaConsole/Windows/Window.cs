@@ -42,9 +42,29 @@ public abstract class Window : IWindow
         return renderer;
     }
 
+    public WindowPositionSize GetPositionSize()
+    {
+        SDL.SDL_GetWindowPosition(WindowHandle, out var x, out var y);
+        SDL.SDL_GetWindowSize(WindowHandle, out var width, out var height);
+        var windowPositionSize = new WindowPositionSize
+        {
+            Height = height,
+            Width = width,
+            X = x,
+            Y = y
+        };
+
+        return windowPositionSize;
+    }
+
     public virtual void HandleEvent(SDL.SDL_Event e) { }
 
     public abstract void Update();
 
     public abstract void Close();
+
+    public void SetPosition(int x, int y)
+    {
+        SDL.SDL_SetWindowPosition(WindowHandle, x, y);
+    }
 }

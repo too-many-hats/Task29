@@ -8,4 +8,6 @@ public interface IWindow
     public void HandleEvent(SDL.SDL_Event e);
     public void Update();
     public void Close();
+    public WindowPositionSize GetPositionSize();
+    public void SetPosition(int x, int y);
 }

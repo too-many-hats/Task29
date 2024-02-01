@@ -36,7 +36,7 @@ public class IndicatorRenderer
             yInternal = yInternal + IndicatorWidthAndMargin;
         }
 
-        var maximumPossibleIntensity = 17000;
+        var maximumPossibleIntensity = 6800;
 
         for (int i = 0; i < indicators.Length; i++)
         {
@@ -69,7 +69,7 @@ public class IndicatorRenderer
             {
                 totalCyclesIndicatorOn = maximumPossibleIntensity;
             }
-            byte onIndictorAlpha = (byte)(totalCyclesIndicatorOn / 66.66);
+            byte onIndictorAlpha = (byte)(totalCyclesIndicatorOn / 26.66);
             var onOffTextures = LightOffTextures.First(x => x.LightType == indicator.Type);
 
             SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
@@ -85,7 +85,7 @@ public class IndicatorRenderer
 
                 SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
 
-                SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)((maximumPossibleIntensity - totalCyclesIndicatorOn) / 66.66));
+                SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)((maximumPossibleIntensity - totalCyclesIndicatorOn) / 26.66));
                 SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);
             }
         }

@@ -15,13 +15,22 @@ SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");
 var configuration = ConfigurationLoader.Load("");
 
 var installation = new Installation().Init(configuration);
+
+var centerConsoleWindow = new CenterConsolePanel(installation.Cpu, configuration).Init();
+var leftConsoleWindow = new LeftConsolePanel(installation.Cpu, configuration).Init();
+var rightConsoleWindow = new RightConsolePanel(installation.Cpu, configuration).Init();
 var windows = new List<IWindow>
 {
-    new CenterConsolePanel(installation.Cpu, configuration).Init(),
-    new LeftConsolePanel(installation.Cpu, configuration).Init(),
-    new RightConsolePanel(installation.Cpu, configuration).Init(),
+    centerConsoleWindow,
+    leftConsoleWindow,
+    rightConsoleWindow
 };
 
+var centerWindowPosition = centerConsoleWindow.GetPositionSize();
+var leftWindowPosition = leftConsoleWindow.GetPositionSize();
+
+leftConsoleWindow.SetPosition(centerWindowPosition.X - leftWindowPosition.Width, centerWindowPosition.Y);
+rightConsoleWindow.SetPosition(centerWindowPosition.X + centerWindowPosition.Width, centerWindowPosition.Y);
 
 //var font = SDL_ttf.TTF_OpenFont(@"C:\wd\Project702\Roboto-Regular.ttf", 12);
 //var textSurface = SDL_ttf.TTF_RenderText_Solid(font, "Message", new SDL.SDL_Color { b = 210, g = 50, r = 255});
