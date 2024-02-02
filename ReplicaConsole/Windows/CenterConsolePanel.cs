@@ -43,6 +43,9 @@ public class CenterConsolePanel : Window
         LargeButtonRenderer = new LargeButtonRenderer(ButtonTextures);
 
         LargeButtonRenderer.CreateMultiple(2300, 1090, Console.MasterClearPressed, Console.StepPressed, Console.StartPressed, Console.ForceStopPressed);
+        LargeButtonRenderer.CreateMultiple(60 +  (IndicatorRenderer.LargeIndicatorDiameter - 1 + 28), 900, Console.ManualClockPressed, Console.ManualDistributorPressed, Console.ManualOperationPressed, Console.AutomaticStepClockPressed, Console.AutomaticStepOperationPressed);
+        
+        LargeButtonRenderer.CreateMultiple(240, 1040, Console.ReleaseOperatingRateSelection);
 
         return this;
     }

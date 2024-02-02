@@ -15,7 +15,6 @@ public static class TestUtils
         }
 
         installation.Cpu.Console.PowerOnPressed();
-        installation.Cpu.Console.StartPressed();
 
         for (int i = 0; i < result.Data.Count; i++)
         {

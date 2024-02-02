@@ -18,6 +18,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\BinUtils\BinUtils.csproj" />
+		<ProjectReference Include="..\CrossAssembler\CrossAssembler.csproj" />
 		<ProjectReference Include="..\Emulator\Emulator.csproj" />
 	</ItemGroup>
 

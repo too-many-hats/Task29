@@ -679,6 +679,16 @@ public class Console
         MainPulseTranslatorIndicators[7].Update(Cpu.MainPulseDistributor == 7 ? (ulong)1 : 0);
 
         SelectiveStopsIndicators[0].Update(Cpu.IsProgramStopped ? (ulong)1 : 0);
+
+        McsMainPulseDistributorTranslators[0][0].Update(Cpu.McsPulseDistributor[0] == 1 ? (ulong)1 : 0);
+        McsMainPulseDistributorTranslators[0][1].Update(Cpu.McsPulseDistributor[0] == 2 ? (ulong)1 : 0);
+        McsMainPulseDistributorTranslators[0][2].Update(Cpu.McsPulseDistributor[0] == 3 ? (ulong)1 : 0);
+        McsMainPulseDistributorTranslators[0][3].Update(Cpu.McsPulseDistributor[0] == 4 ? (ulong)1 : 0);
+
+        McsMainPulseDistributorTranslators[1][0].Update(Cpu.McsPulseDistributor[1] == 1 ? (ulong)1 : 0);
+        McsMainPulseDistributorTranslators[1][1].Update(Cpu.McsPulseDistributor[1] == 2 ? (ulong)1 : 0);
+        McsMainPulseDistributorTranslators[1][2].Update(Cpu.McsPulseDistributor[1] == 3 ? (ulong)1 : 0);
+        McsMainPulseDistributorTranslators[1][3].Update(Cpu.McsPulseDistributor[1] == 4 ? (ulong)1 : 0);
     }
 
     public void ClearPAK()
@@ -708,11 +718,41 @@ public class Console
 
     public void StepPressed()
     {
-        Cpu.StepPressed(1);
+        Cpu.StepPressed();
     }
 
     public void ForceStopPressed()
     {
         Cpu.ForceStopPressed();
+    }
+
+    public void ReleaseOperatingRateSelection()
+    {
+        Cpu.SetExecuteMode(ExecuteMode.HighSpeed); // functionally the same as calling SetExecuteMode(ExecuteMode executeMode), but a nicer API for consumers.
+    }
+
+    public void ManualClockPressed()
+    {
+        Cpu.SetExecuteMode(ExecuteMode.Clock);
+    }
+
+    public void ManualDistributorPressed()
+    {
+        Cpu.SetExecuteMode(ExecuteMode.Distributor);
+    }
+
+    public void ManualOperationPressed()
+    {
+        Cpu.SetExecuteMode(ExecuteMode.Operation);
+    }
+
+    public void AutomaticStepClockPressed()
+    {
+        Cpu.SetExecuteMode(ExecuteMode.AutomaticStepClock);
+    }
+
+    public void AutomaticStepOperationPressed()
+    {
+        Cpu.SetExecuteMode(ExecuteMode.AutomaticStepOperation);
     }
 }

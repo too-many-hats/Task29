@@ -1,4 +1,5 @@
-﻿using Emulator;
+﻿using CrossAssembler;
+using Emulator;
 using Emulator.Devices.Computer;
 using ReplicaConsole;
 using ReplicaConsole.Windows;
@@ -15,6 +16,19 @@ SDL.SDL_SetHint(SDL.SDL_HINT_RENDER_SCALE_QUALITY, "1");
 var configuration = ConfigurationLoader.Load("");
 
 var installation = new Installation().Init(configuration);
+
+# region forTestingOnly
+
+var assemblyResult = new Assembler().Assemble("ps,0,0");
+
+for (int i = 0; i < assemblyResult.Data.Count; i++)
+{
+    installation.Cpu.Memory[i] = assemblyResult.Data[i];
+}
+
+installation.Cpu.Console.SetPAKTo(0);
+
+#endregion
 
 var centerConsoleWindow = new CenterConsolePanel(installation.Cpu, configuration).Init();
 

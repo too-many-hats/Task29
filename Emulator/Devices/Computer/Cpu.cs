@@ -292,7 +292,7 @@ public class Cpu
         TypeAFault == false && TypeBFault == false && IsForceStopped == false && IsProgramStopped == false && SelectiveStops.All(x => x == false) 
         && (IsAbnormalCondition == false || IsAbnormalCondition && IsTestCondition); // an abnormal condition if the machine is not in test mode stops execution. (maint manual page 50)
 
-    private readonly Random random = new();
+    private bool StartPressedInTestMode;
 
     // The 1103A commands. These are named to match the Timing Sequences manual and Maint manual as closely as possible.
     private readonly Command ClearX;
@@ -394,14 +394,23 @@ public class Cpu
 
                 SccInitRead = false; // timing manual, page 61. By this point the read has been initialised and we are executing. PDC continues to stop the CPU clock until the read is completed. This must occur after the WaitInit lockout check above.
 
-                if (McsWaitInit[coreBank] == false || executeAllInAutomatic) // MCP-0
+                if (executeAllInAutomatic) // skip straight to the end state when executing in automatic.
+                {
+                    PdcWaitInternal = false;
+                    McsHoldWaitInitNextCycle[coreBank] = true;
+                    X = Memory[McsAddressRegister[coreBank] + (coreBank * 4096)];
+                    RunningTimeCycles += 4;
+                    return;
+                }
+
+                if (McsWaitInit[coreBank] == false) // MCP-0
                 {
                     McsWaitInit[coreBank] = true;
                     McsReadWriteEnable[coreBank] = true;
                     McsPulseDistributor[coreBank] = 1;
                     return;
                 }
-                else if (McsMonInit[coreBank] == false || executeAllInAutomatic) // MCP-1
+                else if (McsMonInit[coreBank] == false) // MCP-1
                 {
                     McsRead[coreBank] = true;
                     McsMonInit[coreBank] = true;
@@ -409,7 +418,7 @@ public class Cpu
                     X = Memory[McsAddressRegister[coreBank] + (coreBank * 4096)];
                     return;
                 }
-                else if (McsRead[coreBank] == true || executeAllInAutomatic) // MCP-2
+                else if (McsRead[coreBank] == true) // MCP-2
                 {
                     McsRead[coreBank] = false;
                     McsPulseDistributor[coreBank] = 3;
@@ -424,7 +433,7 @@ public class Cpu
                 //    McsPulseDistributor[coreBank] = 4;
                 //    McsWrite[coreBank] = true;
                 //}
-                else if (McsWrite[coreBank] == true || executeAllInAutomatic) // MCP-4
+                else if (McsWrite[coreBank] == true) // MCP-4
                 {
                     McsPulseDistributor[coreBank] = 0;
                     McsWrite[coreBank] = false;
@@ -433,11 +442,6 @@ public class Cpu
                     McsReadWriteEnable[coreBank] = false;
                     PdcWaitInternal = false;
                     McsHoldWaitInitNextCycle[coreBank] = true;
-                }
-
-                if (executeAllInAutomatic)
-                {
-                    RunningTimeCycles += 4;
                 }
             }
         });
@@ -462,6 +466,11 @@ public class Cpu
             {
                 IsOperating = false;
                 // TODO: This needs to set clock release flip-flop properly.
+            }
+
+            if (IsTestCondition == false)
+            {
+                StartPressedInTestMode = false;
             }
 
             if (IsOperating)
@@ -550,6 +559,11 @@ public class Cpu
             {
                 SetNextMainPulse(7);
             }
+
+            if (ExecuteMode == ExecuteMode.Operation)
+            {
+                IsOperating = false;
+            }
         }
         else if (MainPulseDistributor == 7)
         {
@@ -560,6 +574,11 @@ public class Cpu
 
             ClearSAR.Execute();
             XtoPCR.Execute();
+        }
+
+        if (ExecuteMode == ExecuteMode.Clock)
+        {
+            IsOperating = false;
         }
     }
 
@@ -785,6 +804,8 @@ public class Cpu
         Drum.AdvanceAik = false;
         Drum.CpdI = false;
         Drum.CpdII = false;
+
+        StartPressedInTestMode = false;
     }
 
     private void SetSAR(uint address)
@@ -843,6 +864,11 @@ public class Cpu
         {
             command.IsComplete = false;
         }
+
+        if (ExecuteMode == ExecuteMode.Distributor)
+        {
+            IsOperating = false;
+        }
     }
 
     public void PowerOnPressed()
@@ -877,14 +903,24 @@ public class Cpu
 
     public void StartPressed()
     {
-        IsOperating = true; // IsOperating may immediately be set back to false before the next cycle if a fault or stop is preventing execution.
         IsForceStopped = false;
+
+        if (ExecuteMode != ExecuteMode.HighSpeed)
+        {
+            StartPressedInTestMode = true;
+        }
+        else // else in normal mode.
+        {
+            IsOperating = true; // IsOperating may immediately be set back to false before the next cycle if a fault or stop is preventing execution.
+        }
     }
 
-    public void StepPressed(uint targetCycles)
+    public void StepPressed()
     {
-        IsOperating = true; // IsOperating may immediately be set back to false before the next cycle if a fault or stop is preventing execution.
-        Cycle(targetCycles, true);
+        if (IsTestCondition && ExecuteMode != ExecuteMode.HighSpeed && StartPressedInTestMode)
+        {
+            IsOperating = true; // IsOperating may immediately be set back to false before the next cycle if a fault or stop is preventing execution.
+        }
     }
 
     public void ForceStopPressed()
@@ -900,5 +936,12 @@ public class Cpu
     public void SetVAKto(uint value)
     {
         VAK = value & (uint)Constants.AddressMask;
+    }
+
+    public void SetExecuteMode(ExecuteMode executeMode)
+    {
+        IsOperating = false; // while I can find nothing explicit in the manuals, it seems unlikely to me that changing the execute mode would not stop the machine and require step or start to be pressed. Especially when switching between test and normal modes in both cases it looks like step/start do need to be pressed.
+
+        ExecuteMode = executeMode;
     }
 }

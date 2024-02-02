@@ -22,6 +22,7 @@ public class TestCoreMemoryRead
         TestUtils.PowerOnAndLoad(installation, "ps,0,0");
 
         var cpuUnderTest = installation.Cpu;
+        cpuUnderTest.StartPressed();
         var referenceCpu = new Cpu(TestUtils.GetDefaultConfig());
         referenceCpu.PowerOnPressed();
         referenceCpu.IsOperating = true;
