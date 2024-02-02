@@ -944,4 +944,44 @@ public class Cpu
 
         ExecuteMode = executeMode;
     }
+
+    public void SelectSelectiveJumpPressed(uint jumpNumber)
+    {
+        if (jumpNumber > 3 || jumpNumber < 1)
+        {
+            throw new Exception("Jump number must be between 1 and 3");
+        }
+
+        SelectiveJumps[--jumpNumber] = true; //-- to convert to 0 based array index.
+    }
+
+    public void ReleaseSelectiveJumpPressed(uint jumpNumber)
+    {
+        if (jumpNumber > 3 || jumpNumber < 1)
+        {
+            throw new Exception("Jump number must be between 1 and 3");
+        }
+
+        SelectiveJumps[--jumpNumber] = false; //-- to convert to 0 based array index.
+    }
+
+    public void SelectSelectiveStopPressed(uint stopNumber)
+    {
+        if (stopNumber > 3 || stopNumber < 1)
+        {
+            throw new Exception("Stop number must be between 1 and 3");
+        }
+
+        SelectiveStops[--stopNumber] = true; //-- to convert to 0 based array index.
+    }
+
+    public void ReleaseSelectiveStopPressed(uint stopNumber)
+    {
+        if (stopNumber > 3 || stopNumber < 1)
+        {
+            throw new Exception("Stop number must be between 1 and 3");
+        }
+
+        SelectiveStops[--stopNumber] = false; //-- to convert to 0 based array index.
+    }
 }

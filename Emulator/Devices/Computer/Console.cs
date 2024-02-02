@@ -679,6 +679,14 @@ public class Console
         MainPulseTranslatorIndicators[7].Update(Cpu.MainPulseDistributor == 7 ? (ulong)1 : 0);
 
         SelectiveStopsIndicators[0].Update(Cpu.IsProgramStopped ? (ulong)1 : 0);
+        SelectiveStopsIndicators[1].Update(Cpu.SelectiveStops[0] ? (ulong)1 : 0);
+        SelectiveStopsIndicators[2].Update(Cpu.SelectiveStops[1] ? (ulong)1 : 0);
+        SelectiveStopsIndicators[3].Update(Cpu.SelectiveStops[2] ? (ulong)1 : 0);
+        SelectiveStopsIndicators[4].Update(Cpu.SelectiveStops[3] ? (ulong)1 : 0);
+
+        SelectiveJumpIndicators[0].Update(Cpu.SelectiveJumps[2] ? (ulong)1 : 0);
+        SelectiveJumpIndicators[1].Update(Cpu.SelectiveJumps[1] ? (ulong)1 : 0);
+        SelectiveJumpIndicators[2].Update(Cpu.SelectiveJumps[0] ? (ulong)1 : 0);
 
         McsMainPulseDistributorTranslators[0][0].Update(Cpu.McsPulseDistributor[0] == 1 ? (ulong)1 : 0);
         McsMainPulseDistributorTranslators[0][1].Update(Cpu.McsPulseDistributor[0] == 2 ? (ulong)1 : 0);
@@ -754,5 +762,25 @@ public class Console
     public void AutomaticStepOperationPressed()
     {
         Cpu.SetExecuteMode(ExecuteMode.AutomaticStepOperation);
+    }
+
+    public void ReleaseStopSelectPressed(uint stopNumber)
+    {
+        Cpu.ReleaseSelectiveStopPressed(stopNumber);
+    }
+
+    public void SelectiveStopSelectPressed(uint stopNumber)
+    {
+        Cpu.SelectSelectiveStopPressed(stopNumber);
+    }
+
+    public void SelectiveJumpSelectPressed(uint jumpNumber)
+    {
+        Cpu.SelectSelectiveJumpPressed(jumpNumber);
+    }
+
+    public void SelectiveJumpReleasePressed(uint jumpNumber)
+    {
+        Cpu.ReleaseSelectiveJumpPressed(jumpNumber);
     }
 }
