@@ -18,7 +18,7 @@ public class LeftConsolePanel : Window
     public LeftConsolePanel Init()
     {
         var logicalWidth = 1920;
-        var logicalHeight = 1300;
+        var logicalHeight = 1350;
 
         CreateDesktopWindow("Task29 Left Console", logicalWidth, logicalHeight);
 

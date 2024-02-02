@@ -18,7 +18,7 @@ public class RightConsolePanel : Window
     public RightConsolePanel Init()
     {
         var logicalWidth = 1920;
-        var logicalHeight = 1300;
+        var logicalHeight = 1350;
 
         CreateDesktopWindow("Task29 Right Console", logicalWidth, logicalHeight);
 

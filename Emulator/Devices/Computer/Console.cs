@@ -84,7 +84,8 @@ public class Console
 
     public Indicator[] OperatingRateIndicators {  get; } = Enumerable.Range(0, 6).Select(_ => new Indicator(false, LightType.White)).ToArray();
     public Indicator[] SelectiveJumpIndicators {  get; } = Enumerable.Range(0, 3).Select(_ => new Indicator(false, LightType.White)).ToArray();
-    public Indicator[] SelectiveStopsIndicators {  get; } = Enumerable.Range(0, 5).Select(_ => new Indicator(false, LightType.Red)).ToArray();
+    public Indicator[] StopIndicators {  get; } = Enumerable.Range(0, 5).Select(_ => new Indicator(false, LightType.Red)).ToArray();
+    public Indicator[] SelectiveStopSelectedIndicators {  get; } = Enumerable.Range(0, 3).Select(_ => new Indicator(false, LightType.White)).ToArray();
     public Indicator IndicateEnableLight {  get; } = new Indicator(false, LightType.Red);
     public Indicator AbnormalConditionLight {  get; } = new Indicator(false, LightType.White);
     public Indicator NormalLight {  get; } = new Indicator(false, LightType.Green);
@@ -231,7 +232,7 @@ public class Console
         EndFramesOfAll(MainControlTranslatorIndicators);
         EndFramesOfAll(OperatingRateIndicators);
         EndFramesOfAll(SelectiveJumpIndicators);
-        EndFramesOfAll(SelectiveStopsIndicators);
+        EndFramesOfAll(StopIndicators);
         EndFramesOfAll(IOBIndicators);
         EndFramesOfAll(MtcTapeRegisterIndicators);
         EndFramesOfAll(MtcTapeControlIndicators);
@@ -289,6 +290,7 @@ public class Console
         EndFramesOfAll(DrumAngularIndexCounter);
         EndFramesOfAll(DrumInterlace);
         EndFramesOfAll(DrumGroup);
+        EndFramesOfAll(SelectiveStopSelectedIndicators);
         MtcReadControl.EndFrame();
         DrumInitWrite.EndFrame();
         DrumInitWrite0_14.EndFrame();
@@ -678,11 +680,15 @@ public class Console
         MainPulseTranslatorIndicators[6].Update(Cpu.MainPulseDistributor == 6 ? (ulong)1 : 0);
         MainPulseTranslatorIndicators[7].Update(Cpu.MainPulseDistributor == 7 ? (ulong)1 : 0);
 
-        SelectiveStopsIndicators[0].Update(Cpu.IsProgramStopped ? (ulong)1 : 0);
-        SelectiveStopsIndicators[1].Update(Cpu.SelectiveStops[0] ? (ulong)1 : 0);
-        SelectiveStopsIndicators[2].Update(Cpu.SelectiveStops[1] ? (ulong)1 : 0);
-        SelectiveStopsIndicators[3].Update(Cpu.SelectiveStops[2] ? (ulong)1 : 0);
-        SelectiveStopsIndicators[4].Update(Cpu.SelectiveStops[3] ? (ulong)1 : 0);
+        StopIndicators[0].Update(Cpu.IsProgramStopped ? (ulong)1 : 0);
+        StopIndicators[1].Update(Cpu.Stops[0] ? (ulong)1 : 0);
+        StopIndicators[2].Update(Cpu.Stops[1] ? (ulong)1 : 0);
+        StopIndicators[3].Update(Cpu.Stops[2] ? (ulong)1 : 0);
+        StopIndicators[4].Update(Cpu.Stops[3] ? (ulong)1 : 0);
+
+        SelectiveStopSelectedIndicators[0].Update(Cpu.SelectiveStopSelected[2] ? (ulong)1 : 0);
+        SelectiveStopSelectedIndicators[1].Update(Cpu.SelectiveStopSelected[1] ? (ulong)1 : 0);
+        SelectiveStopSelectedIndicators[2].Update(Cpu.SelectiveStopSelected[0] ? (ulong)1 : 0);
 
         SelectiveJumpIndicators[0].Update(Cpu.SelectiveJumps[2] ? (ulong)1 : 0);
         SelectiveJumpIndicators[1].Update(Cpu.SelectiveJumps[1] ? (ulong)1 : 0);
@@ -764,7 +770,7 @@ public class Console
         Cpu.SetExecuteMode(ExecuteMode.AutomaticStepOperation);
     }
 
-    public void ReleaseStopSelectPressed(uint stopNumber)
+    public void ReleaseSelectiveStopPressed(uint stopNumber)
     {
         Cpu.ReleaseSelectiveStopPressed(stopNumber);
     }

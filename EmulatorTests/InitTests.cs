@@ -113,10 +113,10 @@ public class InitTests
         Assert.False(cpuUnderTest.SelectiveJumps[2]);
 
         cpuUnderTest.IsProgramStopped.Should().Be(false);
-        Assert.False(cpuUnderTest.SelectiveStops[0]);
-        Assert.False(cpuUnderTest.SelectiveStops[1]);
-        Assert.False(cpuUnderTest.SelectiveStops[2]);
-        Assert.False(cpuUnderTest.SelectiveStops[3]);
+        Assert.False(cpuUnderTest.Stops[0]);
+        Assert.False(cpuUnderTest.Stops[1]);
+        Assert.False(cpuUnderTest.Stops[2]);
+        Assert.False(cpuUnderTest.Stops[3]);
 
         cpuUnderTest.IsManualInterruptArmed.Should().Be(false);
 
@@ -244,5 +244,7 @@ public class InitTests
         cpuUnderTest.Drum.AdvanceAik.Should().Be(false);
         cpuUnderTest.Drum.CpdI.Should().Be(false);
         cpuUnderTest.Drum.CpdII.Should().Be(false);
+
+        cpuUnderTest.SelectiveStopSelected.Should().AllBeEquivalentTo(false);
     }
 }

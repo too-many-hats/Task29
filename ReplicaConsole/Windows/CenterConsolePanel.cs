@@ -23,7 +23,7 @@ public class CenterConsolePanel : Window
     public CenterConsolePanel Init()
     {
         var logicalWidth = 3840;
-        var logicalHeight = 1300;
+        var logicalHeight = 1350;
 
         CreateDesktopWindow("Task29 Main Console", logicalWidth, logicalHeight);
 
@@ -49,6 +49,9 @@ public class CenterConsolePanel : Window
 
         LargeButtonRenderer.CreateMultiple(830, 950, () => Console.SelectiveJumpSelectPressed(3), () => Console.SelectiveJumpSelectPressed(2), () => Console.SelectiveJumpSelectPressed(1));
         LargeButtonRenderer.CreateMultiple(830, 1110, () => Console.SelectiveJumpReleasePressed(3), () => Console.SelectiveJumpReleasePressed(2), () => Console.SelectiveJumpReleasePressed(1));
+
+        LargeButtonRenderer.CreateMultiple(1594, 1110, () => Console.SelectiveStopSelectPressed(3), () => Console.SelectiveStopSelectPressed(2), () => Console.SelectiveStopSelectPressed(1));
+        LargeButtonRenderer.CreateMultiple(1594, 1270, () => Console.ReleaseSelectiveStopPressed(3), () => Console.ReleaseSelectiveStopPressed(2), () => Console.ReleaseSelectiveStopPressed(1));
 
         return this;
     }
@@ -181,9 +184,14 @@ public class CenterConsolePanel : Window
             IndicatorRenderer.RenderLight(Console.SelectiveJumpIndicators[i], 830 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
-        for (int i = 0; i < Console.SelectiveStopsIndicators.Length; i++)
+        for (int i = 0; i < Console.StopIndicators.Length; i++)
         {
-            IndicatorRenderer.RenderLight(Console.SelectiveStopsIndicators[i], 1500 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLight(Console.StopIndicators[i], 1500 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
+        }
+
+        for (int i = 0; i < Console.SelectiveStopSelectedIndicators.Length; i++)
+        {
+            IndicatorRenderer.RenderLight(Console.SelectiveStopSelectedIndicators[i], 1592 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 950);
         }
 
         IndicatorRenderer.RenderLight(Console.IndicateEnableLight, 2100, 780);

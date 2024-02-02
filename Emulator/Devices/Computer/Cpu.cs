@@ -119,7 +119,8 @@ public class Cpu
     public bool[] SelectiveJumps { get; set; } = new bool[3];
 
     public bool IsProgramStopped { get; set; }
-    public bool[] SelectiveStops { get; set; } = new bool[4];
+    public bool[] Stops { get; set; } = new bool[4];
+    public bool[] SelectiveStopSelected { get; set; } = new bool[3];
 
     public bool IsManualInterruptArmed { get; set; }
 
@@ -288,8 +289,8 @@ public class Cpu
     public ulong RunningTimeCycles { get; set; } // as a ulong this is sufficient capacity for 584,942 years running time, at the risk of a Y2K event, I think this is enough for our project.
     public ulong Delay { get; set; } // Number of cycles to wait for machine generated waits.
     public int MainPulseDistributor { get; set; }
-    private bool CanExecuteNextCycle => 
-        TypeAFault == false && TypeBFault == false && IsForceStopped == false && IsProgramStopped == false && SelectiveStops.All(x => x == false) 
+    private bool CanExecuteNextCycle =>
+        TypeAFault == false && TypeBFault == false && IsForceStopped == false && IsProgramStopped == false && Stops.All(x => x == false)
         && (IsAbnormalCondition == false || IsAbnormalCondition && IsTestCondition); // an abnormal condition if the machine is not in test mode stops execution. (maint manual page 50)
 
     private bool StartPressedInTestMode;
@@ -380,7 +381,7 @@ public class Cpu
 
                 return;
             }
-            
+
             if (SctMcs0 == true || SctMcs1 == true)
             {
                 // see page 66 timing manual for details of the below logic.
@@ -678,9 +679,9 @@ public class Cpu
 
         IsProgramStopped = false;
 
-        for (var i = 0; i < SelectiveStops.Length; i++)
+        for (var i = 0; i < Stops.Length; i++)
         {
-            SelectiveStops[i] = false;
+            Stops[i] = false;
         }
 
         IsManualInterruptArmed = false;
@@ -806,6 +807,11 @@ public class Cpu
         Drum.CpdII = false;
 
         StartPressedInTestMode = false;
+        
+        for (int i = 0; i < SelectiveStopSelected.Length; i++)
+        {
+            SelectiveStopSelected[i] = false;
+        }
     }
 
     private void SetSAR(uint address)
@@ -860,7 +866,7 @@ public class Cpu
         MainPulseDistributor = nextMainPulse;
 
         // with the main pulse completed, reset each command for the next main pulse.
-        foreach(var command in Commands)
+        foreach (var command in Commands)
         {
             command.IsComplete = false;
         }
@@ -972,7 +978,7 @@ public class Cpu
             throw new Exception("Stop number must be between 1 and 3");
         }
 
-        SelectiveStops[--stopNumber] = true; //-- to convert to 0 based array index.
+        SelectiveStopSelected[--stopNumber] = true;
     }
 
     public void ReleaseSelectiveStopPressed(uint stopNumber)
@@ -982,6 +988,6 @@ public class Cpu
             throw new Exception("Stop number must be between 1 and 3");
         }
 
-        SelectiveStops[--stopNumber] = false; //-- to convert to 0 based array index.
+        SelectiveStopSelected[--stopNumber] = false;
     }
 }
