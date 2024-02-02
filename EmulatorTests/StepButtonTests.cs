@@ -113,13 +113,12 @@ public class StepButtonTests
         cpuUnderTest.Cycle(1);
 
         referenceCpu.SetExecuteMode(ExecuteMode.Clock);
-        referenceCpu.RunningTimeCycles = 2;
+        referenceCpu.RunningTimeCycles = 5; // when manually stepping, the core memory read happens all at once because core memory references use their own clock which is not manually stepped. See accuracy document for details. 
         referenceCpu.SetPAKto(1);
-        referenceCpu.PdcWaitInternal = true;
-        referenceCpu.McsPulseDistributor[0] = 1;
+        referenceCpu.MainPulseDistributor = 7;
         referenceCpu.McsWaitInit[0] = true;
-        referenceCpu.McsReadWriteEnable[0] = true;
-        
+        referenceCpu.X = referenceCpu.Memory[0];
+
         // start only needs to be pressed once after entering test mode, then step can be pressed as many times as desired. See example sequence in paragraph 3-55 of reference manual.
 
         cpuUnderTest.Should().BeEquivalentTo(referenceCpu);

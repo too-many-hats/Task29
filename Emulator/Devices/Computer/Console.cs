@@ -789,4 +789,9 @@ public class Console
     {
         Cpu.ReleaseSelectiveJumpPressed(jumpNumber);
     }
+
+    public void ClearAFaultPressed()
+    {
+        Cpu.ClearAFaultPressed();
+    }
 }

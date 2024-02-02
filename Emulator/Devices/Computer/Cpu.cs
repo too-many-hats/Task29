@@ -131,8 +131,8 @@ public class Cpu
     public bool IsAbnormalCondition => CL_TCRDisconnectSwitch || CL_TRDisconnectSwitch || IOB_TCRDisconnectSwitch || IOB_TRDisconnectSwitch || IOB_BKDisconnectSwitch || TR_IOBDisconnectSwitch || StartDisconnectSwitch || ErrorSignalDisconnectSwitch || ReadDisconnectSwitch || WriteDisconnectSwitch || DisconnectMdWriteVoltage4Switch || DisconnectMdWriteVoltage5Switch || DisconnectMdWriteVoltage6Switch || DisconnectMdWriteVoltage7Switch || DisconnectClearASwitch || DisconnectClearXSwitch || DisconnectClearQSwitch || DisconnectClearSARSwitch || DisconnectClearPAKSwitch || DisconnectClearPCRSwitch || DisconnectInitiateWrite0_35Switch || DisconnectInitiateWrite0_14Switch || DisconnectInitiateWrite15_29Switch || F140001_00000Switch || SingleMcsSelectionSwitch || OscDrumSwitch || DisconnectStopSwitch || DisconnectSARToPAKSwitch || DisconnectVAKToSARSwitch || DisconnectQ1ToX1Switch || DisconnectXToPCRSwitch || DisconnectAdvPAKSwitch || DisconnectBackSKSwitch || DisconnectWaitInitSwitch || ForceMcZeroSwitch || ForceMcOneSwitch || PtAmpMarginalCheckSwitch || Mcs0AmpMarginalCheckSwitch || Mcs1AmpMarginalCheckSwitch || MDAmpMarginalCheckSwitch || MTAmpMarginalCheckSwitch || ContReduceHeaterVoltageSwitch || ArithReduceHeaterVoltageSwitch || Mcs0ReduceHeaterVoltageSwitch || Mcs1ReduceHeaterVoltageSwitch || MTReduceHeaterVoltageSwitch || MDReduceHeaterVoltageSwitch || DisconnectPAKToSARSwitch || TestNormalSwitch || AbnormalNormalDrumSwitch;
 
     public bool IsOperating { get; set; }
-    public bool TypeAFault => DivFault | SccFault | OverflowFault | PrintFault | TempFault | WaterFault | FpCharOverflow;
-    public bool TypeBFault => MatrixDriveFault | TapeFault | MctFault | IOFault | VoltageFault;
+    public bool TypeAFault => DivFault || SccFault || OverflowFault || PrintFault || TempFault || WaterFault || FpCharOverflow;
+    public bool TypeBFault => MatrixDriveFault || TapeFault || MctFault || IOFault || VoltageFault;
 
     // throw switches.
     //
@@ -399,8 +399,9 @@ public class Cpu
                 {
                     PdcWaitInternal = false;
                     McsHoldWaitInitNextCycle[coreBank] = true;
+                    McsWaitInit[coreBank] = true; //one cycle lockout for core memory references.
                     X = Memory[McsAddressRegister[coreBank] + (coreBank * 4096)];
-                    RunningTimeCycles += 4;
+                    RunningTimeCycles += 3; // reads take four cycles, one is already accounted for at the start of ExecuteSingleCycle which invoked this comand.
                     return;
                 }
 
@@ -989,5 +990,16 @@ public class Cpu
         }
 
         SelectiveStopSelected[--stopNumber] = false;
+    }
+
+    public void ClearAFaultPressed()
+    {
+        DivFault = false;
+        SccFault = false;
+        OverflowFault = false;
+        FpCharOverflow = false;
+        TempFault = false;
+        WaterFault = false;
+        PrintFault = false;
     }
 }
