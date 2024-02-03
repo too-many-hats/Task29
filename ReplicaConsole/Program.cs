@@ -97,6 +97,12 @@ while (running)
             // find the window that the event is targeting, and let that window handle it's event.
             foreach (var window in windows)
             {
+                if (window.WindowId == centerConsoleWindow.WindowId && e.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE)
+                {
+                    running = false;
+                    break;
+                }
+
                 if (window.WindowId == e.window.windowID)
                 {
                     window.HandleEvent(e);

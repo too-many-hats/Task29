@@ -6,7 +6,7 @@ namespace ReplicaConsole.Windows;
 public abstract class Window : IWindow
 {
     public uint WindowId { get; private set; }
-    protected Configuration Configuration { get; init; }
+    private Configuration Configuration { get; init; }
     public nint WindowHandle { get; private set; }
 
     public Window(Configuration configuration)
