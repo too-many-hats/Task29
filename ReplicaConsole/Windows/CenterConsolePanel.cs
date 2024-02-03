@@ -53,6 +53,8 @@ public class CenterConsolePanel : Window
         LargeButtonRenderer.CreateMultiple(1594, 1110, () => Console.SelectiveStopSelectPressed(3), () => Console.SelectiveStopSelectPressed(2), () => Console.SelectiveStopSelectPressed(1));
         LargeButtonRenderer.CreateMultiple(1594, 1270, () => Console.ReleaseSelectiveStopPressed(3), () => Console.ReleaseSelectiveStopPressed(2), () => Console.ReleaseSelectiveStopPressed(1));
 
+        LargeButtonRenderer.CreateMultiple(2860 + 1 * (65 + 28), 1180, Console.ClearAFaultPressed);
+
         return this;
     }
 
