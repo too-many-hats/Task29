@@ -885,16 +885,45 @@ public class Cpu
 
     public void ClearPAK()
     {
+        if (IsOperating) // cannot be changed, even while running in TEST mode, reference manual paragraph 3-18.
+        {
+            return;
+        }
+
         PAK = 0;
+    }
+
+    public void SetAto(UInt128 value)
+    {
+        if (IsOperating == false || IsTestCondition) // can be changed while operating in test mode, reference manual paragraph 3-18.
+        {
+            A = value & Constants.WordMask;
+        }
+    }
+
+    public void SetQto(ulong value)
+    {
+        if (IsOperating == false || IsTestCondition) // can be changed while operating in test mode, reference manual paragraph 3-18.
+        {
+            Q = value & Constants.WordMask;
+        }
     }
 
     public void SetXto(ulong value)
     {
-        X = value & Constants.WordMask;
+        if (IsOperating == false || IsTestCondition)
+        {
+            X = value & Constants.WordMask;
+        }
     }
 
     public void SetPAKto(uint value)
     {
+        if (IsOperating) // cannot be changed, even while running in TEST mode, reference manual paragraph 3-18.
+        {
+            return;
+        }
+
         PAK = value & (uint)Constants.AddressMask;
     }
 
@@ -905,7 +934,10 @@ public class Cpu
 
     public void SetMCRto(uint value)
     {
-        MCR = value & (uint)Constants.SixBitMask;
+        if (IsOperating == false || IsTestCondition) // can be changed while operating in test mode, reference manual paragraph 3-18.
+        {
+            MCR = value & (uint)Constants.SixBitMask;
+        }
     }
 
     public void StartPressed()
@@ -937,23 +969,37 @@ public class Cpu
 
     public void SetUAKto(uint value)
     {
-        UAK = value & (uint)Constants.AddressMask;
+        if (IsOperating == false || IsTestCondition) // can be changed while operating in test mode, reference manual paragraph 3-18.
+        {
+            UAK = value & (uint)Constants.AddressMask;
+        }
     }
 
     public void SetVAKto(uint value)
     {
-        VAK = value & (uint)Constants.AddressMask;
+        if (IsOperating == false || IsTestCondition) // can be changed while operating in test mode, reference manual paragraph 3-18.
+        {
+            VAK = value & (uint)Constants.AddressMask;
+        }
     }
 
     public void SetExecuteMode(ExecuteMode executeMode)
     {
-        IsOperating = false; // while I can find nothing explicit in the manuals, it seems unlikely to me that changing the execute mode would not stop the machine and require step or start to be pressed. Especially when switching between test and normal modes in both cases it looks like step/start do need to be pressed.
+        if (IsOperating) // cannot be changed, even while running in TEST mode, reference manual paragraph 3-18.
+        {
+            return;
+        }
 
         ExecuteMode = executeMode;
     }
 
     public void SelectSelectiveJumpPressed(uint jumpNumber)
     {
+        if (IsOperating) // cannot be changed, even while running in TEST mode, reference manual paragraph 3-18.
+        {
+            return;
+        }
+
         if (jumpNumber > 3 || jumpNumber < 1)
         {
             throw new Exception("Jump number must be between 1 and 3");
@@ -964,6 +1010,11 @@ public class Cpu
 
     public void ReleaseSelectiveJumpPressed(uint jumpNumber)
     {
+        if (IsOperating) // cannot be changed, even while running in TEST mode, reference manual paragraph 3-18.
+        {
+            return;
+        }
+
         if (jumpNumber > 3 || jumpNumber < 1)
         {
             throw new Exception("Jump number must be between 1 and 3");
@@ -974,6 +1025,11 @@ public class Cpu
 
     public void SelectSelectiveStopPressed(uint stopNumber)
     {
+        if (IsOperating && IsNormalCondition)
+        {
+            return;
+        }
+
         if (stopNumber > 3 || stopNumber < 1)
         {
             throw new Exception("Stop number must be between 1 and 3");
@@ -984,6 +1040,11 @@ public class Cpu
 
     public void ReleaseSelectiveStopPressed(uint stopNumber)
     {
+        if (IsOperating && IsNormalCondition)
+        {
+            return;
+        }
+
         if (stopNumber > 3 || stopNumber < 1)
         {
             throw new Exception("Stop number must be between 1 and 3");
@@ -994,6 +1055,11 @@ public class Cpu
 
     public void ClearAFaultPressed()
     {
+        if (IsOperating && IsNormalCondition)
+        {
+            return;
+        }
+
         DivFault = false;
         SccFault = false;
         OverflowFault = false;
