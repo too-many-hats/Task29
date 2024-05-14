@@ -36,7 +36,7 @@ public class CenterConsolePanel : Window
 
         MctLightOnTexture = SdlHelpers.LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoron.png");
         MctLightOffTexture = SdlHelpers.LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoroff.png");
-        IndicatorRenderer = new IndicatorRenderer(Renderer, LightTexturesLoader.Load(Renderer));
+        IndicatorRenderer = new IndicatorRenderer(Renderer, LightTexturesLoader.Load(Renderer), Console);
 
         ButtonTextures = new ButtonTextures().Load(Renderer);
         LargeButtonRenderer = new LargeButtonRenderer(ButtonTextures);
@@ -255,10 +255,10 @@ public class CenterConsolePanel : Window
                 y = yInternal + 45 * (i / 8),
             };
 
-            var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
+            var engerisedRatio = IndicatorRenderer.GetIndicatorEnergisedRatio(indicator, Console.TotalCyclesLast6Frames);
             SDL.SDL_RenderCopy(Renderer, MctLightOffTexture, ref IndicatorRenderer.indicatorSource, ref destRect);
 
-            SDL.SDL_SetTextureAlphaMod(MctLightOnTexture, (byte)(totalCyclesIndicatorOn / 133.33));
+            SDL.SDL_SetTextureAlphaMod(MctLightOnTexture, (byte)(engerisedRatio * 255));
             //     Debug.WriteLine("Alpha: " + (byte)(totalCyclesIndicatorOn / 266.66));
             SDL.SDL_RenderCopy(Renderer, MctLightOnTexture, ref IndicatorRenderer.indicatorSource, ref destRect);
         }

@@ -198,7 +198,13 @@ public class Console
     public Indicator DrumPreset { get; } = new Indicator(true);
     public Indicator DrumCpdI { get; } = new Indicator(true);
     public Indicator DrumCpdII { get; } = new Indicator(true);
-    
+    private readonly List<Indicator> _allIndicators;
+    public int TotalCyclesLast6Frames { get; private set; }
+
+    private int indicatorFrameIndex = 0;
+    const int framesToTrackLightBrightness = 6;
+    private int[] lastFramesDuration = new int[framesToTrackLightBrightness]; // six frames chosen based on frame-by-frame analysis of video of a real UNIVAC mainframe
+
     //RightConsolePanel
 
     private Cpu Cpu { get; set; }
@@ -213,221 +219,27 @@ public class Console
             McsMainPulseDistributorTranslators[i] = Enumerable.Range(0, 4).Select(_ => new Indicator(false)).ToArray();
             McsPulseDistributors[i] = Enumerable.Range(0, 3).Select(_ => new Indicator(true)).ToArray();
         }
-    }
 
-    internal void EndFrame()
-    {
-        EndFramesOfAll(AIndicators);
-        EndFramesOfAll(QIndicators);
-        EndFramesOfAll(XIndicators);
-        EndFramesOfAll(MCRIndicators);
-        EndFramesOfAll(VAKIndicators);
-        EndFramesOfAll(UAKIndicators);
-        EndFramesOfAll(PAKIndicators);
-        EndFramesOfAll(SARIndicators);
-        EndFramesOfAll(MpdIndicators);
-        EndFramesOfAll(JTranslatorIndicators);
-        EndFramesOfAll(SkTranslatorIndicators);
-        EndFramesOfAll(MainPulseTranslatorIndicators);
-        EndFramesOfAll(MainControlTranslatorIndicators);
-        EndFramesOfAll(OperatingRateIndicators);
-        EndFramesOfAll(SelectiveJumpIndicators);
-        EndFramesOfAll(StopIndicators);
-        EndFramesOfAll(IOBIndicators);
-        EndFramesOfAll(MtcTapeRegisterIndicators);
-        EndFramesOfAll(MtcTapeControlIndicators);
-        EndFramesOfAll(MtcBlockCounterIndicators);
-        EndFramesOfAll(MtcSprocketDelayIndicators);
-        EndFramesOfAll(MtcStopControlIndicators);
-        EndFramesOfAll(MtcLeaderDelayIndicators);
-        EndFramesOfAll(MtcInitialDelayIndicators);
-        EndFramesOfAll(MtcStartControlIndicators);
-        EndFramesOfAll(MtcBTKIndicators);
-        EndFramesOfAll(MtcWKIndicators);
-        EndFramesOfAll(MtcTSKIndicators);
-        EndFramesOfAll(MtcLKIndicators);
-        EndFramesOfAll(MtcWriteResumeIndicators);
-        EndFramesOfAll(MtcMtWriteControlIndicators);
-        EndFramesOfAll(MtcCkErrorParityIndicators);
-        EndFramesOfAll(MtcControlSyncSprocketTestIndicators);
-        EndFramesOfAll(MtcAlignInputRegisterIndicators);
-        EndFramesOfAll(MtcBlockEnd);
-        EndFramesOfAll(MtcRecordEnd);
-        EndFramesOfAll(MtcBccControl);
-        EndFramesOfAll(MtcTrControl);
-        EndFramesOfAll(MtcBsk);
-        EndFramesOfAll(MtcSubt);
-        EndFramesOfAll(MtcWrite);
-        EndFramesOfAll(MtcAdd);
-        EndFramesOfAll(MtcDelay);
-        EndFramesOfAll(MtcCenterDriveControl);
-        EndFramesOfAll(IoA);
-        EndFramesOfAll(FpSRegister);
-        EndFramesOfAll(FpDRegister);
-        EndFramesOfAll(FpCRegister);
-        EndFramesOfAll(FpSequenceGates);
-        EndFramesOfAll(McsAddressRegisters[1]);
-        EndFramesOfAll(McsAddressRegisters[0]);
-        EndFramesOfAll(McsMonInit);
-        EndFramesOfAll(McsRead);
-        EndFramesOfAll(McsRead);
-        EndFramesOfAll(McsWrite);
-        EndFramesOfAll(McsReadWriteEnable);
-        EndFramesOfAll(McsWaitInit);
-        EndFramesOfAll(McsEnId);
-        EndFramesOfAll(McsWr0_14);
-        EndFramesOfAll(McsWr30_35);
-        EndFramesOfAll(McsWr15_29);
-        EndFramesOfAll(McsPulseDistributors[1]);
-        EndFramesOfAll(McsPulseDistributors[0]);
-        EndFramesOfAll(McsMainPulseDistributorTranslators[1]);
-        EndFramesOfAll(McsMainPulseDistributorTranslators[0]);
-        EndFramesOfAll(McsPulseDistributors[0]);
-        EndFramesOfAll(McsPulseDistributors[0]);
-        EndFramesOfAll(TypewriterRegister);
-        EndFramesOfAll(HsPunchRegister);
-        EndFramesOfAll(DrumGs);
-        EndFramesOfAll(DrumAngularIndexCounter);
-        EndFramesOfAll(DrumInterlace);
-        EndFramesOfAll(DrumGroup);
-        EndFramesOfAll(SelectiveStopSelectedIndicators);
-        MtcReadControl.EndFrame();
-        DrumInitWrite.EndFrame();
-        DrumInitWrite0_14.EndFrame();
-        DrumInitWrite15_29.EndFrame();
-        DrumInitRead.EndFrame();
-        DrumInitDelayedRead.EndFrame();
-        DrumReadLockoutI.EndFrame();
-        DrumReadLockoutII.EndFrame();
-        DrumReadLockoutIII.EndFrame();
-        DrumConincLockout.EndFrame();
-        DrumPreset.EndFrame();
-        DrumAdvanceAik.EndFrame();
-        DrumCpdI.EndFrame();
-        DrumCpdII.EndFrame();
-        HsPunchRes.EndFrame();
-        HsPunchInit.EndFrame();
-        FpDelayShiftA.EndFrame();
-        FpSign.EndFrame();
-        FpDiv.EndFrame();
-        FpMulti.EndFrame();
-        FpAddSubt.EndFrame();
-        FpUV.EndFrame();
-        FpMooMrp.EndFrame();
-        FpNormExit.EndFrame();
-        WaitIoARead.EndFrame();
-        WaitIoBRead.EndFrame();
-        WaitIoBWrite.EndFrame();
-        WaitIoBRead.EndFrame();
-        ExtFaultIoA1.EndFrame();
-        ExtFaultIoB1.EndFrame();
-        MtcNotReady.EndFrame();
-        MtcReadWriteSync.EndFrame();
-        MtcBlShift.EndFrame();
-        MtcTskControl.EndFrame();
-        MtcBlEnd.EndFrame();
-        MtcFaultControl.EndFrame();
-        MtcBccError.EndFrame();
-        MtcTrControlTcrSync.EndFrame();
-        IndicateEnableLight.EndFrame();
-        AbnormalConditionLight.EndFrame();
-        NormalLight.EndFrame();
-        TestLight.EndFrame();
-        OperatingLight.EndFrame();
-        ForceStopLight.EndFrame();
-        MatrixDriveFaultLight.EndFrame();
-        MtFaultLight.EndFrame();
-        IOFaultLight.EndFrame();
-        VoltageFaultLight.EndFrame();
-        PrintFault.EndFrame();
-        TempFault.EndFrame();
-        WaterFault.EndFrame();
-        CharOverflowLight.EndFrame();
-        IoaWrite.EndFrame();
-        IoBWrite.EndFrame();
-        Select.EndFrame();
-
-        Halt.EndFrame();
-        Interrupt.EndFrame();
-
-        AscDelAdd.EndFrame();
-        AscSpSubt.EndFrame();
-        AscOverflow.EndFrame();
-        OverflowFaultLight.EndFrame();
-        AscAL.EndFrame();
-        AscAR.EndFrame();
-        AscB.EndFrame();
-        AscC.EndFrame();
-        AscD.EndFrame();
-        AscE.EndFrame();
-        InitArithSequenceLog.EndFrame();
-        InitArithSequenceA_1.EndFrame();
-        InitArithSequenceSP.EndFrame();
-        InitArithSequenceA1.EndFrame();
-        InitArithSequenceQL.EndFrame();
-        InitArithSequenceDiv.EndFrame();
-        InitArithSequenceMult.EndFrame();
-        InitArithSequenceSEQ.EndFrame();
-        InitArithSequenceStep.EndFrame();
-        InitArithSequenceCase.EndFrame();
-        InitArithSequenceCKI.EndFrame();
-        InitArithSequenceCKII.EndFrame();
-        InitArithSequenceRestX.EndFrame();
-        InitArithSequenceMultiStep.EndFrame();
-        InitArithSequenceExtSeq.EndFrame();
-
-        StopTape.EndFrame();
-        SccFault.EndFrame();
-        SccFaultLight.EndFrame();
-        MctFault.EndFrame();
-        MctFaultLight.EndFrame();
-        DivFault.EndFrame();
-        DivFaultLight.EndFrame();
-        AZero.EndFrame();
-        TapeFeed.EndFrame();
-        Rsc75.EndFrame();
-        RscHoldRpt.EndFrame();
-        RscJumpTerm.EndFrame();
-        RscInitRpt.EndFrame();
-        RscInitTest.EndFrame();
-        RscEndRpt.EndFrame();
-        RscDelayTest.EndFrame();
-        RscAdvAdd.EndFrame();
-
-        SccInitRead.EndFrame();
-        SccInitWrite.EndFrame();
-        SccInitIw0_14.EndFrame();
-        SccInitIw15_29.EndFrame();
-        SccReadQ.EndFrame();
-        SccWriteAorQ.EndFrame();
-        SccClearA.EndFrame();
-
-        MasterClockCSSI.EndFrame();
-        MasterClockCSSII.EndFrame();
-        MasterClockCRCI.EndFrame();
-        MasterClockCRCII.EndFrame();
-
-        PdcHpc.EndFrame();
-        PdcTwc.EndFrame();
-        PdcWaitInternal.EndFrame();
-        PdcWaitExternal.EndFrame();
-        PdcWaitRsc.EndFrame();
-        PdcStop.EndFrame();
-
-        SctA.EndFrame();
-        SctQ.EndFrame();
-        SctMD.EndFrame();
-        SctMcs0.EndFrame();
-        SctMcs1.EndFrame();
-        SctMcs2.EndFrame();
-    }
-
-    private static void EndFramesOfAll(Indicator[] indicators)
-    {
-        foreach (var indicator in indicators)
-        {
-            indicator.EndFrame();
-        }
+        _allIndicators = [
+            DrumCpdI,
+            DrumCpdII,
+            DrumPreset,
+            DrumAdvanceAik,
+            DrumConincLockout,
+            ..PAKIndicators,
+            ..SARIndicators,
+            ..QIndicators,
+            ..AIndicators,
+            ..MpdIndicators,
+            ..MainPulseTranslatorIndicators,
+            ForceStopLight,
+            OperatingLight,
+            AbnormalConditionLight,
+            TestLight,
+            OperatingLight,
+            NormalLight,
+            //TODO: add the rest
+            ];
     }
 
     private static void UpdateIndicator(Indicator[] indicators, UInt128 value)
@@ -437,13 +249,13 @@ public class Console
         ulong highHalf = (ulong)(value >> 36) & Constants.WordMask;
         for (var j = 0; j < 36; j++)
         {
-            indicators[j].Update(lowHalf & 1);
+            indicators[j].Update((lowHalf & 1) > 0 ? 1 : -1);
             lowHalf = lowHalf >> 1;
         }
 
         for (var j = 36; j < 36; j++)
         {
-            indicators[j].Update(highHalf & 1);
+            indicators[j].Update((highHalf & 1) > 0 ? 1 : -1);
             highHalf = highHalf >> 1;
         }
     }
@@ -452,19 +264,37 @@ public class Console
     {
         for (var j = 0; j < indicators.Length; j++)
         {
-            indicators[j].Update(value & 1);
+            indicators[j].Update((value & 1) > 0 ? 1 : -1);
             value = value >> 1;
         }
     }
 
     private static void UpdateIndicator(Indicator indicator, bool value)
     {
-        indicator.Update(value ? (ulong)1 : 0);
+        indicator.Update(value ? 1 : -1);
     }
 
     public void PowerOnPressed()
     {
         Cpu.PowerOnPressed();
+    }
+
+    internal void StartBrightnessTrackInFrame(int cyclesExecuted)
+    {
+        indicatorFrameIndex = (indicatorFrameIndex + 1) % framesToTrackLightBrightness;
+
+        foreach (var indicator in _allIndicators)
+        {
+            indicator.FrameIndex = indicatorFrameIndex;
+            indicator.CyclesLitInFrame[indicatorFrameIndex] = 0; //clear state from last time this frame was recorded.
+        }
+
+        lastFramesDuration[indicatorFrameIndex] = cyclesExecuted;
+        TotalCyclesLast6Frames = 0;
+        foreach (var frame in lastFramesDuration)
+        {
+            TotalCyclesLast6Frames += frame;
+        }
     }
 
     internal void UpdateIndicatorStatusEndOfCycle()
@@ -648,21 +478,21 @@ public class Console
         UpdateIndicator(DrumInterlace, Cpu.Drum.Interlace);
         UpdateIndicator(DrumGroup, Cpu.Drum.Group);
 
-        IndicateEnableLight.Update(Cpu.IsManualInterruptArmed ? (ulong)1 : 0);
-        AbnormalConditionLight.Update(Cpu.IsAbnormalCondition ? (ulong)1 : 0);
-        NormalLight.Update(Cpu.IsNormalCondition ? (ulong)1 : 0);
-        TestLight.Update(Cpu.IsTestCondition ? (ulong)1 : 0);
-        OperatingLight.Update(Cpu.IsOperating ? (ulong)1 : 0);
-        ForceStopLight.Update(Cpu.IsForceStopped ? (ulong)1 : 0);
+        IndicateEnableLight.Update(Cpu.IsManualInterruptArmed ? (int)1 : -1);
+        AbnormalConditionLight.Update(Cpu.IsAbnormalCondition ? (int)1 : -1);
+        NormalLight.Update(Cpu.IsNormalCondition ? (int)1 : -1);
+        TestLight.Update(Cpu.IsTestCondition ? (int)1 : -1);
+        OperatingLight.Update(Cpu.IsOperating ? (int)1 : -1);
+        ForceStopLight.Update(Cpu.IsForceStopped ? (int)1 : -1);
 
-        MatrixDriveFaultLight.Update(Cpu.MatrixDriveFault ? (ulong)1 : 0);
-        MtFaultLight.Update(Cpu.TapeFault ? (ulong)1 : 0);
-        IOFaultLight.Update(Cpu.IOFault ? (ulong)1 : 0);
-        VoltageFaultLight.Update(Cpu.VoltageFault ? (ulong)1 : 0);
-        PrintFault.Update(Cpu.PrintFault ? (ulong)1 : 0);
-        TempFault.Update(Cpu.TempFault ? (ulong)1 : 0);
-        WaterFault.Update(Cpu.WaterFault ? (ulong)1 : 0);
-        CharOverflowLight.Update(Cpu.FpCharOverflow ? (ulong)1 : 0);
+        MatrixDriveFaultLight.Update(Cpu.MatrixDriveFault ? (int)1 : -1);
+        MtFaultLight.Update(Cpu.TapeFault ? (int)1 : -1);
+        IOFaultLight.Update(Cpu.IOFault ? 1 : -1);
+        VoltageFaultLight.Update(Cpu.VoltageFault ? (int)1 : -1);
+        PrintFault.Update(Cpu.PrintFault ? (int)1 : -1);
+        TempFault.Update(Cpu.TempFault ? (int)1 : -1);
+        WaterFault.Update(Cpu.WaterFault ? (int)1 : -1);
+        CharOverflowLight.Update(Cpu.FpCharOverflow ? (int)1 : -1);
 
         UpdateIndicator(OperatingRateIndicators[5], Cpu.ExecuteMode == ExecuteMode.HighSpeed);
         UpdateIndicator(OperatingRateIndicators[4], Cpu.ExecuteMode == ExecuteMode.AutomaticStepOperation);
@@ -671,38 +501,38 @@ public class Console
         UpdateIndicator(OperatingRateIndicators[1], Cpu.ExecuteMode == ExecuteMode.Distributor);
         UpdateIndicator(OperatingRateIndicators[0], Cpu.ExecuteMode == ExecuteMode.Clock);
 
-        MainPulseTranslatorIndicators[0].Update(Cpu.MainPulseDistributor == 0 ? (ulong)1 : 0);
-        MainPulseTranslatorIndicators[1].Update(Cpu.MainPulseDistributor == 1 ? (ulong)1 : 0);
-        MainPulseTranslatorIndicators[2].Update(Cpu.MainPulseDistributor == 2 ? (ulong)1 : 0);
-        MainPulseTranslatorIndicators[3].Update(Cpu.MainPulseDistributor == 3 ? (ulong)1 : 0);
-        MainPulseTranslatorIndicators[4].Update(Cpu.MainPulseDistributor == 4 ? (ulong)1 : 0);
-        MainPulseTranslatorIndicators[5].Update(Cpu.MainPulseDistributor == 5 ? (ulong)1 : 0);
-        MainPulseTranslatorIndicators[6].Update(Cpu.MainPulseDistributor == 6 ? (ulong)1 : 0);
-        MainPulseTranslatorIndicators[7].Update(Cpu.MainPulseDistributor == 7 ? (ulong)1 : 0);
+        MainPulseTranslatorIndicators[0].Update(Cpu.MainPulseDistributor == 0 ? (int)1 : -1);
+        MainPulseTranslatorIndicators[1].Update(Cpu.MainPulseDistributor == 1 ? (int)1 : -1);
+        MainPulseTranslatorIndicators[2].Update(Cpu.MainPulseDistributor == 2 ? (int)1 : -1);
+        MainPulseTranslatorIndicators[3].Update(Cpu.MainPulseDistributor == 3 ? (int)1 : -1);
+        MainPulseTranslatorIndicators[4].Update(Cpu.MainPulseDistributor == 4 ? (int)1 : -1);
+        MainPulseTranslatorIndicators[5].Update(Cpu.MainPulseDistributor == 5 ? (int)1 : -1);
+        MainPulseTranslatorIndicators[6].Update(Cpu.MainPulseDistributor == 6 ? (int)1 : -1);
+        MainPulseTranslatorIndicators[7].Update(Cpu.MainPulseDistributor == 7 ? (int)1 : -1);
 
-        StopIndicators[0].Update(Cpu.IsProgramStopped ? (ulong)1 : 0);
-        StopIndicators[1].Update(Cpu.Stops[0] ? (ulong)1 : 0);
-        StopIndicators[2].Update(Cpu.Stops[1] ? (ulong)1 : 0);
-        StopIndicators[3].Update(Cpu.Stops[2] ? (ulong)1 : 0);
-        StopIndicators[4].Update(Cpu.Stops[3] ? (ulong)1 : 0);
+        StopIndicators[0].Update(Cpu.IsProgramStopped ? (int)1 : -1);
+        StopIndicators[1].Update(Cpu.Stops[0] ? (int)1 : -1);
+        StopIndicators[2].Update(Cpu.Stops[1] ? (int)1 : -1);
+        StopIndicators[3].Update(Cpu.Stops[2] ? (int)1 : -1);
+        StopIndicators[4].Update(Cpu.Stops[3] ? (int)1 : -1);
 
-        SelectiveStopSelectedIndicators[0].Update(Cpu.SelectiveStopSelected[2] ? (ulong)1 : 0);
-        SelectiveStopSelectedIndicators[1].Update(Cpu.SelectiveStopSelected[1] ? (ulong)1 : 0);
-        SelectiveStopSelectedIndicators[2].Update(Cpu.SelectiveStopSelected[0] ? (ulong)1 : 0);
+        SelectiveStopSelectedIndicators[0].Update(Cpu.SelectiveStopSelected[2] ? (int)1 : -1);
+        SelectiveStopSelectedIndicators[1].Update(Cpu.SelectiveStopSelected[1] ? (int)1 : -1);
+        SelectiveStopSelectedIndicators[2].Update(Cpu.SelectiveStopSelected[0] ? (int)1 : -1);
 
-        SelectiveJumpIndicators[0].Update(Cpu.SelectiveJumps[2] ? (ulong)1 : 0);
-        SelectiveJumpIndicators[1].Update(Cpu.SelectiveJumps[1] ? (ulong)1 : 0);
-        SelectiveJumpIndicators[2].Update(Cpu.SelectiveJumps[0] ? (ulong)1 : 0);
+        SelectiveJumpIndicators[0].Update(Cpu.SelectiveJumps[2] ? (int)1 : -1);
+        SelectiveJumpIndicators[1].Update(Cpu.SelectiveJumps[1] ? (int)1 : -1);
+        SelectiveJumpIndicators[2].Update(Cpu.SelectiveJumps[0] ? (int)1 : -1);
 
-        McsMainPulseDistributorTranslators[0][0].Update(Cpu.McsPulseDistributor[0] == 1 ? (ulong)1 : 0);
-        McsMainPulseDistributorTranslators[0][1].Update(Cpu.McsPulseDistributor[0] == 2 ? (ulong)1 : 0);
-        McsMainPulseDistributorTranslators[0][2].Update(Cpu.McsPulseDistributor[0] == 3 ? (ulong)1 : 0);
-        McsMainPulseDistributorTranslators[0][3].Update(Cpu.McsPulseDistributor[0] == 4 ? (ulong)1 : 0);
+        McsMainPulseDistributorTranslators[0][0].Update(Cpu.McsPulseDistributor[0] == 1 ? (int)1 : -1);
+        McsMainPulseDistributorTranslators[0][1].Update(Cpu.McsPulseDistributor[0] == 2 ? (int)1 : -1);
+        McsMainPulseDistributorTranslators[0][2].Update(Cpu.McsPulseDistributor[0] == 3 ? (int)1 : -1);
+        McsMainPulseDistributorTranslators[0][3].Update(Cpu.McsPulseDistributor[0] == 4 ? (int)1 : -1);
 
-        McsMainPulseDistributorTranslators[1][0].Update(Cpu.McsPulseDistributor[1] == 1 ? (ulong)1 : 0);
-        McsMainPulseDistributorTranslators[1][1].Update(Cpu.McsPulseDistributor[1] == 2 ? (ulong)1 : 0);
-        McsMainPulseDistributorTranslators[1][2].Update(Cpu.McsPulseDistributor[1] == 3 ? (ulong)1 : 0);
-        McsMainPulseDistributorTranslators[1][3].Update(Cpu.McsPulseDistributor[1] == 4 ? (ulong)1 : 0);
+        McsMainPulseDistributorTranslators[1][0].Update(Cpu.McsPulseDistributor[1] == 1 ? (int)1 : -1);
+        McsMainPulseDistributorTranslators[1][1].Update(Cpu.McsPulseDistributor[1] == 2 ? (int)1 : -1);
+        McsMainPulseDistributorTranslators[1][2].Update(Cpu.McsPulseDistributor[1] == 3 ? (int)1 : -1);
+        McsMainPulseDistributorTranslators[1][3].Update(Cpu.McsPulseDistributor[1] == 4 ? (int)1 : -1);
     }
 
     public void ClearPAK()

@@ -94,7 +94,7 @@ while (running)
         // Check to see if there are any events and continue to do so until the queue is empty.
         while (SDL.SDL_PollEvent(out SDL.SDL_Event e) == 1)
         {
-            // find the window that the event is targeting, and let that window handle it's event.
+            // find the window the event is targeting, and let that window handle it.
             foreach (var window in windows)
             {
                 if (window.WindowId == centerConsoleWindow.WindowId && e.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_CLOSE)
@@ -111,8 +111,9 @@ while (running)
             }
         }
 
-        installation.Cpu.Cycle((uint)millisecondsSinceLastFrame * 1000 / Cpu.ClockCycleMicroseconds);
-
+        var cyclesInFrame = (uint)(millisecondsSinceLastFrame * 1000 / Cpu.ClockCycleMicroseconds);
+        installation.Cpu.Cycle(cyclesInFrame);
+        
         // update the UI for each window.
         foreach (var window in windows)
         {

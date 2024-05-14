@@ -7,11 +7,13 @@ public class IndicatorRenderer
 {
     private readonly nint Renderer;
     private readonly List<LightOnOffTexture> LightOffTextures;
+    private readonly Emulator.Devices.Computer.Console _console;
 
-    public IndicatorRenderer(nint renderer, List<LightOnOffTexture> lightOnOffTextures)
+    public IndicatorRenderer(nint renderer, List<LightOnOffTexture> lightOnOffTextures, Emulator.Devices.Computer.Console console)
     {
         Renderer = renderer;
         LightOffTextures = lightOnOffTextures;
+        _console = console;
     }
 
     // the area of the image which we are pulling the indicator texture out of.
@@ -35,8 +37,6 @@ public class IndicatorRenderer
         {
             yInternal = yInternal + IndicatorWidthAndMargin;
         }
-
-        var maximumPossibleIntensity = 6800;
 
         for (int i = 0; i < indicators.Length; i++)
         {
@@ -64,16 +64,13 @@ public class IndicatorRenderer
             };
 
             // render the top indicator first
-            var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
-            if (totalCyclesIndicatorOn > maximumPossibleIntensity)
-            {
-                totalCyclesIndicatorOn = maximumPossibleIntensity;
-            }
-            byte onIndictorAlpha = (byte)(totalCyclesIndicatorOn / 26.66);
+
+
+            var engerisedRatio = GetIndicatorEnergisedRatio(indicator, _console.TotalCyclesLast6Frames);
             var onOffTextures = LightOffTextures.First(x => x.LightType == indicator.Type);
 
             SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
-            SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, onIndictorAlpha);
+            SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(engerisedRatio * 255));
 
             //     Debug.WriteLine("Alpha: " + (byte)(totalCyclesIndicatorOn / 266.66));
             SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);
@@ -85,7 +82,7 @@ public class IndicatorRenderer
 
                 SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
 
-                SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)((maximumPossibleIntensity - totalCyclesIndicatorOn) / 26.66));
+                SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(255 - engerisedRatio));
                 SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);
             }
         }
@@ -105,16 +102,25 @@ public class IndicatorRenderer
 
         var onOffTextures = LightOffTextures.First(x => x.LightType == indicator.Type);
 
-        var totalCyclesIndicatorOn = indicator.SumIntensityRecordedFrames();
-        var maximumPossibleIntensity = 6800;
 
-        if (totalCyclesIndicatorOn > maximumPossibleIntensity)
+        var engerisedRatio = GetIndicatorEnergisedRatio(indicator, _console.TotalCyclesLast6Frames);
+        SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
+        SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(engerisedRatio * 255));
+        SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);
+    }
+
+    internal static double GetIndicatorEnergisedRatio(Indicator indicator, int totalCyclesLast6Frames)
+    {
+        // the brightness of an indicator is determined by counting how many machine cycles the indicator was energised for in the last 6 frames.
+        // 0 brightness indicates the indicator was energised 50% of the time -TotalNumberOfCycles means the indicator was never engerised and TotalNumberOfCycles means the indicator was energised the whole time.
+        var totalCyclesAdjusted = totalCyclesLast6Frames * 2;
+        int illuminatedFrames = 0;
+        foreach (var cyclesLitInFrame in indicator.CyclesLitInFrame)
         {
-            totalCyclesIndicatorOn = maximumPossibleIntensity;
+            illuminatedFrames += cyclesLitInFrame;
         }
 
-        SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
-        SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(totalCyclesIndicatorOn / 26.66));
-        SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);
+        var adjusted = illuminatedFrames + totalCyclesLast6Frames;
+        return (double)adjusted / totalCyclesAdjusted;
     }
 }

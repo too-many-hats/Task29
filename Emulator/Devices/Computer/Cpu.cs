@@ -401,7 +401,7 @@ public class Cpu
                     McsHoldWaitInitNextCycle[coreBank] = true;
                     McsWaitInit[coreBank] = true; //one cycle lockout for core memory references.
                     X = Memory[McsAddressRegister[coreBank] + (coreBank * 4096)];
-                    RunningTimeCycles += 3; // reads take four cycles, one is already accounted for at the start of ExecuteSingleCycle which invoked this comand.
+                    RunningTimeCycles += 3; // reads take four cycles, one is already accounted for at the start of ExecuteSingleCycle which invoked this command.
                     return;
                 }
 
@@ -462,6 +462,8 @@ public class Cpu
     {
         Debug.WriteLine("Target cycles: " + targetCycles);
 
+        Console.StartBrightnessTrackInFrame((int)targetCycles / 5);
+
         for (var i = 0; i < targetCycles; i++)
         {
             if (CanExecuteNextCycle == false) // a fault or software stop means the CPU cannot execute this cycle, no matter what.
@@ -501,11 +503,9 @@ public class Cpu
             {
                 Console.UpdateIndicatorStatusEndOfCycle();
             }
-
+            
             // update the IO devices.
         }
-
-        Console.EndFrame();
 
         return 0;
     }
