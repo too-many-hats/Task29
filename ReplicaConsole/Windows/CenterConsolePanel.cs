@@ -1,7 +1,6 @@
 ﻿using Emulator;
 using Emulator.Devices.Computer;
 using SDL2;
-using System.Diagnostics;
 
 namespace ReplicaConsole.Windows;
 
@@ -28,15 +27,15 @@ public class CenterConsolePanel : Window
         CreateDesktopWindow("Task29 Main Console", logicalWidth, logicalHeight);
 
         // Creates a new SDL hardware renderer using the default graphics device with VSYNC enabled.
-        Renderer = CreateRenderer(logicalWidth, logicalHeight);
+        Renderer = SdlHelpers.CreateRenderer(logicalWidth, logicalHeight, WindowHandle);
 
         if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == 0)
         {
             // Console.WriteLine($"There was an issue initilizing SDL2_Image {SDL_image.IMG_GetError()}");
         }
 
-        MctLightOnTexture = SDL_image.IMG_LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoron.png");
-        MctLightOffTexture = SDL_image.IMG_LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoroff.png");
+        MctLightOnTexture = SdlHelpers.LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoron.png");
+        MctLightOffTexture = SdlHelpers.LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoroff.png");
         IndicatorRenderer = new IndicatorRenderer(Renderer, LightTexturesLoader.Load(Renderer));
 
         ButtonTextures = new ButtonTextures().Load(Renderer);

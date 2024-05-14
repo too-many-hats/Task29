@@ -1024,11 +1024,8 @@ public class Cpu
     }
 
     public void SelectSelectiveStopPressed(uint stopNumber)
-    {
-        if (IsOperating && IsNormalCondition)
-        {
-            return;
-        }
+    { 
+        // selective stops can be changed while operating, reference manual paragraph 3-22.
 
         if (stopNumber > 3 || stopNumber < 1)
         {
@@ -1040,10 +1037,7 @@ public class Cpu
 
     public void ReleaseSelectiveStopPressed(uint stopNumber)
     {
-        if (IsOperating && IsNormalCondition)
-        {
-            return;
-        }
+        // selective stops can be changed while operating, reference manual paragraph 3-22.
 
         if (stopNumber > 3 || stopNumber < 1)
         {

@@ -23,7 +23,7 @@ public class LeftConsolePanel : Window
         CreateDesktopWindow("Task29 Left Console", logicalWidth, logicalHeight);
 
         // Creates a new SDL hardware renderer using the default graphics device with VSYNC enabled.
-        Renderer = CreateRenderer(logicalWidth, logicalHeight);
+        Renderer = SdlHelpers.CreateRenderer(logicalWidth, logicalHeight, WindowHandle);
 
         if (SDL_image.IMG_Init(SDL_image.IMG_InitFlags.IMG_INIT_PNG) == 0)
         {

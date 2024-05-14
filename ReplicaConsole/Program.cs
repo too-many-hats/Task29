@@ -49,7 +49,7 @@ if (configuration.HideConsoleSideWings == false)
     var leftWindowPosition = leftConsoleWindow.GetPositionSize();
 
     // TODO: this code does not handle display scaling at all, It also only works if you have a 4k monitor to the left of your primary display. It'll do for testing.
-    centerConsoleWindow.SetPosition(-2880, centerWindowPosition.Y);
+    centerConsoleWindow.SetPosition(1080, centerWindowPosition.Y);
 
     var centerWindowPositionUpdated = centerConsoleWindow.GetPositionSize(); // get the updated position
 

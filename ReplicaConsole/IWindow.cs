@@ -1,4 +1,5 @@
 ﻿using SDL2;
+using static ReplicaConsole.Windows.SdlHelpers;
 
 namespace ReplicaConsole;
 

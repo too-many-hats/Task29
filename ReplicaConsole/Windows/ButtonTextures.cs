@@ -27,10 +27,10 @@ public class ButtonTextures
     public ButtonTextures Load(nint renderer)
     {
         var texturesDirectory = Path.Combine(AppContext.BaseDirectory, "Images");
-        ClearButton = SDL_image.IMG_LoadTexture(renderer, Path.Combine(texturesDirectory, "clearbutton.png"));
-        SetBlackButton = SDL_image.IMG_LoadTexture(renderer, Path.Combine(texturesDirectory, "indicatoron.png"));
-        SetBlueButton = SDL_image.IMG_LoadTexture(renderer, Path.Combine(texturesDirectory, "indicatoron.png"));
-        LargeButtonTexture = SDL_image.IMG_LoadTexture(renderer, Path.Combine(texturesDirectory, "clearbutton.png"));
+        ClearButton = SdlHelpers.LoadTexture(renderer, Path.Combine(texturesDirectory, "clearbutton.png"));
+        SetBlackButton = SdlHelpers.LoadTexture(renderer, Path.Combine(texturesDirectory, "indicatoron.png"));
+        SetBlueButton = SdlHelpers.LoadTexture(renderer, Path.Combine(texturesDirectory, "indicatoron.png"));
+        LargeButtonTexture = SdlHelpers.LoadTexture(renderer, Path.Combine(texturesDirectory, "clearbutton.png"));
 
         return this;
     }
