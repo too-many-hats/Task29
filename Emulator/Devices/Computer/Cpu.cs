@@ -7,6 +7,10 @@ public class Cpu
 {
     public static uint ClockCycleMicroseconds => 2; // the machine operates at 500,000 clock cycles per second. So 2 microseconds per clock cycle. All timing in the machine is a multiple of this value.
 
+    private uint _pak;
+
+    public Indicators Indicators { get; private set; }
+
     public ulong[] Memory { get; set; } = new ulong[8192];
     public Drum Drum { get; set; }
     public Console Console { get; set; }
@@ -20,7 +24,7 @@ public class Cpu
     public uint VAK { get; set; } // V Address Kounter 
     public uint UAK { get; set; } // U Address Kounter
     public uint SAR { get; set; } // Storage Address Register
-    public uint PAK { get; set; } // Program Address Kounter
+    public uint PAK { get => _pak; set { _pak = value; Indicators.Update(Indicators.PAK, value); } } // Program Address Kounter
     public bool Halt { get; set; }
     public bool Interrupt { get; set; }
 
@@ -286,7 +290,14 @@ public class Cpu
 
     // magnetic drum section is managed by the magnetic drum device.
 
-    public ulong RunningTimeCycles { get; set; } // as a ulong this is sufficient capacity for 584,942 years running time, at the risk of a Y2K event, I think this is enough for our project.
+    public ulong RunningTimeCycles { get; set; }
+
+    /// <summary>
+    /// Tracks real-world time elapsed since the emulator began to cycle, used
+    /// for timing IO devices, indicators, and anything else which has events outside the CPU clock. 
+    /// </summary>
+    public ulong WorldClock { get; set; } // as a ulong this is sufficient capacity for 584,942 years running time, at the risk of a Y2K event, I think this is enough for our project.
+
     public ulong Delay { get; set; } // Number of cycles to wait for machine generated waits.
     public int MainPulseDistributor { get; set; }
     private bool CanExecuteNextCycle =>
@@ -311,6 +322,7 @@ public class Cpu
     {
         Console = new Console(this);
         Drum = new Drum(configuration);
+        Indicators = new Indicators(this);
 
         // command implementations.
         ClearX = new Command((command) =>
@@ -395,15 +407,15 @@ public class Cpu
 
                 SccInitRead = false; // timing manual, page 61. By this point the read has been initialised and we are executing. PDC continues to stop the CPU clock until the read is completed. This must occur after the WaitInit lockout check above.
 
-                if (executeAllInAutomatic) // skip straight to the end state when executing in automatic.
-                {
-                    PdcWaitInternal = false;
-                    McsHoldWaitInitNextCycle[coreBank] = true;
-                    McsWaitInit[coreBank] = true; //one cycle lockout for core memory references.
-                    X = Memory[McsAddressRegister[coreBank] + (coreBank * 4096)];
-                    RunningTimeCycles += 3; // reads take four cycles, one is already accounted for at the start of ExecuteSingleCycle which invoked this command.
-                    return;
-                }
+                //if (executeAllInAutomatic) // skip straight to the end state when executing in automatic.
+                //{
+                //    PdcWaitInternal = false;
+                //    McsHoldWaitInitNextCycle[coreBank] = true;
+                //    McsWaitInit[coreBank] = true; //one cycle lockout for core memory references.
+                //    X = Memory[McsAddressRegister[coreBank] + (coreBank * 4096)];
+                //    RunningTimeCycles += 3; // reads take four cycles, one is already accounted for at the start of ExecuteSingleCycle which invoked this command.
+                //    return;
+                //}
 
                 if (McsWaitInit[coreBank] == false) // MCP-0
                 {
@@ -462,7 +474,7 @@ public class Cpu
     {
         Debug.WriteLine("Target cycles: " + targetCycles);
 
-        Console.StartBrightnessTrackInFrame((int)targetCycles / 5);
+        Indicators.StartBrightnessTrackInFrame((int)targetCycles);
 
         for (var i = 0; i < targetCycles; i++)
         {
@@ -498,14 +510,12 @@ public class Cpu
                 }
             }
 
-            // at the end of each cycle record which flip-flop circuits are HIGH. Essentially each flip-flop is connected to an indicator on the console. By counting for how many cycles a flip-flop is high, we can calculate the brightness of each indicator blub in each frame.
-            if ((i % 5) == 0)
-            {
-                Console.UpdateIndicatorStatusEndOfCycle();
-            }
+            WorldClock++;
             
             // update the IO devices.
         }
+
+        Indicators.UpdateStatusEndOfCycle();
 
         return 0;
     }

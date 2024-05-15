@@ -7,13 +7,13 @@ public class IndicatorRenderer
 {
     private readonly nint Renderer;
     private readonly List<LightOnOffTexture> LightOffTextures;
-    private readonly Emulator.Devices.Computer.Console _console;
+    private readonly Cpu _cpu;
 
-    public IndicatorRenderer(nint renderer, List<LightOnOffTexture> lightOnOffTextures, Emulator.Devices.Computer.Console console)
+    public IndicatorRenderer(nint renderer, List<LightOnOffTexture> lightOnOffTextures, Cpu cpu)
     {
         Renderer = renderer;
         LightOffTextures = lightOnOffTextures;
-        _console = console;
+        _cpu = cpu;
     }
 
     // the area of the image which we are pulling the indicator texture out of.
@@ -66,7 +66,7 @@ public class IndicatorRenderer
             // render the top indicator first
 
 
-            var engerisedRatio = GetIndicatorEnergisedRatio(indicator, _console.TotalCyclesLast6Frames);
+            var engerisedRatio = GetIndicatorEnergisedRatio(indicator, _cpu.Indicators.TotalCyclesLast6Frames);
             var onOffTextures = LightOffTextures.First(x => x.LightType == indicator.Type);
 
             SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
@@ -82,7 +82,7 @@ public class IndicatorRenderer
 
                 SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
 
-                SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(255 - engerisedRatio));
+                SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(255 - (engerisedRatio * 255)));
                 SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);
             }
         }
@@ -103,7 +103,7 @@ public class IndicatorRenderer
         var onOffTextures = LightOffTextures.First(x => x.LightType == indicator.Type);
 
 
-        var engerisedRatio = GetIndicatorEnergisedRatio(indicator, _console.TotalCyclesLast6Frames);
+        var engerisedRatio = GetIndicatorEnergisedRatio(indicator, _cpu.Indicators.TotalCyclesLast6Frames);
         SDL.SDL_RenderCopy(Renderer, onOffTextures.OffTexture, ref indicatorSource, ref destRect);
         SDL.SDL_SetTextureAlphaMod(onOffTextures.OnTexture, (byte)(engerisedRatio * 255));
         SDL.SDL_RenderCopy(Renderer, onOffTextures.OnTexture, ref indicatorSource, ref destRect);

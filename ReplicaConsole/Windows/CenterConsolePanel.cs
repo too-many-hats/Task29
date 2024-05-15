@@ -7,6 +7,7 @@ namespace ReplicaConsole.Windows;
 public class CenterConsolePanel : Window
 {
     public Emulator.Devices.Computer.Console Console { get; set; }
+    public Cpu Cpu { get; set; }
     private nint Renderer;
     private nint MctLightOnTexture;
     private nint MctLightOffTexture;
@@ -17,6 +18,7 @@ public class CenterConsolePanel : Window
     public CenterConsolePanel(Cpu cpu, Configuration configuration):base(configuration)
     {
         Console = cpu.Console;
+        Cpu = cpu;
     }
 
     public CenterConsolePanel Init()
@@ -36,7 +38,7 @@ public class CenterConsolePanel : Window
 
         MctLightOnTexture = SdlHelpers.LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoron.png");
         MctLightOffTexture = SdlHelpers.LoadTexture(Renderer, AppContext.BaseDirectory + @"\Images\indicatoroff.png");
-        IndicatorRenderer = new IndicatorRenderer(Renderer, LightTexturesLoader.Load(Renderer), Console);
+        IndicatorRenderer = new IndicatorRenderer(Renderer, LightTexturesLoader.Load(Renderer), Cpu);
 
         ButtonTextures = new ButtonTextures().Load(Renderer);
         LargeButtonRenderer = new LargeButtonRenderer(ButtonTextures);
@@ -67,7 +69,7 @@ public class CenterConsolePanel : Window
 
         LargeButtonRenderer.RenderAll(Renderer);
 
-        IndicatorRenderer.RenderIndicators(Console.AIndicators, 0, 150, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.A, 0, 150, true, 3, true);
 
         //for (int i = 0; i < Console.AIndicators.Length; i++)
         //{
@@ -82,140 +84,140 @@ public class CenterConsolePanel : Window
         //    SDL.SDL_RenderCopy(Renderer, ButtonTextures.ClearButton, ref ButtonTextures.SourceRect, ref destRect);
         //}
 
-        IndicatorRenderer.RenderIndicators(Console.QIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 0, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.XIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 300, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.MCRIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 450, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.UAKIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 42, 450, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.VAKIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 57, 450, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.PAKIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 36, 600, true, 3, true);
-        IndicatorRenderer.RenderIndicators(Console.SARIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 57, 600, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.Q, IndicatorRenderer.IndicatorWidthAndMargin * 36, 0, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.X, IndicatorRenderer.IndicatorWidthAndMargin * 36, 300, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.MCR, IndicatorRenderer.IndicatorWidthAndMargin * 36, 450, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.UAK, IndicatorRenderer.IndicatorWidthAndMargin * 42, 450, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.VAK, IndicatorRenderer.IndicatorWidthAndMargin * 57, 450, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.PAK, IndicatorRenderer.IndicatorWidthAndMargin * 36, 600, true, 3, true);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.SAR, IndicatorRenderer.IndicatorWidthAndMargin * 57, 600, true, 3, true);
         IndicatorRenderer.RenderIndicators( 
             [
-                Console.AscDelAdd, 
-                Console.AscSpSubt, 
-                Console.AscOverflow, 
-                Console.AscAL, 
-                Console.AscAR, 
-                Console.AscB, 
-                Console.AscC, 
-                Console.AscD, 
-                Console.AscE
+                Cpu.Indicators.AscDelAdd,
+                Cpu.Indicators.AscSpSubt,
+                Cpu.Indicators.AscOverflow,
+                Cpu.Indicators.AscAL,
+                Cpu.Indicators.AscAR,
+                Cpu.Indicators.AscB,
+                Cpu.Indicators.AscC,
+                Cpu.Indicators.AscD,
+                Cpu.Indicators.AscE
             ], 0, 0, true, 3);
         IndicatorRenderer.RenderIndicators( 
             [
-                Console.InitArithSequenceLog, 
-                Console.InitArithSequenceA_1, 
-                Console.InitArithSequenceSP, 
-                Console.InitArithSequenceA1, 
-                Console.InitArithSequenceQL, 
-                Console.InitArithSequenceDiv, 
-                Console.InitArithSequenceMult, 
-                Console.InitArithSequenceSEQ, 
-                Console.InitArithSequenceStep, 
-                Console.InitArithSequenceCase, 
-                Console.InitArithSequenceCKI, 
-                Console.InitArithSequenceCKII, 
-                Console.InitArithSequenceRestX, 
-                Console.InitArithSequenceMultiStep, 
-                Console.InitArithSequenceExtSeq
+                Cpu.Indicators.InitArithSequenceLog,
+                Cpu.Indicators.InitArithSequenceA_1,
+                Cpu.Indicators.InitArithSequenceSP,
+                Cpu.Indicators.InitArithSequenceA1,
+                Cpu.Indicators.InitArithSequenceQL,
+                Cpu.Indicators.InitArithSequenceDiv,
+                Cpu.Indicators.InitArithSequenceMult,
+                Cpu.Indicators.InitArithSequenceSEQ,
+                Cpu.Indicators.InitArithSequenceStep,
+                Cpu.Indicators.InitArithSequenceCase,
+                Cpu.Indicators.InitArithSequenceCKI,
+                Cpu.Indicators.InitArithSequenceCKII,
+                Cpu.Indicators.InitArithSequenceRestX,
+                Cpu.Indicators.InitArithSequenceMultiStep,
+                Cpu.Indicators.InitArithSequenceExtSeq
             ], IndicatorRenderer.IndicatorWidthAndMargin * 13, 0, true, 3);
         IndicatorRenderer.RenderIndicators( 
             [
-                Console.StopTape, 
-                Console.SccFault, 
-                Console.MctFault, 
-                Console.DivFault, 
-                Console.AZero, 
-                Console.TapeFeed,
-                Console.Rsc75,
-                Console.RscHoldRpt, 
-                Console.RscJumpTerm,
-                Console.RscInitRpt, 
-                Console.RscInitTest,
-                Console.RscEndRpt,
-                Console.RscDelayTest,
-                Console.RscAdvAdd,
-                Console.SccInitRead,
-                Console.SccInitWrite,
-                Console.SccInitIw0_14,
-                Console.SccInitIw15_29,
-                Console.SccReadQ,
-                Console.SccWriteAorQ, 
-                Console.SccClearA
+                Cpu.Indicators.StopTape,
+                Cpu.Indicators.SccFault,
+                Cpu.Indicators.MctFault,
+                Cpu.Indicators.DivFault,
+                Cpu.Indicators.AZero,
+                Cpu.Indicators.TapeFeed,
+                Cpu.Indicators.Rsc75,
+                Cpu.Indicators.RscHoldRpt,
+                Cpu.Indicators.RscJumpTerm,
+                Cpu.Indicators.RscInitRpt,
+                Cpu.Indicators.RscInitTest,
+                Cpu.Indicators.RscEndRpt,
+                Cpu.Indicators.RscDelayTest,
+                Cpu.Indicators.RscAdvAdd,
+                Cpu.Indicators.SccInitRead,
+                Cpu.Indicators.SccInitWrite,
+                Cpu.Indicators.SccInitIw0_14,
+                Cpu.Indicators.SccInitIw15_29,
+                Cpu.Indicators.SccReadQ,
+                Cpu.Indicators.SccWriteAorQ,
+                Cpu.Indicators.SccClearA
             ], 0, 300, true, 3);
         IndicatorRenderer.RenderIndicators( 
             [
-                Console.MasterClockCSSI,
-                Console.MasterClockCSSII,
-                Console.MasterClockCRCI,
-                Console.MasterClockCRCII
+                Cpu.Indicators.MasterClockCSSI,
+                Cpu.Indicators.MasterClockCSSII,
+                Cpu.Indicators.MasterClockCRCI,
+                Cpu.Indicators.MasterClockCRCII
             ], 0, 600, true, 3);
         IndicatorRenderer.RenderIndicators( 
             [
-                Console.PdcHpc,
-                Console.PdcTwc,
-                Console.PdcWaitInternal,
-                Console.PdcWaitExternal,
-                Console.PdcWaitRsc,
-                Console.PdcStop
+                Cpu.Indicators.PdcHpc,
+                Cpu.Indicators.PdcTwc,
+                Cpu.Indicators.PdcWaitInternal,
+                Cpu.Indicators.PdcWaitExternal,
+                Cpu.Indicators.PdcWaitRsc,
+                Cpu.Indicators.PdcStop
             ], IndicatorRenderer.IndicatorWidthAndMargin * 8, 600, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.MpdIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 18, 600, true, 3);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.Mpd, IndicatorRenderer.IndicatorWidthAndMargin * 18, 600, true, 3);
         IndicatorRenderer.RenderIndicators( 
             [
-                Console.SctA,
-                Console.SctQ,
-                Console.SctMD,
-                Console.SctMcs0,
-                Console.SctMcs1
+                Cpu.Indicators.SctA,
+                Cpu.Indicators.SctQ,
+                Cpu.Indicators.SctMD,
+                Cpu.Indicators.SctMcs0,
+                Cpu.Indicators.SctMcs1
             ], IndicatorRenderer.IndicatorWidthAndMargin * 16, 450, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.SkTranslatorIndicators, 0, 450, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.JTranslatorIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 8, 450, true, 3);
-        IndicatorRenderer.RenderIndicators(Console.MainPulseTranslatorIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 24, 600, true, 3);
-        IndicatorRenderer.RenderIndicators([Console.Halt, Console.Interrupt], IndicatorRenderer.IndicatorWidthAndMargin * 53, 600, true, 3);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.SkTranslator, 0, 450, true, 3);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.JTranslator, IndicatorRenderer.IndicatorWidthAndMargin * 8, 450, true, 3);
+        IndicatorRenderer.RenderIndicators(Cpu.Indicators.MainPulseTranslator, IndicatorRenderer.IndicatorWidthAndMargin * 24, 600, true, 3);
+        IndicatorRenderer.RenderIndicators([Cpu.Indicators.Halt, Cpu.Indicators.Interrupt], IndicatorRenderer.IndicatorWidthAndMargin * 53, 600, true, 3);
 
-        RenderMctIndicators(Console.MainControlTranslatorIndicators, IndicatorRenderer.IndicatorWidthAndMargin * 24, 280);
+        RenderMctIndicators(Cpu.Indicators.MainControlTranslator, IndicatorRenderer.IndicatorWidthAndMargin * 24, 280);
 
-        for (int i = 0; i < Console.OperatingRateIndicators.Length; i++)
+        for (int i = 0; i < Cpu.Indicators.OperatingRate.Length; i++)
         {
-            IndicatorRenderer.RenderLight(Console.OperatingRateIndicators[i], 150 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLight(Cpu.Indicators.OperatingRate[i], 150 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
-        for (int i = 0; i < Console.SelectiveJumpIndicators.Length; i++)
+        for (int i = 0; i < Cpu.Indicators.SelectiveJump.Length; i++)
         {
-            IndicatorRenderer.RenderLight(Console.SelectiveJumpIndicators[i], 830 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLight(Cpu.Indicators.SelectiveJump[i], 830 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
-        for (int i = 0; i < Console.StopIndicators.Length; i++)
+        for (int i = 0; i < Cpu.Indicators.Stop.Length; i++)
         {
-            IndicatorRenderer.RenderLight(Console.StopIndicators[i], 1500 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
+            IndicatorRenderer.RenderLight(Cpu.Indicators.Stop[i], 1500 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 780);
         }
 
-        for (int i = 0; i < Console.SelectiveStopSelectedIndicators.Length; i++)
+        for (int i = 0; i < Cpu.Indicators.SelectiveStopSelected.Length; i++)
         {
-            IndicatorRenderer.RenderLight(Console.SelectiveStopSelectedIndicators[i], 1592 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 950);
+            IndicatorRenderer.RenderLight(Cpu.Indicators.SelectiveStopSelected[i], 1592 + (i * (IndicatorRenderer.LargeIndicatorDiameter + 28)), 950);
         }
 
-        IndicatorRenderer.RenderLight(Console.IndicateEnableLight, 2100, 780);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.IndicateEnableLight, 2100, 780);
 
-        IndicatorRenderer.RenderLight(Console.AbnormalConditionLight, 2350, 880);
-        IndicatorRenderer.RenderLight(Console.NormalLight, 2300, 980);
-        IndicatorRenderer.RenderLight(Console.TestLight, 2300 + 1 * (65 + 28), 980);
-        IndicatorRenderer.RenderLight(Console.OperatingLight, 2300 + 2 * (65 + 28), 980);
-        IndicatorRenderer.RenderLight(Console.ForceStopLight, 2300 + 3 * (65 + 28), 980);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.AbnormalConditionLight, 2350, 880);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.NormalLight, 2300, 980);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.TestLight, 2300 + 1 * (65 + 28), 980);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.OperatingLight, 2300 + 2 * (65 + 28), 980);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.ForceStopLight, 2300 + 3 * (65 + 28), 980);
 
-        IndicatorRenderer.RenderLight(Console.MatrixDriveFaultLight, 2860 + 0 * (65 + 28), 800);
-        IndicatorRenderer.RenderLight(Console.MtFaultLight, 2860 + 1 * (65 + 28), 800);
-        IndicatorRenderer.RenderLight(Console.MctFaultLight, 2860 + 2 * (65 + 28), 800);
-        IndicatorRenderer.RenderLight(Console.IOFaultLight, 2860 + 0 * (65 + 28), 890);
-        IndicatorRenderer.RenderLight(Console.VoltageFaultLight, 2860 + 2 * (65 + 28), 890);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.MatrixDriveFaultLight, 2860 + 0 * (65 + 28), 800);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.MtFaultLight, 2860 + 1 * (65 + 28), 800);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.MctFaultLight, 2860 + 2 * (65 + 28), 800);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.IOFaultLight, 2860 + 0 * (65 + 28), 890);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.VoltageFaultLight, 2860 + 2 * (65 + 28), 890);
 
-        IndicatorRenderer.RenderLight(Console.DivFaultLight, 2860 + 0 * (65 + 28), 1000);
-        IndicatorRenderer.RenderLight(Console.SccFaultLight, 2860 + 1 * (65 + 28), 1000);
-        IndicatorRenderer.RenderLight(Console.OverflowFaultLight, 2860 + 2 * (65 + 28), 1000);
-        IndicatorRenderer.RenderLight(Console.PrintFault, 2860 + 0 * (65 + 28), 1090);
-        IndicatorRenderer.RenderLight(Console.TempFault, 2860 + 1 * (65 + 28), 1090);
-        IndicatorRenderer.RenderLight(Console.WaterFault, 2860 + 2 * (65 + 28), 1090);
-        IndicatorRenderer.RenderLight(Console.CharOverflowLight, 2860 + 2 * (65 + 28), 1180);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.DivFaultLight, 2860 + 0 * (65 + 28), 1000);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.SccFaultLight, 2860 + 1 * (65 + 28), 1000);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.OverflowFaultLight, 2860 + 2 * (65 + 28), 1000);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.PrintFault, 2860 + 0 * (65 + 28), 1090);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.TempFault, 2860 + 1 * (65 + 28), 1090);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.WaterFault, 2860 + 2 * (65 + 28), 1090);
+        IndicatorRenderer.RenderLight(Cpu.Indicators.CharOverflowLight, 2860 + 2 * (65 + 28), 1180);
 
         // Switches out the currently presented render surface with the one we just did work on.
         SDL.SDL_RenderPresent(Renderer);
@@ -255,7 +257,7 @@ public class CenterConsolePanel : Window
                 y = yInternal + 45 * (i / 8),
             };
 
-            var engerisedRatio = IndicatorRenderer.GetIndicatorEnergisedRatio(indicator, Console.TotalCyclesLast6Frames);
+            var engerisedRatio = IndicatorRenderer.GetIndicatorEnergisedRatio(indicator, Cpu.Indicators.TotalCyclesLast6Frames);
             SDL.SDL_RenderCopy(Renderer, MctLightOffTexture, ref IndicatorRenderer.indicatorSource, ref destRect);
 
             SDL.SDL_SetTextureAlphaMod(MctLightOnTexture, (byte)(engerisedRatio * 255));
