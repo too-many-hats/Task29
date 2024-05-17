@@ -407,15 +407,15 @@ public class Cpu
 
                 SccInitRead = false; // timing manual, page 61. By this point the read has been initialised and we are executing. PDC continues to stop the CPU clock until the read is completed. This must occur after the WaitInit lockout check above.
 
-                //if (executeAllInAutomatic) // skip straight to the end state when executing in automatic.
-                //{
-                //    PdcWaitInternal = false;
-                //    McsHoldWaitInitNextCycle[coreBank] = true;
-                //    McsWaitInit[coreBank] = true; //one cycle lockout for core memory references.
-                //    X = Memory[McsAddressRegister[coreBank] + (coreBank * 4096)];
-                //    RunningTimeCycles += 3; // reads take four cycles, one is already accounted for at the start of ExecuteSingleCycle which invoked this command.
-                //    return;
-                //}
+                if (executeAllInAutomatic) // skip straight to the end state when executing in automatic.
+                {
+                    PdcWaitInternal = false;
+                    McsHoldWaitInitNextCycle[coreBank] = true;
+                    McsWaitInit[coreBank] = true; //one cycle lockout for core memory references.
+                    X = Memory[McsAddressRegister[coreBank] + (coreBank * 4096)];
+                    RunningTimeCycles += 3; // reads take four cycles, one is already accounted for at the start of ExecuteSingleCycle which invoked this command.
+                    return;
+                }
 
                 if (McsWaitInit[coreBank] == false) // MCP-0
                 {

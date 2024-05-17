@@ -1,5 +1,8 @@
 ﻿using CrossAssembler;
 using Emulator;
+using Emulator.Devices.Computer;
+using FluentAssertions;
+using FluentAssertions.Equivalency;
 
 namespace EmulatorTests;
 
@@ -21,9 +24,19 @@ public static class TestUtils
             installation.Cpu.Memory[i] = result.Data[i];
         }
     }
-
+    
     public static Configuration GetDefaultConfig()
     {
         return new Configuration();
+    }
+
+    public static Func<EquivalencyAssertionOptions<Cpu>, EquivalencyAssertionOptions<Cpu>> NormalCpuConfig()
+    {
+        return (options) => options.Excluding(su => su.Indicators).Excluding(x => x.WorldClock);
+    }
+
+    public static void AssertEquivalent(Cpu cpuUnderTest, Cpu referenceCpu)
+    {
+        cpuUnderTest.Should().BeEquivalentTo(referenceCpu, NormalCpuConfig());
     }
 }

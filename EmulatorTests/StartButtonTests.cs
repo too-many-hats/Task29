@@ -1,7 +1,6 @@
 ﻿using Emulator.Devices.Computer;
 using Emulator;
 using Xunit;
-using FluentAssertions;
 
 namespace EmulatorTests;
 
@@ -25,8 +24,8 @@ public class StartButtonTests
         var referenceCpu = new Cpu(TestUtils.GetDefaultConfig());
         referenceCpu.PowerOnPressed();
         referenceCpu.Memory[0] = cpuUnderTest.Memory[0];
-        cpuUnderTest.Console.SetPAKTo(0);
-        referenceCpu.Console.SetPAKTo(0);
+        cpuUnderTest.PAK = 0;
+        referenceCpu.PAK = 0;
 
         cpuUnderTest.SetExecuteMode(executeMode);
         referenceCpu.SetExecuteMode(executeMode);
@@ -34,7 +33,7 @@ public class StartButtonTests
         cpuUnderTest.StartPressed(); // despite manual clock rate, step is not pressed
         cpuUnderTest.Cycle(1); // no progress should be made, because step is required to be pressed when an operating rate selection is made.
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
     }
 
     [Fact]
@@ -49,21 +48,21 @@ public class StartButtonTests
 
         var cpuUnderTest = installation.Cpu;
         cpuUnderTest.StartPressed();
-        cpuUnderTest.Console.SetPAKTo(0);
+        cpuUnderTest.PAK = 0;
 
         var referenceCpu = new Cpu(TestUtils.GetDefaultConfig());
         referenceCpu.PowerOnPressed();
         referenceCpu.Memory[0] = cpuUnderTest.Memory[0];
-        referenceCpu.Console.SetPAKTo(1);
+        referenceCpu.PAK = 1;
 
         cpuUnderTest.Cycle(100);
 
         referenceCpu.RunningTimeCycles = 8;
         referenceCpu.IsProgramStopped = true;
-        referenceCpu.SetMCRto(47);
+        referenceCpu.MCR = 47;
         referenceCpu.MainPulseDistributor = 0;
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
     }
 
     [Fact]
@@ -76,12 +75,12 @@ public class StartButtonTests
 
         var cpuUnderTest = installation.Cpu;
         cpuUnderTest.StartPressed();
-        cpuUnderTest.Console.SetPAKTo(0);
+        cpuUnderTest.PAK = 0;
 
         var referenceCpu = new Cpu(TestUtils.GetDefaultConfig());
         referenceCpu.PowerOnPressed();
         referenceCpu.Memory[0] = cpuUnderTest.Memory[0];
-        referenceCpu.Console.SetPAKTo(1);
+        referenceCpu.PAK = 1;
         referenceCpu.StartPressed();
 
         cpuUnderTest.Cycle(1);
@@ -90,19 +89,19 @@ public class StartButtonTests
         referenceCpu.SccInitRead = true;
         referenceCpu.PdcWaitInternal = true;
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
 
         cpuUnderTest.StartPressed(); // press start a second time.
         cpuUnderTest.Cycle(1); // execution should continue as if nothing happened.
 
         referenceCpu.RunningTimeCycles = 2;
-        referenceCpu.SetPAKto(1);
+        referenceCpu.PAK = 1;
         referenceCpu.PdcWaitInternal = true;
         referenceCpu.McsPulseDistributor[0] = 1;
         referenceCpu.McsWaitInit[0] = true;
         referenceCpu.McsReadWriteEnable[0] = true;
         referenceCpu.SccInitRead = false;
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
     }
 }

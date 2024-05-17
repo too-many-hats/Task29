@@ -26,7 +26,7 @@ public class StepButtonTests
 
         // IsOperating remains false because the CPU is not in test mode.
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class StepButtonTests
 
         // IsOperating remains false because start must be pressed first when entering test mode. See reference manual paragraph 3-11.
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class StepButtonTests
         var referenceCpu = new Cpu(TestUtils.GetDefaultConfig());
         referenceCpu.PowerOnPressed();
         referenceCpu.Memory[0] = cpuUnderTest.Memory[0];
-        cpuUnderTest.Console.SetPAKTo(0);
+        cpuUnderTest.PAK = 0;
         referenceCpu.Console.SetPAKTo(0);
 
         cpuUnderTest.SetExecuteMode(ExecuteMode.Clock);
@@ -85,7 +85,7 @@ public class StepButtonTests
 
         // IsOperating remains false because start must be pressed once when entering test mode.
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
     }
 
     [Fact]
@@ -100,8 +100,8 @@ public class StepButtonTests
         var referenceCpu = new Cpu(TestUtils.GetDefaultConfig());
         referenceCpu.PowerOnPressed();
         referenceCpu.Memory[0] = cpuUnderTest.Memory[0];
-        cpuUnderTest.Console.SetPAKTo(0);
-        referenceCpu.Console.SetPAKTo(0);
+        cpuUnderTest.PAK = 0;
+        referenceCpu.PAK = 0;
 
         cpuUnderTest.SetExecuteMode(ExecuteMode.Clock);
 
@@ -114,14 +114,14 @@ public class StepButtonTests
 
         referenceCpu.SetExecuteMode(ExecuteMode.Clock);
         referenceCpu.RunningTimeCycles = 5; // when manually stepping, the core memory read happens all at once because core memory references use their own clock which is not manually stepped. See accuracy document for details. 
-        referenceCpu.SetPAKto(1);
+        referenceCpu.PAK = 1;
         referenceCpu.MainPulseDistributor = 7;
         referenceCpu.McsWaitInit[0] = true;
         referenceCpu.X = referenceCpu.Memory[0];
 
         // start only needs to be pressed once after entering test mode, then step can be pressed as many times as desired. See example sequence in paragraph 3-55 of reference manual.
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
     }
 
     [Fact]
@@ -136,8 +136,8 @@ public class StepButtonTests
         var referenceCpu = new Cpu(TestUtils.GetDefaultConfig());
         referenceCpu.PowerOnPressed();
         referenceCpu.Memory[0] = cpuUnderTest.Memory[0];
-        cpuUnderTest.Console.SetPAKTo(0);
-        referenceCpu.Console.SetPAKTo(0);
+        cpuUnderTest.PAK = 0;
+        referenceCpu.PAK = 0;
 
         cpuUnderTest.SetExecuteMode(ExecuteMode.Clock);
 
@@ -147,11 +147,11 @@ public class StepButtonTests
 
         referenceCpu.SetExecuteMode(ExecuteMode.Clock);
         referenceCpu.RunningTimeCycles = 1;
-        referenceCpu.SetPAKto(1);
+        referenceCpu.PAK = 1;
         referenceCpu.SccInitRead = true;
         referenceCpu.PdcWaitInternal = true;
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
 
         cpuUnderTest.SetExecuteMode(ExecuteMode.HighSpeed); // returns to NormalCondition
         referenceCpu.SetExecuteMode(ExecuteMode.HighSpeed);
@@ -161,7 +161,7 @@ public class StepButtonTests
 
         cpuUnderTest.IsNormalCondition.Should().BeTrue();
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
     }
 
     [Fact]

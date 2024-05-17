@@ -1,6 +1,5 @@
 ﻿using Emulator;
 using Emulator.Devices.Computer;
-using FluentAssertions;
 using Xunit;
 
 namespace EmulatorTests;
@@ -32,13 +31,13 @@ public class TestCoreMemoryRead
         referenceCpu.Memory[physicalStartAddress] = referenceCpu.Memory[0];
 
         // attempt to read word at address 0 of memory
-        cpuUnderTest.Console.SetPAKTo(startAddress);
-        referenceCpu.Console.SetPAKTo(startAddress);
-        cpuUnderTest.Console.SetXTo(5); // random value to test that the ClearX command occurs.
+        cpuUnderTest.PAK = startAddress;
+        referenceCpu.PAK = startAddress;
+        cpuUnderTest.X = 5; // random value to test that the ClearX command occurs.
 
         cpuUnderTest.Cycle(1); // should start the internal reference sub command.
 
-        referenceCpu.Console.SetPAKTo(startAddress + 1);
+        referenceCpu.PAK = startAddress + 1;
         referenceCpu.SctMcs0 = coreBank == 0;
         referenceCpu.SetSARto(startAddress);
         referenceCpu.SctMcs1 = coreBank == 1;
@@ -47,7 +46,7 @@ public class TestCoreMemoryRead
         referenceCpu.PdcWaitInternal = true;
         referenceCpu.McsAddressRegister[coreBank] = startAddress & 0b111_111_111_111;
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
 
         cpuUnderTest.Cycle(1); //MCP-0
 
@@ -58,7 +57,7 @@ public class TestCoreMemoryRead
         referenceCpu.McsWaitInit[coreBank] = true;
         referenceCpu.McsReadWriteEnable[coreBank] = true;
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
 
         cpuUnderTest.Cycle(1); //MCP-1
 
@@ -68,10 +67,10 @@ public class TestCoreMemoryRead
         referenceCpu.McsWaitInit[coreBank] = true;
         referenceCpu.McsReadWriteEnable[coreBank] = true;
         referenceCpu.McsMonInit[coreBank] = true;
-        referenceCpu.Console.SetXTo(referenceCpu.Memory[physicalStartAddress]);
+        referenceCpu.X = referenceCpu.Memory[physicalStartAddress];
         referenceCpu.McsRead[coreBank] = true;
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
 
         cpuUnderTest.Cycle(1); //MCP-2/3
 
@@ -84,7 +83,7 @@ public class TestCoreMemoryRead
         referenceCpu.McsWrite[coreBank] = true;
         referenceCpu.RunningTimeCycles = 4;
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
 
         cpuUnderTest.Cycle(1); //MCP-4
 
@@ -98,7 +97,7 @@ public class TestCoreMemoryRead
         referenceCpu.PdcWaitInternal = false; // data is ready in X and the read core subcommand has signalled we are ready to continue on the next cycle.
         referenceCpu.MainPulseDistributor = 7;
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
 
         // check that McsWaitInit remained high for one extra cycle, even though the rest of the CPU continued into MP7.
         cpuUnderTest.Cycle(1);
@@ -106,10 +105,10 @@ public class TestCoreMemoryRead
         referenceCpu.RunningTimeCycles = 6;
         referenceCpu.McsWaitInit[coreBank] = false;
         referenceCpu.SetSARto(0);
-        referenceCpu.SetMCRto(47);
+        referenceCpu.MCR = 47;
         referenceCpu.MainPulseDistributor = 7; // MP7 lasts for two cycles so we haven't advanced yet.
 
-        cpuUnderTest.Should().BeEquivalentTo(referenceCpu);
+        TestUtils.AssertEquivalent(cpuUnderTest, referenceCpu);
     }
 
     //TODO: Test the one cycle lockout actually introduces a delay. Requires an instruction that writes to core.
